@@ -1,6 +1,7 @@
 package com.lightbend.modelserver;
 
 import com.lightbend.kafka.ApplicationKafkaParameters;
+import com.lightbend.queriablestate.QueriesRestService;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -38,10 +39,13 @@ public class ModelServer {
         final KafkaStreams streams = createStreams(streamsConfiguration);
         streams.cleanUp();
         streams.start();
+        // Start the Restful proxy for servicing remote access to state stores
+        final QueriesRestService restService = startRestProxy(streams, port);
         // Add shutdown hook to respond to SIGTERM and gracefully close Kafka Streams
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 streams.close();
+                restService.stop();
             } catch (Exception e) {
                 // ignored
             }
@@ -73,5 +77,11 @@ public class ModelServer {
                     }
                 });
         return new KafkaStreams(builder, streamsConfiguration);
+    }
+
+    static QueriesRestService startRestProxy(final KafkaStreams streams, final int port) throws Exception {
+        final QueriesRestService restService = new QueriesRestService(streams);
+        restService.start(port);
+        return restService;
     }
 }

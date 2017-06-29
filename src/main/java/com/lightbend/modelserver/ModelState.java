@@ -4,6 +4,7 @@ import com.lightbend.model.Model;
 import com.lightbend.model.PMMLModel;
 import com.lightbend.model.TensorModel;
 import com.lightbend.model.Winerecord;
+import com.lightbend.queriablestate.ModelServingInfo;
 
 import java.util.Optional;
 
@@ -14,12 +15,16 @@ public class ModelState {
 
     private static Model currentModel = null;
     private static Model newModel = null;
+    private static ModelServingInfo currentServingInfo = null;
+    private static ModelServingInfo newServingInfo = null;
 
     private static ModelState instance = null;
 
     private ModelState(){                       // Disallow creation
         currentModel = null;
         newModel = null;
+        currentServingInfo = null;
+        newServingInfo = null;
     }
 
     static public synchronized ModelState getInstance(){
@@ -49,6 +54,7 @@ public class ModelState {
                     break;
             }
             newModel = current;
+            newServingInfo = new ModelServingInfo(model.getName(), model.getDescription(), 0);
             return;
         } catch (Throwable t) {
             System.out.println("Failed to create model");
@@ -64,6 +70,9 @@ public class ModelState {
             if(currentModel != null)
                 currentModel.cleanup();
             currentModel = newModel;
+            currentServingInfo = new ModelServingInfo(
+                    newServingInfo.getName(), newServingInfo.getDescription(), System.currentTimeMillis());
+            newServingInfo = null;
             newModel = null;
         }
         // Actually score
@@ -77,8 +86,13 @@ public class ModelState {
             long start = System.currentTimeMillis();
             double quality = (double) currentModel.score(data);
             long duration = System.currentTimeMillis() - start;
+            currentServingInfo.update(duration);
             System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
             return Optional.of(quality);
         }
+    }
+
+    public ModelServingInfo getCurrentServingInfo() {
+        return currentServingInfo;
     }
 }
