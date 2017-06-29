@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option java_package = "com.lightbend.model";
+
+// Description of the wine.
+message WineRecord {
+    double fixed_acidity = 1;
+    double volatile_acidity = 2;
+    double citric_acid = 3;
+    double residual_sugar = 4;
+    double chlorides = 5;
+    double free_sulfur_dioxide = 6;
+    double total_sulfur_dioxide = 7;
+    double density = 8;
+    double pH = 9;
+    double sulphates = 10;
+    double alcohol = 11;
+    // Data type for this record
+    string dataType = 12;
+}

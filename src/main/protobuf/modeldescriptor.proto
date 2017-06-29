@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_package = "com.lightbend.model";
+
+
+// Description of the trained model.
+message ModelDescriptor {
+    // Model name
+    string name = 1;
+    // Human readable description.
+    string description = 2;
+    // Data type for which this model is applied.
+    string dataType = 3;
+    // Model type
+    enum ModelType {
+        TENSORFLOW  = 0;
+        PMML        = 1;
+    };
+    ModelType modeltype = 4;
+    oneof MessageContent {
+        // Byte array containing the model
+        bytes data = 5;
+        string location = 6;
+    }
+}
