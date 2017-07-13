@@ -1,5 +1,7 @@
 package com.lightbend.queriablestate;
 
+// https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/WordCountInteractiveQueriesRestService.java
+
 import java.util.Objects;
 import java.util.Set;
 

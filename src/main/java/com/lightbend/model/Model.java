@@ -9,4 +9,5 @@ import java.io.Serializable;
 public interface Model extends Serializable {
     Object score(Object input);
     void cleanup();
+    byte[] getBytes();
 }

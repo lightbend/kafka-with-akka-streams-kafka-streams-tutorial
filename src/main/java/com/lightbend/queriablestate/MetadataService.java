@@ -5,12 +5,12 @@ import org.apache.kafka.streams.state.StreamsMetadata;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * Looks up StreamsMetadata from KafkaStreams and converts the results
  * into Beans that can be JSON serialized via Jersey.
+ * https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/MetadataService.java
  */
 public class MetadataService {
 
@@ -30,15 +30,30 @@ public class MetadataService {
         return mapInstancesToHostStoreInfo(metadata);
     }
 
+    /**
+     * Get the metadata for all instances of this Kafka Streams application that currently
+     * has the provided store.
+     * @param store   The store to locate
+     * @return  List of {@link HostStoreInfo}
+     */
+    public List<HostStoreInfo> streamsMetadataForStore(final  String store) {
+        // Get metadata for all of the instances of this Kafka Streams application hosting the store
+        final Collection<StreamsMetadata> metadata = streams.allMetadataForStore(store);
+        return mapInstancesToHostStoreInfo(metadata);
+    }
+
+
     private List<HostStoreInfo> mapInstancesToHostStoreInfo(final Collection<StreamsMetadata> metadatas) {
         return metadatas.stream().map(metadata -> new HostStoreInfo(metadata.host(),
                 metadata.port(),
-                addCustomStore(metadata.stateStoreNames())))
+                metadata.stateStoreNames()))
+//                addCustomStore(metadata.stateStoreNames())))
                 .collect(Collectors.toList());
     }
 
+/*
     private Set<String> addCustomStore(Set<String> current){
         current.add("ModelServing");
         return current;
-    }
+    }*/
 }

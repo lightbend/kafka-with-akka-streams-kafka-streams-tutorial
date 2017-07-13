@@ -1,6 +1,7 @@
 package com.lightbend.queriablestate;
 
-import com.lightbend.modelserver.ModelState;
+import com.lightbend.modelserver.store.ModelStateStore;
+import com.lightbend.modelserver.store.ReadableModelStateStore;
 import org.apache.kafka.streams.KafkaStreams;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -9,9 +10,7 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -19,6 +18,7 @@ import java.util.List;
  *  A simple REST proxy that runs embedded in the {@link com.lightbend.modelserver.ModelServer}. This is used to
  *  demonstrate how a developer can use the Interactive Queries APIs exposed by Kafka Streams to
  *  locate and query the State Stores within a Kafka Streams Application.
+ *  https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/WordCountInteractiveQueriesRestService.java
  */
 @Path("state")
 public class QueriesRestService {
@@ -43,15 +43,35 @@ public class QueriesRestService {
         return metadataService.streamsMetadata();
     }
 
+    /**
+     * Get the metadata for all instances of this Kafka Streams application that currently
+     * has the provided store.
+     * @param store   The store to locate
+     * @return  List of {@link HostStoreInfo}
+     */
+    @GET()
+    @Path("/instances/{storeName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<HostStoreInfo> streamsMetadataForStore(@PathParam("storeName") String store) {
+        return metadataService.streamsMetadataForStore(store);
+    }
 
     /**
      * Get current value of the of state
      * @return {@link ModelServingInfo} representing the key-value pair
      */
     @GET
-    @Path("/value")
+    @Path("{storeName}/value")
     @Produces(MediaType.APPLICATION_JSON)
-    public ModelServingInfo servingInfo() { return ModelState.getInstance().getCurrentServingInfo(); }
+    public ModelServingInfo servingInfo(@PathParam("storeName") final String storeName) {
+//        return ModelState.getInstance().getCurrentServingInfo();
+        // Get the  Store
+        final ReadableModelStateStore store = streams.store(storeName, new ModelStateStore.ModelStateStoreType());
+        if (store == null) {
+            throw new NotFoundException();
+        }
+        return store.getCurrentServingInfo();
+    }
 
     /**
      * Start an embedded Jetty Server on the given port

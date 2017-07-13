@@ -54,6 +54,11 @@ public class TensorModel implements Model{
         graph.close();
     }
 
+    @Override
+    public byte[] getBytes() {
+        return graph.toGraphDef();
+    }
+
     public Graph getGraph() {
         return graph;
     }

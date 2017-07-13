@@ -9,12 +9,13 @@ import org.jpmml.evaluator.visitors.*;
 import org.jpmml.model.PMMLUtil;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.*;
 
 /**
  * Created by boris on 5/18/17.
  */
-public class PMMLModel implements Model {
+public class PMMLModel implements Model{
 
     private static List<? extends Visitor> optimizers = Arrays.asList(new ExpressionOptimizer(), new FieldOptimizer(), new PredicateOptimizer(), new GeneralRegressionModelOptimizer(), new NaiveBayesModelOptimizer(), new RegressionModelOptimizer());
 
@@ -35,6 +36,7 @@ public class PMMLModel implements Model {
         return map;
     }
 
+    private PMML pmml;
     private Evaluator evaluator;
     private FieldName tname;
     private List<InputField> inputFields;
@@ -42,7 +44,7 @@ public class PMMLModel implements Model {
 
     public PMMLModel(byte[] input) throws Throwable{
         // unmarshal PMML
-        PMML pmml = PMMLUtil.unmarshal(new ByteArrayInputStream(input));
+        pmml = PMMLUtil.unmarshal(new ByteArrayInputStream(input));
         // Optimize model
         synchronized(this) {
             for (Visitor optimizer : optimizers) {
@@ -94,5 +96,17 @@ public class PMMLModel implements Model {
     private double getValueByName(Winerecord.WineRecord input, String name){
         Descriptors.FieldDescriptor descriptor =  input.getDescriptorForType().findFieldByName(names.get(name));
         return (double)input.getField(descriptor);
+    }
+
+    @Override
+    public byte[] getBytes() {
+        ByteArrayOutputStream ous = new ByteArrayOutputStream();
+        try {
+            PMMLUtil.marshal(pmml, ous);
+        }
+        catch(Throwable t){
+            t.printStackTrace();
+        }
+        return ous.toByteArray();
     }
 }

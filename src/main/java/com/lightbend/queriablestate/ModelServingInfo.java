@@ -18,10 +18,21 @@ public class ModelServingInfo {
         this.name = name;
         this.description = description;
         this.since = since;
-        invocations = 0;
-        duration = 0.;
-        min = Long.MAX_VALUE;
-        max = Long.MIN_VALUE;
+        this.invocations = 0;
+        this.duration = 0.;
+        this.min = Long.MAX_VALUE;
+        this.max = Long.MIN_VALUE;
+    }
+
+    public ModelServingInfo(final String name, final String description, final long since, final long invocations,
+                            final double duration, final long min, final long max) {
+        this.name = name;
+        this.description = description;
+        this.since = since;
+        this.invocations = invocations;
+        this.duration = duration;
+        this.min = min;
+        this.max = max;
     }
 
     public void update(long execution){
