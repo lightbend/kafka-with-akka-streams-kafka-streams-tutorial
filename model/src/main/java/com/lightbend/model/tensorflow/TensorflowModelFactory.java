@@ -17,7 +17,7 @@ public class TensorflowModelFactory implements ModelFactory {
     public Optional<Model> create(CurrentModelDescriptor descriptor) {
 
         try{
-            return Optional.of(new TensorModel(descriptor.getModelData()));
+            return Optional.of(new TensorflowModel(descriptor.getModelData()));
         }
         catch (Throwable t){
             System.out.println("Exception creating TensorflowModel from " + descriptor);
@@ -29,7 +29,7 @@ public class TensorflowModelFactory implements ModelFactory {
     @Override
     public Model restore(byte[] bytes) {
         try{
-            return new TensorModel(bytes);
+            return new TensorflowModel(bytes);
         }
         catch (Throwable t){
             System.out.println("Exception restoring PMMLModel from ");
