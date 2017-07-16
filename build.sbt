@@ -23,7 +23,7 @@ lazy val model = (project in file("./model"))
   .dependsOn(protobufs)
 
 lazy val server = (project in file("./server"))
-  .settings(libraryDependencies ++= Dependencies.kafkaDependencies ++ Dependencies.modelsDependencies ++ Dependencies.webDependencies)
+  .settings(libraryDependencies ++= Dependencies.kafkaDependencies ++ Dependencies.webDependencies)
   .dependsOn(model, configuration)
 
 lazy val configuration = (project in file("./configuration"))
