@@ -3,7 +3,7 @@ name := "KafkaStreamsModelServer"
 
 version := "1.0"
 
-scalaVersion := "2.11.8"
+scalaVersion in ThisBuild := "2.11.11"
 
 
 lazy val protobufs = (project in file("./protobufs"))
