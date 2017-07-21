@@ -8,7 +8,7 @@ scalaVersion in ThisBuild := "2.11.11"
 
 lazy val protobufs = (project in file("./protobufs"))
     .settings(
-      PB.targets in Compile := Seq(
+      PB.targets in Compile := Seq( 
         PB.gens.java -> (sourceManaged in Compile).value,
         scalapb.gen(javaConversions=true) -> (sourceManaged in Compile).value
       )
@@ -30,3 +30,4 @@ lazy val configuration = (project in file("./configuration"))
 
 lazy val root = (project in file(".")).
   aggregate(protobufs, client, model, configuration, server)
+

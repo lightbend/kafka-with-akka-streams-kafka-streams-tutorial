@@ -8,6 +8,7 @@ import com.lightbend.queriablestate.ModelServingInfo;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 /**
  * Created by boris on 6/28/17.
@@ -19,8 +20,6 @@ public class ModelState {
     private static ModelServingInfo currentServingInfo = null;
     private static ModelServingInfo newServingInfo = null;
 
-    private static ModelState instance = null;
-
     private static final Map<Integer, ModelFactory> factories = new HashMap<Integer, ModelFactory>() {
         {
             put(Modeldescriptor.ModelDescriptor.ModelType.TENSORFLOW.getNumber(), TensorflowModelFactory.getInstance());
@@ -28,18 +27,11 @@ public class ModelState {
         }
     };
 
-    private ModelState(){                       // Disallow creation
+    ModelState(){                       // Disallow creation
         currentModel = null;
         newModel = null;
         currentServingInfo = null;
         newServingInfo = null;
-    }
-
-    static public synchronized ModelState getInstance(){
-        if(instance == null){
-            instance = new ModelState();
-        }
-        return  instance;
     }
 
     public void updateModel(CurrentModelDescriptor model){
@@ -61,8 +53,8 @@ public class ModelState {
         }
     }
 
-    public Optional<Double> serve(Winerecord.WineRecord data){
-        if(newModel != null){
+    public OptionalDouble serve(Winerecord.WineRecord data){
+        if(newModel != null) {
             // update the model
             if(currentModel != null)
                 currentModel.cleanup();
@@ -76,7 +68,7 @@ public class ModelState {
         if(currentModel == null) {
             // No model currently
             System.out.println("No model available - skipping");
-            return Optional.empty();
+            return OptionalDouble.empty();
         }
         else{
             // Score the model
@@ -85,7 +77,7 @@ public class ModelState {
             long duration = System.currentTimeMillis() - start;
             currentServingInfo.update(duration);
             System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
-            return Optional.of(quality);
+            return OptionalDouble.of(quality);
         }
     }
 

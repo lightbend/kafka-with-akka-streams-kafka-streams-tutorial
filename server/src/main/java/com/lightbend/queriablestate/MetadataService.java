@@ -51,9 +51,4 @@ public class MetadataService {
                 .collect(Collectors.toList());
     }
 
-/*
-    private Set<String> addCustomStore(Set<String> current){
-        current.add("ModelServing");
-        return current;
-    }*/
 }

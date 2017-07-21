@@ -18,6 +18,7 @@ import java.util.Properties;
 /**
  * Created by boris on 6/28/17.
  */
+@SuppressWarnings("Duplicates")
 public class ModelServerWithStore {
 
     final static int port=8888;                             // Port for queryable state

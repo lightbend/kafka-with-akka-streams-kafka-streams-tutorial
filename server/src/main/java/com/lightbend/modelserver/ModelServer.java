@@ -1,91 +1,101 @@
 package com.lightbend.modelserver;
 
+import akka.NotUsed;
+import akka.actor.ActorSystem;
+import akka.http.scaladsl.settings.ServerSettings;
+import akka.japi.Pair;
+import akka.kafka.AutoSubscription;
+import akka.kafka.ConsumerSettings;
+import akka.kafka.Subscriptions;
+import akka.kafka.javadsl.Consumer;
+import akka.stream.ActorMaterializer;
+import akka.stream.Materializer;
+import akka.stream.SourceShape;
+import akka.stream.javadsl.GraphDSL;
+import akka.stream.javadsl.Source;
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.model.CurrentModelDescriptor;
 import com.lightbend.model.DataConverter;
-import com.lightbend.queriablestate.QueriesRestService;
-import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.ForeachAction;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KStreamBuilder;
+import com.lightbend.model.Winerecord;
+import com.lightbend.modelserver.store.ReadableModelStateStore;
+import com.lightbend.queriablestate.QueriesAkkaHttpService;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.Collections;
+import java.util.OptionalDouble;
 
-/**
- * Created by boris on 6/28/17.
- */
 public class ModelServer {
 
-    final static int port=8888;                             // Port for queryable state
+  // Port for queryable state
+  final static int port = 8888;
 
-    public static void main(String [ ] args) throws Throwable {
+  private static ActorSystem system;
+  private static Materializer mat;
+  private static ConsumerSettings<byte[], byte[]> consumerSettings;
 
-        Properties streamsConfiguration = new Properties();
-        // Give the Streams application a unique name.  The name must be unique in the Kafka cluster
-        // against which the application is run.
-        streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "interactive-queries-example");
-        streamsConfiguration.put(StreamsConfig.CLIENT_ID_CONFIG, "interactive-queries-example-client");
-        // Where to find Kafka broker(s).
-        streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, ApplicationKafkaParameters.LOCAL_KAFKA_BROKER);
-        // Provide the details of our embedded http service that we'll use to connect to this streams
-        // instance and discover locations of stores.
-        streamsConfiguration.put(StreamsConfig.APPLICATION_SERVER_CONFIG, "localhost:" + port);
-        final File example = Files.createTempDirectory(new File("/tmp").toPath(), "example").toFile();
-        streamsConfiguration.put(StreamsConfig.STATE_DIR_CONFIG, example.getPath());
-        // Create topology
-        final KafkaStreams streams = createStreams(streamsConfiguration);
-        streams.cleanUp();
-        streams.start();
-        // Start the Restful proxy for servicing remote access to state stores
-        final QueriesRestService restService = startRestProxy(streams, port);
-        // Add shutdown hook to respond to SIGTERM and gracefully close Kafka Streams
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                streams.close();
-                restService.stop();
-            } catch (Exception e) {
-                // ignored
-            }
-        }));
-    }
+  public static void main(String[] args) throws Throwable {
+    system = ActorSystem.create("ModelServer");
+    mat = ActorMaterializer.create(system);
 
-    static KafkaStreams createStreams(final Properties streamsConfiguration) {
+      consumerSettings = ConsumerSettings.create(system, new ByteArrayDeserializer(), new ByteArrayDeserializer())
+        .withBootstrapServers(ApplicationKafkaParameters.LOCAL_KAFKA_BROKER)
+        .withGroupId("model-server-group") // TODO is this ok?
+        .withClientId("interactive-queries-example-client");
 
-        final Serde<byte[]> serde = Serdes.ByteArray();
-        KStreamBuilder builder = new KStreamBuilder();
-        // Data input stream
-        KStream<byte[], byte[]> dataStream = builder.stream(serde, serde, ApplicationKafkaParameters.DATA_TOPIC);
-        KStream<byte[], byte[]> modelStream = builder.stream(serde, serde, ApplicationKafkaParameters.MODELS_TOPIC);
-        // Model processing
-        modelStream.mapValues(value -> DataConverter.convertModel(value)).
-                flatMapValues(value -> Arrays.asList(value.get())).
-                foreach(new ForeachAction<byte[], CurrentModelDescriptor>() {
-                    public void apply(byte[] key, CurrentModelDescriptor value) {
-                        ModelState.getInstance().updateModel(value);
-                    }
-                });
-        // Data processing
-        dataStream.mapValues(value -> DataConverter.convertData(value)).
-                flatMapValues(value -> Arrays.asList(value.get())).
-                mapValues(value -> ModelState.getInstance().serve(value)).
-                foreach(new ForeachAction<byte[], Optional<Double>>() {
-                    public void apply(byte[] key, Optional<Double> value) {
-                        System.out.println("Result" + value);
-                    }
-                });
-        return new KafkaStreams(builder, streamsConfiguration);
-    }
+    final Source<Pair<Winerecord.WineRecord, OptionalDouble>, ReadableModelStateStore> predictionsSource = wireStreams(consumerSettings);
 
-    static QueriesRestService startRestProxy(final KafkaStreams streams, final int port) throws Exception {
-        final QueriesRestService restService = new QueriesRestService(streams);
-        restService.start(port);
-        return restService;
-    }
+    startRest(predictionsSource, port);
+  }
+
+  static Source<Pair<Winerecord.WineRecord, OptionalDouble>, ReadableModelStateStore> wireStreams(final ConsumerSettings<byte[], byte[]> streamsConfiguration) {
+    final AutoSubscription modelsTopic = Subscriptions.topics(ApplicationKafkaParameters.MODELS_TOPIC);
+    final Source<ConsumerRecord<byte[], byte[]>, akka.kafka.javadsl.Consumer.Control> models =
+      akka.kafka.javadsl.Consumer.<byte[], byte[]>atMostOnceSource(consumerSettings, modelsTopic);
+
+    final AutoSubscription dataTopic = Subscriptions.topics(ApplicationKafkaParameters.DATA_TOPIC);
+    final Source<ConsumerRecord<byte[], byte[]>, akka.kafka.javadsl.Consumer.Control> datas =
+      akka.kafka.javadsl.Consumer.<byte[], byte[]>atMostOnceSource(consumerSettings, dataTopic);
+
+
+    // Model stream
+    final Source<Winerecord.WineRecord, Consumer.Control> wineRecords = models
+      .map(value -> DataConverter.convertData(value.value()))
+      .mapConcat(value -> Collections.singletonList(value.get()));
+
+    // Data stream
+    final Source<CurrentModelDescriptor, Consumer.Control> modelDescriptors = datas
+      .map(value -> DataConverter.convertModel(value.value()))
+      .mapConcat(value -> Collections.singletonList(value.get()));
+
+
+    final Source<Pair<Winerecord.WineRecord, OptionalDouble>, ReadableModelStateStore> modelPredictions  = 
+      Source.fromGraph(GraphDSL.create3(
+        wineRecords, modelDescriptors, new ModelStage(),
+        (wineStreamControl, modelChangeStreamControl, notUsed) -> notUsed, // materialized values, no need for control values of kafka consumers
+        (b, wineData, modelChange, model) -> { // wire together the input streams with the model stage (2 in, 1 out)
+            
+          /* 
+                      wine --> |       |
+                               | model | -> (Source of predictions)
+              model changes -> |       | 
+           */
+
+        b
+          .from(wineData).toInlet(model.wineRecordIn)
+          .from(modelChange).toInlet(model.modelIn);
+
+        return new SourceShape<>(model.qualityOut);
+      }));
+
+    return modelPredictions.map(value -> {
+      System.out.println("Result" + value);
+      return value;
+    });
+  }
+
+  static void startRest(final Source<Pair<Winerecord.WineRecord, OptionalDouble>, ReadableModelStateStore> predictions, final int port) throws Exception {
+    final QueriesAkkaHttpService httpService = new QueriesAkkaHttpService(predictions);
+    httpService.startServer("localhost", port); // TODO translated it, but does not seem to make much sense if kafka streams not used?
+  }
 }
