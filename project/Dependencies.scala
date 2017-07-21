@@ -5,6 +5,13 @@ import sbt._
 import Versions._
 
 object Dependencies {
+  val reactiveKafka = "com.typesafe.akka"               %% "akka-stream-kafka"             % reactiveKafkaVersion
+  
+  val akkaStream    = "com.typesafe.akka"               %% "akka-stream"                   % akkaVersion
+  val akkaHttp      = "com.typesafe.akka"               %% "akka-http"                     % akkaHttpVersion
+  val akkaHttpJsonJackson = "de.heikoseeberger"         %% "akka-http-jackson"             % akkaHttpJsonVersion 
+  
+  // FIXME replace with reactive kafka?
   val kafka         = "org.apache.kafka"                % "kafka_2.11"                    % kafkaVersion
   val kafkaclients  = "org.apache.kafka"                % "kafka-clients"                 % kafkaVersion
   val kafkastreams  = "org.apache.kafka"                % "kafka-streams"                 % kafkaVersion
@@ -22,8 +29,9 @@ object Dependencies {
   val jpmmlextras   = "org.jpmml"                       % "pmml-evaluator-extension"      % PMMLVersion
 
   val modelsDependencies    = Seq(jpmml, jpmmlextras, tensorflow)
-  val kafkabaseDependencies = Seq(kafka, kafkaclients)
-  val kafkaDependencies     = Seq(kafka, kafkaclients, kafkastreams)
-  val webDependencies       = Seq(gson, jersey, jerseymedia, jettyserver, jettyservlet, wsrs)
+  val kafkabaseDependencies = Seq(reactiveKafka) ++ Seq(kafka, kafkaclients)
+  val kafkaDependencies     = Seq(reactiveKafka) ++ Seq(kafka, kafkaclients, kafkastreams)
+  val webDependencies       = Seq(reactiveKafka) ++ Seq(akkaStream, akkaHttp, akkaHttpJsonJackson) ++ 
+                              Seq(gson, jersey, jerseymedia, jettyserver, jettyservlet, wsrs)
 
 }
