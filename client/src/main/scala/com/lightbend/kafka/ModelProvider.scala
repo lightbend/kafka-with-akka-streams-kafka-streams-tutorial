@@ -16,7 +16,7 @@ object ModelProvider {
 
   val directory = "data/"
   val tensorfile = "data/optimized_WineQuality.pb"
-  val timeInterval = 1000 * 60 * 1        // 1 mins
+  val timeInterval = 1000 * 60 * 1           // 1 mins
 
   def main(args: Array[String]) {
     val sender = KafkaMessageSender(ApplicationKafkaParameters.LOCAL_KAFKA_BROKER, ApplicationKafkaParameters.LOCAL_ZOOKEEPER_HOST)

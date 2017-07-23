@@ -44,13 +44,14 @@ object AkkaModelServer {
     EmbeddedSingleNodeKafkaCluster.createTopic(DATA_TOPIC)
     EmbeddedSingleNodeKafkaCluster.createTopic(MODELS_TOPIC)
 
-    val dataStream: Source[WineRecord, Consumer.Control] =
-      Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(DATA_TOPIC))
-        .map(record => DataRecord.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
-
     val modelStream: Source[ModelToServe, Consumer.Control] =
       Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))
         .map(record => ModelToServe.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
+//    modelStream.map(println(_)).runWith(Sink.ignore)
+
+    val dataStream: Source[WineRecord, Consumer.Control] =
+      Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(DATA_TOPIC))
+        .map(record => DataRecord.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
 
     val model = new ModelStage()
 
@@ -72,11 +73,7 @@ object AkkaModelServer {
           m ~> w.modelRecordIn
           SourceShape(w.scoringResultOut)
       }
-    ).runWith(Sink.ignore)
-//    val done = modelPredictions.map{value => value match {
-//      case Some(v) => println(v)
-//      case _  => None
-//    }}
+    ).map(println(_)).runWith(Sink.ignore)
   }
 
 //  def startRest(final Source<Pair<Winerecord.WineRecord, OptionalDouble>, ReadableModelStateStore> predictions, final int port) throws Exception {

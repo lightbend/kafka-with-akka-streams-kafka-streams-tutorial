@@ -30,13 +30,12 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelFanInShape, Readab
       private var newState : Option[ModelToServeStats] = None
 
 
-      /*
+
       // TODO the pulls needed to get the stage actually pulling from the input streams
       override def preStart(): Unit = {
         tryPull(shape.modelRecordIn)
         tryPull(shape.dataRecordIn)
       }
-      */
 
       setHandler(shape.modelRecordIn, new InHandler {
         override def onPush(): Unit = {
@@ -79,12 +78,13 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelFanInShape, Readab
               push(shape.scoringResultOut, None)
             }
           }
+          pull(shape.dataRecordIn)
         }
       })
 
       setHandler(shape.scoringResultOut, new OutHandler {
         override def onPull(): Unit = {
-          pull(shape.dataRecordIn)
+//          pull(shape.dataRecordIn)
         }
       })
     }
