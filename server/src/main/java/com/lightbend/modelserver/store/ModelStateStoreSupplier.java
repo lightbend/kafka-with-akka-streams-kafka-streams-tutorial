@@ -13,11 +13,11 @@ import java.util.Map;
 public class ModelStateStoreSupplier implements StateStoreSupplier<ModelStateStore> {
 
     private String name;
-    private Serde<ModelStateStore.StoreState> serde;
+    private Serde<StoreState> serde;
     private boolean loggingEnabled;
     private Map<String, String> logConfig;
 
-    public ModelStateStoreSupplier(String name, Serde<ModelStateStore.StoreState> serde, boolean loggingEnabled, Map<String, String> logConfig){
+    public ModelStateStoreSupplier(String name, Serde<StoreState> serde, boolean loggingEnabled, Map<String, String> logConfig){
 
         this.name = name;
         this.serde = serde;
@@ -25,11 +25,11 @@ public class ModelStateStoreSupplier implements StateStoreSupplier<ModelStateSto
         this.logConfig = logConfig;
     }
 
-    public ModelStateStoreSupplier(String name, Serde<ModelStateStore.StoreState> serde) {
+    public ModelStateStoreSupplier(String name, Serde<StoreState> serde) {
         this(name, serde, true, new HashMap<>());
     }
 
-    public ModelStateStoreSupplier(String name, Serde<ModelStateStore.StoreState> serde, boolean loggingEnabled) {
+    public ModelStateStoreSupplier(String name, Serde<StoreState> serde, boolean loggingEnabled) {
         this(name, serde, loggingEnabled, new HashMap<>());
     }
 

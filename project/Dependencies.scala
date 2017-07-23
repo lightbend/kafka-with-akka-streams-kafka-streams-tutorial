@@ -5,16 +5,18 @@ import sbt._
 import Versions._
 
 object Dependencies {
-  val reactiveKafka = "com.typesafe.akka"               %% "akka-stream-kafka"             % reactiveKafkaVersion
+  val reactiveKafka = "com.typesafe.akka"               % "akka-stream-kafka_2.11"        % reactiveKafkaVersion
   
-  val akkaStream    = "com.typesafe.akka"               %% "akka-stream"                   % akkaVersion
-  val akkaHttp      = "com.typesafe.akka"               %% "akka-http"                     % akkaHttpVersion
-  val akkaHttpJsonJackson = "de.heikoseeberger"         %% "akka-http-jackson"             % akkaHttpJsonVersion 
+  val akkaStream    = "com.typesafe.akka"               % "akka-stream_2.11"              % akkaVersion
+  val akkaHttp      = "com.typesafe.akka"               % "akka-http_2.11"                % akkaHttpVersion
+  val akkaHttpJsonJackson = "de.heikoseeberger"         % "akka-http-jackson_2.11"        % akkaHttpJsonVersion
   
-  // FIXME replace with reactive kafka?
+
   val kafka         = "org.apache.kafka"                % "kafka_2.11"                    % kafkaVersion
   val kafkaclients  = "org.apache.kafka"                % "kafka-clients"                 % kafkaVersion
   val kafkastreams  = "org.apache.kafka"                % "kafka-streams"                 % kafkaVersion
+
+  val curator       = "org.apache.curator"              % "curator-test"                  % Curator                 // ApacheV2
 
   val gson          = "com.google.code.gson"            % "gson"                          % gsonVersion
   val jersey        = "org.glassfish.jersey.containers" % "jersey-container-servlet-core" % jerseyVersion
@@ -31,7 +33,7 @@ object Dependencies {
   val modelsDependencies    = Seq(jpmml, jpmmlextras, tensorflow)
   val kafkabaseDependencies = Seq(reactiveKafka) ++ Seq(kafka, kafkaclients)
   val kafkaDependencies     = Seq(reactiveKafka) ++ Seq(kafka, kafkaclients, kafkastreams)
-  val webDependencies       = Seq(reactiveKafka) ++ Seq(akkaStream, akkaHttp, akkaHttpJsonJackson) ++ 
-                              Seq(gson, jersey, jerseymedia, jettyserver, jettyservlet, wsrs)
+  val webDependencies       = Seq(gson, jersey, jerseymedia, jettyserver, jettyservlet, wsrs)
+  val akkaServerDependencies = Seq(reactiveKafka) ++ Seq(akkaStream, akkaHttp, akkaHttpJsonJackson, reactiveKafka)
 
 }

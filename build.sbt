@@ -25,9 +25,13 @@ lazy val model = (project in file("./model"))
 lazy val server = (project in file("./server"))
   .settings(libraryDependencies ++= Dependencies.kafkaDependencies ++ Dependencies.webDependencies)
   .dependsOn(model, configuration)
+lazy val akkaServer = (project in file("./akkaserver"))
+  .settings(libraryDependencies ++= Dependencies.kafkaDependencies ++ Dependencies.akkaServerDependencies
+    ++ Dependencies.modelsDependencies ++ Seq(Dependencies.curator))
+  .dependsOn(protobufs, configuration)
 
 lazy val configuration = (project in file("./configuration"))
 
 lazy val root = (project in file(".")).
-  aggregate(protobufs, client, model, configuration, server)
+  aggregate(protobufs, client, model, configuration, server, akkaServer)
 

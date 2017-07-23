@@ -22,10 +22,10 @@ import java.util.Map;
  * based on
  * https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/scala/io/confluent/examples/streams/algebird/TopCMSSerde.scala
  */
-public class ModelStateSerde implements Serde<ModelStateStore.StoreState> {
+public class ModelStateSerde implements Serde<StoreState> {
 
-    final private Serializer<ModelStateStore.StoreState> serializer;
-    final private Deserializer<ModelStateStore.StoreState> deserializer;
+    final private Serializer<StoreState> serializer;
+    final private Deserializer<StoreState> deserializer;
 
     public ModelStateSerde(){
         serializer = new ModelStateSerializer();
@@ -36,23 +36,26 @@ public class ModelStateSerde implements Serde<ModelStateStore.StoreState> {
 
     @Override public void close() {}
 
-    @Override public Serializer<ModelStateStore.StoreState> serializer() {
+    @Override public Serializer<StoreState> serializer() {
         return serializer;
     }
 
-    @Override public Deserializer<ModelStateStore.StoreState> deserializer() {
+    @Override public Deserializer<StoreState> deserializer() {
         return deserializer;
     }
 
-    public static class ModelStateSerializer implements Serializer<ModelStateStore.StoreState> {
+    public static class ModelStateSerializer implements Serializer<StoreState> {
+
+        private ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
 
         @Override public void configure(Map<String, ?> configs, boolean isKey) {}
 
-        @Override public byte[] serialize(String topic, ModelStateStore.StoreState state) {
+        @Override public byte[] serialize(String topic, StoreState state) {
 
             System.out.println("Serializing Store !!");
 
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bos.reset();
             DataOutputStream output = new DataOutputStream(bos);
 
             writeModel(state.getCurrentModel(), output);
@@ -110,7 +113,7 @@ public class ModelStateSerde implements Serde<ModelStateStore.StoreState> {
 
         @Override public void close() {}
     }
-    public static class ModelStateDeserializer implements Deserializer<ModelStateStore.StoreState> {
+    public static class ModelStateDeserializer implements Deserializer<StoreState> {
 
         private static final Map<Integer, ModelFactory> factories = new HashMap<Integer, ModelFactory>() {
             {
@@ -124,7 +127,7 @@ public class ModelStateSerde implements Serde<ModelStateStore.StoreState> {
         }
 
         @Override
-        public ModelStateStore.StoreState deserialize(String topic, byte[] data) {
+        public StoreState deserialize(String topic, byte[] data) {
 
             System.out.println("Deserializing Store !!");
 
@@ -137,7 +140,7 @@ public class ModelStateSerde implements Serde<ModelStateStore.StoreState> {
             ModelServingInfo currentServingInfo = readServingInfo(input);
             ModelServingInfo newServingInfo = readServingInfo(input);
 
-            return new ModelStateStore.StoreState(currentModel, newModel, currentServingInfo, newServingInfo);
+            return new StoreState(currentModel, newModel, currentServingInfo, newServingInfo);
         }
 
         @Override

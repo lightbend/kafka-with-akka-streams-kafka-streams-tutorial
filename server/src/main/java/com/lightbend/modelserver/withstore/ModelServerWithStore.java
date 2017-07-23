@@ -2,8 +2,8 @@ package com.lightbend.modelserver.withstore;
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.modelserver.store.ModelStateSerde;
-import com.lightbend.modelserver.store.ModelStateStore;
 import com.lightbend.modelserver.store.ModelStateStoreSupplier;
+import com.lightbend.modelserver.store.StoreState;
 import com.lightbend.queriablestate.QueriesRestService;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.Serde;
@@ -56,7 +56,7 @@ public class ModelServerWithStore {
 
     static KafkaStreams createStreams(final Properties streamsConfiguration) {
 
-        Serde<ModelStateStore.StoreState> stateSerde = new ModelStateSerde();
+        Serde<StoreState> stateSerde = new ModelStateSerde();
         ByteArrayDeserializer deserializer = new ByteArrayDeserializer();
         ModelStateStoreSupplier storeSupplier = new ModelStateStoreSupplier("modelStore", stateSerde);
 
