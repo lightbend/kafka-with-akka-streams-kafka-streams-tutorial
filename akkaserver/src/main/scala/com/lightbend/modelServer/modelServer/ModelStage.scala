@@ -11,13 +11,13 @@ import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.modelServer.model.PMML.PMMLModel
 import com.lightbend.modelServer.model.tensorflow.TensorFlowModel
 
-class ModelStage extends GraphStageWithMaterializedValue[ModelFanInShape, ReadableModelStateStore] {
+class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, ReadableModelStateStore] {
 
   private val factories = Map(
     ModelDescriptor.ModelType.PMML -> PMMLModel,
     ModelDescriptor.ModelType.TENSORFLOW -> TensorFlowModel)
 
-  override val shape: ModelFanInShape = new ModelFanInShape
+  override val shape: ModelStageShape = new ModelStageShape
 
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, ReadableModelStateStore) = {
 
@@ -41,8 +41,11 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelFanInShape, Readab
         override def onPush(): Unit = {
           val model = grab(shape.modelRecordIn)
           println(s"New model - $model")
-          newModel = factories.get(model.modelType) match{
-            case Some(factory) => factory.create(model)
+          factories.get(model.modelType) match{
+            case Some(factory) => {
+              newModel = factory.create(model)
+              newState = Some(new ModelToServeStats(model))
+            }
             case _ => None
           }
           pull(shape.modelRecordIn)
@@ -61,6 +64,7 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelFanInShape, Readab
               }
               // Update model
               currentModel = Some(model)
+              currentState = newState
               newModel = None
             }
             case _ =>
@@ -95,7 +99,7 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelFanInShape, Readab
   }
 }
 
-class ModelFanInShape() extends Shape {
+class ModelStageShape() extends Shape {
   var dataRecordIn = Inlet[WineRecord]("dataRecordIn")
   var modelRecordIn = Inlet[ModelToServe]("modelRecordIn")
   var scoringResultOut = Outlet[Option[Double]]("scoringOut")
@@ -107,10 +111,10 @@ class ModelFanInShape() extends Shape {
     this.scoringResultOut = scoringResultOut
   }
 
-  override def deepCopy(): Shape = new ModelFanInShape(dataRecordIn.carbonCopy(), modelRecordIn.carbonCopy(), scoringResultOut)
+  override def deepCopy(): Shape = new ModelStageShape(dataRecordIn.carbonCopy(), modelRecordIn.carbonCopy(), scoringResultOut)
 
   override def copyFromPorts(inlets: immutable.Seq[Inlet[_]], outlets: immutable.Seq[Outlet[_]]): Shape =
-    new ModelFanInShape(
+    new ModelStageShape(
       inlets(0).asInstanceOf[Inlet[WineRecord]],
       inlets(1).asInstanceOf[Inlet[ModelToServe]],
       outlets(0).asInstanceOf[Outlet[Option[Double]]])
