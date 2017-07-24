@@ -5,7 +5,6 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Route
 import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.kafka.scaladsl.Consumer
-import akka.stream.impl.fusing.GraphStageModule
 import akka.stream.{ActorMaterializer, SourceShape}
 import akka.stream.scaladsl.{GraphDSL, Sink, Source}
 import akka.util.Timeout
