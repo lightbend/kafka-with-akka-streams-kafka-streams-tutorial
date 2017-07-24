@@ -84,7 +84,6 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelFanInShape, Readab
 
       setHandler(shape.scoringResultOut, new OutHandler {
         override def onPull(): Unit = {
-//          pull(shape.dataRecordIn)
         }
       })
     }

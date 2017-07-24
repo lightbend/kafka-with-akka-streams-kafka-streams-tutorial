@@ -39,10 +39,10 @@ class QueriesAkkaHttpService(
 
   override protected def routes: Route =
     (get & pathPrefix("state")) {
-      instancesRoutes ~
+//      instancesRoutes ~
         storeRoutes
     }
-
+/*
   def instancesRoutes: Route =
     pathPrefix("instances") {
       path(StoreName) { storeName =>
@@ -51,7 +51,7 @@ class QueriesAkkaHttpService(
         pathEnd {
           complete(???) // FIXME not sure what to do here... seems that service only makes sense if using kafka streams?
         }
-    }
+    } */
 
   def storeRoutes: Route =
     path(StoreName / "value") { storeName =>
