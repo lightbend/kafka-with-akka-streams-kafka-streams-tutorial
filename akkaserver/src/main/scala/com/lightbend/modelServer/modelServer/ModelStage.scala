@@ -1,15 +1,42 @@
 package com.lightbend.modelServer.modelServer
 
-import scala.collection.{ JavaConversions, immutable }
 import akka.stream._
-import akka.stream.stage._
-import com.lightbend.modelServer.{ ModelToServe, ModelToServeStats }
-import com.lightbend.modelServer.model.Model
-import akka.stream.stage.GraphStageLogicWithLogging
+import akka.stream.scaladsl.{ GraphDSL, Source }
+import akka.stream.stage.{ GraphStageLogicWithLogging, _ }
 import com.lightbend.model.modeldescriptor.ModelDescriptor
 import com.lightbend.model.winerecord.WineRecord
+import com.lightbend.modelServer.model.Model
 import com.lightbend.modelServer.model.PMML.PMMLModel
 import com.lightbend.modelServer.model.tensorflow.TensorFlowModel
+import com.lightbend.modelServer.{ ModelToServe, ModelToServeStats }
+
+import scala.collection.immutable
+
+object ModelStage {
+  def connect(modelStream: Source[ModelToServe, _], dataStream: Source[WineRecord, _]): Source[Option[Double], ReadableModelStateStore] = {
+    val model = new ModelStage()
+
+    def keepModelMaterializedValue[M1, M2, M3](m1: M1, m2: M2, m3: M3): M3 = m3
+
+    Source.fromGraph(
+          GraphDSL.create(dataStream, modelStream, model)(keepModelMaterializedValue) {
+            implicit builder => (d, m, w) =>
+              import GraphDSL.Implicits._
+    
+              // wire together the input streams with the model stage (2 in, 1 out)
+              /*
+                                dataStream --> |       |
+                                               | model | -> predictions
+                                modelStream -> |       |
+              */
+    
+              d ~> w.dataRecordIn
+              m ~> w.modelRecordIn
+              SourceShape(w.scoringResultOut)
+          }
+        )
+  }
+}
 
 class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, ReadableModelStateStore] {
 

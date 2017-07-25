@@ -9,12 +9,11 @@ import de.heikoseeberger.akkahttpjackson.JacksonSupport
 
 object QueriesAkkaHttpResource extends JacksonSupport {
 
-  def storeRoutes(predictions: ReadableModelStateStore) : Route = pathPrefix("stats") {
-    pathEnd {
-      get {
+  def storeRoutes(predictions: ReadableModelStateStore): Route =
+    get {
+      path("stats") {
         val info: ModelToServeStats = predictions.getCurrentServingInfo
         complete(info)
       }
     }
-  }
 }
