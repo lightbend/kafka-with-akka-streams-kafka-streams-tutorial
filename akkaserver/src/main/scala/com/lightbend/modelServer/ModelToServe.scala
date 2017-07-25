@@ -21,10 +21,10 @@ case class ModelToServe(name: String, description: String,
                         modelType: ModelDescriptor.ModelType,
                         model : Array[Byte], dataType : String) {}
 
-case class ModelToServeStats(name: String, description: String, modelType: ModelDescriptor.ModelType,
+case class ModelToServeStats(name: String, description: String, modelType: String,
                              since : Long, var usage : Long = 0, var duration : Double = .0,
                              var min : Long = Long.MaxValue, var max : Long = Long.MinValue){
-  def this(m : ModelToServe) = this(m.name, m.description, m.modelType, System.currentTimeMillis())
+  def this(m : ModelToServe) = this(m.name, m.description, m.modelType.name, System.currentTimeMillis())
   def incrementUsage(execution : Long) : ModelToServeStats = {
     usage = usage + 1
     duration = duration + execution
@@ -35,5 +35,5 @@ case class ModelToServeStats(name: String, description: String, modelType: Model
 }
 
 object ModelToServeStats{
-  val empty = ModelToServeStats("None", "None", ModelDescriptor.ModelType.PMML, 0)
+  val empty = ModelToServeStats("None", "None", "None", 0, 0, .0, 0, 0)
 }

@@ -59,10 +59,10 @@ object AkkaModelServer {
 
     val model = new ModelStage()
 
-    def dropMaterializedValue[M1, M2, M3](m1: M1, m2: M2, m3: M3): NotUsed = NotUsed
+    def keepModelMaterializedValue[M1, M2, M3](m1: M1, m2: M2, m3: M3): M3 = m3
 
-    val modelPredictions  = Source.fromGraph(
-      GraphDSL.create(dataStream, modelStream, model)(dropMaterializedValue) {
+    val modelPredictions : Source[Option[Double], ReadableModelStateStore] = Source.fromGraph(
+      GraphDSL.create(dataStream, modelStream, model)(keepModelMaterializedValue) {
         implicit builder => (d, m, w) =>
           import GraphDSL.Implicits._
 
@@ -79,8 +79,14 @@ object AkkaModelServer {
       }
     )
 
-//    startRest(modelPredictions)
-    modelPredictions.map(println(_)).runWith(Sink.ignore)
+
+  val materializedReadableModelStateStore: ReadableModelStateStore =
+      modelPredictions
+        .map(println(_))
+        .to(Sink.ignore) // we do not read the results directly
+        .run() // we run the stream, materializing the stage's StateStore
+
+    startRest(materializedReadableModelStateStore)
   }
 
   def startRest(service : ReadableModelStateStore) : Unit = {

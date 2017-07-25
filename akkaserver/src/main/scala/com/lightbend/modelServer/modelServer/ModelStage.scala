@@ -41,11 +41,9 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
         override def onPush(): Unit = {
           val model = grab(shape.modelRecordIn)
           println(s"New model - $model")
-          factories.get(model.modelType) match{
-            case Some(factory) => {
-              newModel = factory.create(model)
-              newState = Some(new ModelToServeStats(model))
-            }
+          newState = Some(new ModelToServeStats(model))
+          newModel = factories.get(model.modelType) match{
+            case Some(factory) => factory.create(model)
             case _ => None
           }
           pull(shape.modelRecordIn)
@@ -75,6 +73,7 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
               val quality = model.score(record.asInstanceOf[AnyVal]).asInstanceOf[Double]
               val duration = System.currentTimeMillis() - start
               println(s"Calculated quality - $quality calculated in $duration ms")
+              currentState.get.incrementUsage(duration)
               push(shape.scoringResultOut, Some(quality))
             }
             case _ => {
