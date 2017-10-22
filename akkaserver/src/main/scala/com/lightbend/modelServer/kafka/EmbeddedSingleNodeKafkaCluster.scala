@@ -6,7 +6,6 @@ import java.util.Properties
 
 import kafka.server.KafkaConfig
 
-
 object EmbeddedSingleNodeKafkaCluster {
   private val log = LoggerFactory.getLogger("EmbeddedSingleNodeKafkaCluster")
   private val DEFAULT_BROKER_PORT = 9092
@@ -14,8 +13,8 @@ object EmbeddedSingleNodeKafkaCluster {
   private var broker = null.asInstanceOf[KafkaEmbedded]
 
   /**
-    * Creates and starts a Kafka cluster.
-    */
+   * Creates and starts a Kafka cluster.
+   */
   def start(): Unit = {
     // Ensure no duplcates
     if (broker != null)
@@ -42,8 +41,8 @@ object EmbeddedSingleNodeKafkaCluster {
   }
 
   /**
-    * Stop the Kafka cluster.
-    */
+   * Stop the Kafka cluster.
+   */
 
   def stop(): Unit = {
     try {
@@ -55,48 +54,48 @@ object EmbeddedSingleNodeKafkaCluster {
   }
 
   /**
-    * The ZooKeeper connection string aka `zookeeper.connect` in `hostnameOrIp:port` format.
-    * Example: `127.0.0.1:2181`.
-    *
-    * You can use this to e.g. tell Kafka brokers how to connect to this instance.
-    */
+   * The ZooKeeper connection string aka `zookeeper.connect` in `hostnameOrIp:port` format.
+   * Example: `127.0.0.1:2181`.
+   *
+   * You can use this to e.g. tell Kafka brokers how to connect to this instance.
+   */
   def zKConnectString: String = zookeeper.getConnectString
 
   /**
-    * This cluster's `bootstrap.servers` value.  Example: `127.0.0.1:9092`.
-    *
-    * You can use this to tell Kafka producers how to connect to this cluster.
-    */
+   * This cluster's `bootstrap.servers` value.  Example: `127.0.0.1:9092`.
+   *
+   * You can use this to tell Kafka producers how to connect to this cluster.
+   */
   def bootstrapServers: String = broker.brokerList
 
   /**
-    * Create a Kafka topic with 1 partition and a replication factor of 1.
-    *
-    * @param topic The name of the topic.
-    */
+   * Create a Kafka topic with 1 partition and a replication factor of 1.
+   *
+   * @param topic The name of the topic.
+   */
   def createTopic(topic: String): Unit = {
     createTopic(topic, 1, 1, new Properties)
   }
 
   /**
-    * Create a Kafka topic with the given parameters.
-    *
-    * @param topic       The name of the topic.
-    * @param partitions  The number of partitions for this topic.
-    * @param replication The replication factor for (the partitions of) this topic.
-    */
+   * Create a Kafka topic with the given parameters.
+   *
+   * @param topic       The name of the topic.
+   * @param partitions  The number of partitions for this topic.
+   * @param replication The replication factor for (the partitions of) this topic.
+   */
   def createTopic(topic: String, partitions: Int, replication: Int): Unit = {
     createTopic(topic, partitions, replication, new Properties)
   }
 
   /**
-    * Create a Kafka topic with the given parameters.
-    *
-    * @param topic       The name of the topic.
-    * @param partitions  The number of partitions for this topic.
-    * @param replication The replication factor for (partitions of) this topic.
-    * @param topicConfig Additional topic-level configuration settings.
-    */
+   * Create a Kafka topic with the given parameters.
+   *
+   * @param topic       The name of the topic.
+   * @param partitions  The number of partitions for this topic.
+   * @param replication The replication factor for (partitions of) this topic.
+   * @param topicConfig Additional topic-level configuration settings.
+   */
   def createTopic(topic: String, partitions: Int, replication: Int, topicConfig: Properties): Unit = {
     broker.createTopic(topic, partitions, replication, topicConfig)
   }

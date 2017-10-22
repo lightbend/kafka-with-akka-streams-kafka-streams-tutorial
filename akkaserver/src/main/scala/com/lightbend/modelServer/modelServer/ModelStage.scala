@@ -2,6 +2,7 @@ package com.lightbend.modelServer.modelServer
 
 import akka.stream._
 import akka.stream.stage.{ GraphStageLogicWithLogging, _ }
+import com.lightbend.influxdb.InfluxDBClient
 import com.lightbend.model.modeldescriptor.ModelDescriptor
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.modelServer.model.Model
@@ -15,21 +16,21 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
 
   private val factories = Map(
     ModelDescriptor.ModelType.PMML -> PMMLModel,
-    ModelDescriptor.ModelType.TENSORFLOW -> TensorFlowModel)
+    ModelDescriptor.ModelType.TENSORFLOW -> TensorFlowModel
+  )
+
+  private val influx = new InfluxDBClient
 
   override val shape: ModelStageShape = new ModelStageShape
 
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, ReadableModelStateStore) = {
 
-
     val logic = new GraphStageLogicWithLogging(shape) {
       // state must be kept in the Logic instance, since it is created per stream materialization
-      private var currentModel : Option[Model] = None
-      private var newModel : Option[Model] = None
-      var currentState : Option[ModelToServeStats] = None // exposed in materialized value
-      private var newState : Option[ModelToServeStats] = None
-
-
+      private var currentModel: Option[Model] = None
+      private var newModel: Option[Model] = None
+      var currentState: Option[ModelToServeStats] = None // exposed in materialized value
+      private var newState: Option[ModelToServeStats] = None
 
       // TODO the pulls needed to get the stage actually pulling from the input streams
       override def preStart(): Unit = {
@@ -42,7 +43,7 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
           val model = grab(shape.modelRecordIn)
           println(s"New model - $model")
           newState = Some(new ModelToServeStats(model))
-          newModel = factories.get(model.modelType) match{
+          newModel = factories.get(model.modelType) match {
             case Some(factory) => factory.create(model)
             case _ => None
           }
@@ -72,7 +73,8 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
               val start = System.currentTimeMillis()
               val quality = model.score(record.asInstanceOf[AnyVal]).asInstanceOf[Double]
               val duration = System.currentTimeMillis() - start
-              println(s"Calculated quality - $quality calculated in $duration ms")
+              //              println(s"Calculated quality - $quality calculated in $duration ms")
+              influx.writePoint("Akka", currentState.get.name, quality, duration)
               currentState.get.incrementUsage(duration)
               push(shape.scoringResultOut, Some(quality))
             }
@@ -116,7 +118,8 @@ class ModelStageShape() extends Shape {
     new ModelStageShape(
       inlets(0).asInstanceOf[Inlet[WineRecord]],
       inlets(1).asInstanceOf[Inlet[ModelToServe]],
-      outlets(0).asInstanceOf[Outlet[Option[Double]]])
+      outlets(0).asInstanceOf[Outlet[Option[Double]]]
+    )
 
   override val inlets = List(dataRecordIn, modelRecordIn)
   override val outlets = List(scoringResultOut)

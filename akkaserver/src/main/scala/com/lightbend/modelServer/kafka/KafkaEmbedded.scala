@@ -1,21 +1,20 @@
 package com.lightbend.modelServer.kafka
 
 import com.google.common.io.Files
-import kafka.admin.{AdminUtils, RackAwareMode}
-import kafka.server.{KafkaConfig, KafkaServerStartable}
-import kafka.utils.{CoreUtils, ZkUtils, ZKStringSerializer}
-import org.I0Itec.zkclient.{ZkClient, ZkConnection}
+import kafka.admin.{ AdminUtils, RackAwareMode }
+import kafka.server.{ KafkaConfig, KafkaServerStartable }
+import kafka.utils.{ CoreUtils, ZkUtils, ZKStringSerializer }
+import org.I0Itec.zkclient.{ ZkClient, ZkConnection }
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.util.{Collections, Properties}
-
+import java.util.{ Collections, Properties }
 
 /**
-  * Runs an in-memory, "embedded" instance of a Kafka broker, which listens at `127.0.0.1:9092` by
-  * default.
-  *
-  * Requires a running ZooKeeper instance to connect to.
-  */
+ * Runs an in-memory, "embedded" instance of a Kafka broker, which listens at `127.0.0.1:9092` by
+ * default.
+ *
+ * Requires a running ZooKeeper instance to connect to.
+ */
 object KafkaEmbedded {
   private val log = LoggerFactory.getLogger(classOf[KafkaEmbedded])
   private val DEFAULT_ZK_CONNECT = "127.0.0.1:2181"
@@ -27,15 +26,15 @@ object KafkaEmbedded {
   def apply(config: Properties): KafkaEmbedded = new KafkaEmbedded(config)
 }
 
-class KafkaEmbedded (val config: Properties){
+class KafkaEmbedded(val config: Properties) {
 
   /**
-    * Creates and starts an embedded Kafka broker.
-    *
-    * @param config Broker configuration settings.  Used to modify, for example, on which port the
-    *               broker should listen to.  Note that you cannot change the `log.dirs` setting
-    *               currently.
-    */
+   * Creates and starts an embedded Kafka broker.
+   *
+   * @param config Broker configuration settings.  Used to modify, for example, on which port the
+   *               broker should listen to.  Note that you cannot change the `log.dirs` setting
+   *               currently.
+   */
   val logDir = KafkaEmbedded.createTempDir
   val effectiveConfig = effectiveConfigFrom(config)
   val loggingEnabled = true
@@ -60,20 +59,20 @@ class KafkaEmbedded (val config: Properties){
   }
 
   /**
-    * This broker's `metadata.broker.list` value.  Example: `127.0.0.1:9092`.
-    *
-    * You can use this to tell Kafka producers and consumers how to connect to this instance.
-    */
+   * This broker's `metadata.broker.list` value.  Example: `127.0.0.1:9092`.
+   *
+   * You can use this to tell Kafka producers and consumers how to connect to this instance.
+   */
   def brokerList: String = String.join(":", kafka.serverConfig.hostName, Integer.toString(kafka.serverConfig.port))
 
   /**
-    * The ZooKeeper connection string aka `zookeeper.connect`.
-    */
+   * The ZooKeeper connection string aka `zookeeper.connect`.
+   */
   def zookeeperConnect: String = effectiveConfig.getProperty("zookeeper.connect", KafkaEmbedded.DEFAULT_ZK_CONNECT)
 
   /**
-    * Start the broker.
-    */
+   * Start the broker.
+   */
   def start(): Unit = {
     KafkaEmbedded.log.debug(s"Starting embedded Kafka broker at $brokerList (with log.dirs=$logDir and ZK ensemble at $zookeeperConnect) ...")
     kafka.startup()
@@ -81,8 +80,8 @@ class KafkaEmbedded (val config: Properties){
   }
 
   /**
-    * Stop the broker.
-    */
+   * Stop the broker.
+   */
   def stop(): Unit = {
     KafkaEmbedded.log.debug(s"Shutting down embedded Kafka broker at $brokerList (with ZK ensemble at $zookeeperConnect) ...")
     kafka.shutdown()
@@ -95,33 +94,33 @@ class KafkaEmbedded (val config: Properties){
   }
 
   /**
-    * Create a Kafka topic with 1 partition and a replication factor of 1.
-    *
-    * @param topic The name of the topic.
-    */
+   * Create a Kafka topic with 1 partition and a replication factor of 1.
+   *
+   * @param topic The name of the topic.
+   */
   def createTopic(topic: String): Unit = {
     createTopic(topic, 1, 1, new Properties)
   }
 
   /**
-    * Create a Kafka topic with the given parameters.
-    *
-    * @param topic       The name of the topic.
-    * @param partitions  The number of partitions for this topic.
-    * @param replication The replication factor for (the partitions of) this topic.
-    */
+   * Create a Kafka topic with the given parameters.
+   *
+   * @param topic       The name of the topic.
+   * @param partitions  The number of partitions for this topic.
+   * @param replication The replication factor for (the partitions of) this topic.
+   */
   def createTopic(topic: String, partitions: Int, replication: Int): Unit = {
     createTopic(topic, partitions, replication, new Properties)
   }
 
   /**
-    * Create a Kafka topic with the given parameters.
-    *
-    * @param topic       The name of the topic.
-    * @param partitions  The number of partitions for this topic.
-    * @param replication The replication factor for (partitions of) this topic.
-    * @param topicConfig Additional topic-level configuration settings.
-    */
+   * Create a Kafka topic with the given parameters.
+   *
+   * @param topic       The name of the topic.
+   * @param partitions  The number of partitions for this topic.
+   * @param replication The replication factor for (partitions of) this topic.
+   * @param topicConfig Additional topic-level configuration settings.
+   */
   def createTopic(topic: String, partitions: Int, replication: Int, topicConfig: Properties): Unit = {
     KafkaEmbedded.log.debug(s"Creating topic { name: $topic, partitions: $partitions, replication: $replication, config: $topicConfig }")
     //  val zkClient = new ZkClient(zookeeperConnect, KafkaEmbedded.DEFAULT_ZK_SESSION_TIMEOUT_MS, KafkaEmbedded.DEFAULT_ZK_CONNECTION_TIMEOUT_MS, ZKStringSerializer)

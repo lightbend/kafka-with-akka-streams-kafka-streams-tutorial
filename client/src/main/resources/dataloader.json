@@ -1,0 +1,18 @@
+{
+  "id": "/dataloader",
+  "cmd": "env; export PATH=$(ls -d $MESOS_SANDBOX/jre*/bin):$PATH && ./client-836b2dcf+20171021-1903/bin/client",
+  "instances": 1,
+  "cpus": 0.2,
+  "mem": 2048,
+  "disk": 512,
+  "gpus": 0,
+  "fetch": [
+    {
+      "uri": "https://downloads.mesosphere.com/java/jre-8u112-linux-x64.tar.gz"
+    },
+    {
+      "uri": "http://jim-lab.marathon.mesos/client-836b2dcf+20171021-1903.tgz"
+
+    }
+  ]
+}

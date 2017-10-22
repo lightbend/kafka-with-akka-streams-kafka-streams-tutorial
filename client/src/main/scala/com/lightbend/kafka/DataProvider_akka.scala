@@ -10,7 +10,7 @@ import akka.kafka.scaladsl.Producer
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{ FileIO, Flow, Framing, Sink, Source }
 import akka.util.ByteString
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.configuration.kafka.ApplicationKafkaParameters._
 import com.lightbend.model.winerecord.WineRecord
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.ByteArraySerializer
@@ -21,40 +21,40 @@ import scala.collection.immutable
 import scala.concurrent.Future
 
 /**
-  * Created by boris on 5/10/17.
-  *
-  * Application publishing models from /data directory to Kafka
-  */
+ * Created by boris on 5/10/17.
+ *
+ * Application publishing models from /data directory to Kafka
+ */
 object DataProvider_akka {
 
   implicit val system = ActorSystem("DataProvider")
   implicit val mat = ActorMaterializer()
   import system.dispatcher
-  
-  val producerSettings: ProducerSettings[Array[Byte], Array[Byte]] = 
+
+  val producerSettings: ProducerSettings[Array[Byte], Array[Byte]] =
     ProducerSettings(system, new ByteArraySerializer, new ByteArraySerializer)
-      .withBootstrapServers(ApplicationKafkaParameters.LOCAL_KAFKA_BROKER)
-  
+      .withBootstrapServers(LOCAL_KAFKA_BROKER)
+
   val file = "data/winequality_red.csv"
   val timeInterval = 1.second
 
   def main(args: Array[String]) {
-    createTopic(ApplicationKafkaParameters.DATA_TOPIC)
-    
-    loadRecordsIntoMemory(file).map { loadedRecords => 
+    createTopic(DATA_TOPIC)
+
+    loadRecordsIntoMemory(file).map { loadedRecords =>
       Source.cycle(() => loadedRecords.iterator)
         .statefulMapConcat(() => {
           val bos = new ByteArrayOutputStream()
           var lineCounter = 0
-              def logEvery(n: Int) = {
-                lineCounter += 1
-                if (lineCounter % n == 0) println(s"Processed ${lineCounter} record")
-              }
+          def logEvery(n: Int) = {
+            lineCounter += 1
+            if (lineCounter % n == 0) println(s"Processed ${lineCounter} record")
+          }
 
           wine => {
             bos.reset()
             wine.writeTo(bos)
-            new ProducerRecord[Array[Byte], Array[Byte]](ApplicationKafkaParameters.DATA_TOPIC, bos.toByteArray) :: Nil
+            new ProducerRecord[Array[Byte], Array[Byte]](DATA_TOPIC, bos.toByteArray) :: Nil
           }
         })
         .via(delay)
@@ -63,13 +63,13 @@ object DataProvider_akka {
   }
 
   private def createTopic(topic: String): Unit = {
-    val sender = KafkaMessageSender(ApplicationKafkaParameters.LOCAL_KAFKA_BROKER, ApplicationKafkaParameters.LOCAL_ZOOKEEPER_HOST)
+    val sender = KafkaMessageSender(LOCAL_KAFKA_BROKER, LOCAL_ZOOKEEPER_HOST)
     sender.createTopic(topic)
   }
 
   /** Delays each element by con*/
-  private def delay[T] : Flow[T, T, NotUsed] = {
-    Flow[T].mapAsync(1) { el => 
+  private def delay[T]: Flow[T, T, NotUsed] = {
+    Flow[T].mapAsync(1) { el =>
       akka.pattern.after(timeInterval, system.scheduler)(Future.successful(el))
     }
   }
@@ -94,6 +94,6 @@ object DataProvider_akka {
           dataType = "wine"
         )
       }
-    .runWith(Sink.seq)
+      .runWith(Sink.seq)
   }
 }

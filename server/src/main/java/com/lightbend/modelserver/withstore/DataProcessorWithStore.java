@@ -1,5 +1,6 @@
 package com.lightbend.modelserver.withstore;
 
+import com.lightbend.influxdb.InfluxDBClient;
 import com.lightbend.model.DataConverter;
 import com.lightbend.model.Winerecord;
 import com.lightbend.modelserver.store.ModelStateStore;
@@ -19,6 +20,7 @@ public class DataProcessorWithStore extends AbstractProcessor<byte[], byte[]> {
 
     private ModelStateStore modelStore;
     private ProcessorContext context;
+    private InfluxDBClient client;
 
     @Override
     public void process(byte[] key, byte[] value) {
@@ -50,7 +52,8 @@ public class DataProcessorWithStore extends AbstractProcessor<byte[], byte[]> {
             double quality = (double) modelStore.getCurrentModel().score(dataRecord.get());
             long duration = System.currentTimeMillis() - start;
             modelStore.getCurrentServingInfo().update(duration);
-            System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
+//            System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
+            client.writePoint("Kafka Streams", modelStore.getCurrentServingInfo().getName(), quality, duration);
 //            context().forward(key,Optional.of(quality));
 //            context().commit();
          }
@@ -63,5 +66,8 @@ public class DataProcessorWithStore extends AbstractProcessor<byte[], byte[]> {
         this.context.schedule(10000);
         modelStore = (ModelStateStore) this.context.getStateStore("modelStore");
         Objects.requireNonNull(modelStore, "State store can't be null");
+
+        // Create InfluxDB connection
+        client = new InfluxDBClient();
     }
 }

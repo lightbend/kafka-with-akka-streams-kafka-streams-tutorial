@@ -1,21 +1,20 @@
 package com.lightbend.kafka
 
 /**
-  * Created by boris on 5/10/17.
-  * Byte array sender to Kafka
-  */
+ * Created by boris on 5/10/17.
+ * Byte array sender to Kafka
+ */
 
 import java.util.Properties
 
 import kafka.admin.AdminUtils
 import kafka.utils.ZkUtils
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata}
+import org.apache.kafka.clients.producer.{ KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata }
 import org.apache.kafka.common.serialization.ByteArraySerializer
 
 import scala.collection.mutable.Map
 
-
-class KafkaMessageSender (brokers: String, zookeeper : String){
+class KafkaMessageSender(brokers: String, zookeeper: String) {
 
   // Configure
   val props = new Properties
@@ -45,35 +44,34 @@ class KafkaMessageSender (brokers: String, zookeeper : String){
     producer.close
   }
 
-  def createTopic(topic : String, numPartitions: Int = 1, replicationFactor : Int = 1): Unit = {
-    if (!AdminUtils.topicExists(zkUtils, topic)){
+  def createTopic(topic: String, numPartitions: Int = 1, replicationFactor: Int = 1): Unit = {
+    if (!AdminUtils.topicExists(zkUtils, topic)) {
       try {
-        AdminUtils.createTopic(zkUtils,topic, numPartitions, replicationFactor)
+        AdminUtils.createTopic(zkUtils, topic, numPartitions, replicationFactor)
         println(s"Topic $topic with $numPartitions partitions and replication factor $replicationFactor is created")
-      }catch {
+      } catch {
         case t: Throwable => println(s"Failed to create topic $topic. ${t.getMessage}")
       }
-    }
-    else
+    } else
       println(s"Topic $topic already exists")
   }
 }
 
-object KafkaMessageSender{
-  private val ACKCONFIGURATION = "all"  // Blocking on the full commit of the record
-  private val RETRYCOUNT = "1"          // Number of retries on put
-  private val BATCHSIZE = "1024"        // Buffers for unsent records for each partition - controlls batching
-  private val LINGERTIME = "1"          // Timeout for more records to arive - controlls batching
-  private val BUFFERMEMORY = "1024000"  // Controls the total amount of memory available to the producer for buffering. If records are sent faster than they can be transmitted to the server then this buffer space will be exhausted. When the buffer space is exhausted additional send calls will block. The threshold for time to block is determined by max.block.ms after which it throws a TimeoutException.
-  private val senders : Map[String, KafkaMessageSender] = Map() // Producer instances
+object KafkaMessageSender {
+  private val ACKCONFIGURATION = "all" // Blocking on the full commit of the record
+  private val RETRYCOUNT = "1" // Number of retries on put
+  private val BATCHSIZE = "1024" // Buffers for unsent records for each partition - controlls batching
+  private val LINGERTIME = "1" // Timeout for more records to arive - controlls batching
+  private val BUFFERMEMORY = "1024000" // Controls the total amount of memory available to the producer for buffering. If records are sent faster than they can be transmitted to the server then this buffer space will be exhausted. When the buffer space is exhausted additional send calls will block. The threshold for time to block is determined by max.block.ms after which it throws a TimeoutException.
+  private val senders: Map[String, KafkaMessageSender] = Map() // Producer instances
 
   private val sessionTimeout = 10 * 1000
   private val connectionTimeout = 8 * 1000
 
-  def apply(brokers: String, zookeeper : String): KafkaMessageSender = {
+  def apply(brokers: String, zookeeper: String): KafkaMessageSender = {
     senders.get(brokers) match {
-      case Some(sender) => sender                   // Producer already exists
-      case _ => {                                   // Does not exist - create a new one
+      case Some(sender) => sender // Producer already exists
+      case _ => { // Does not exist - create a new one
         val sender = new KafkaMessageSender(brokers, zookeeper)
         senders.put(brokers, sender)
         sender

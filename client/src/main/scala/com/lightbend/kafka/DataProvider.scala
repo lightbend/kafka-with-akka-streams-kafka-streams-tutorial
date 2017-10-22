@@ -2,45 +2,49 @@ package com.lightbend.kafka
 
 import java.io.ByteArrayOutputStream
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.configuration.kafka.ApplicationKafkaParameters._
 import com.lightbend.model.winerecord.WineRecord
 
 import scala.io.Source
 
 /**
-  * Created by boris on 5/10/17.
-  *
-  * Application publishing models from /data directory to Kafka
-  */
+ * Created by boris on 5/10/17.
+ *
+ * Application publishing models from /data directory to Kafka
+ */
 object DataProvider {
 
   val file = "data/winequality_red.csv"
-  val timeInterval = 1000 * 1        // 1 sec
+  var timeInterval = 1000 * 1 // 1 sec
 
   def main(args: Array[String]) {
-    val sender = KafkaMessageSender(ApplicationKafkaParameters.LOCAL_KAFKA_BROKER, ApplicationKafkaParameters.LOCAL_ZOOKEEPER_HOST)
-    sender.createTopic(ApplicationKafkaParameters.DATA_TOPIC)
+
+    println(s"Using kafka brokers at ${LOCAL_KAFKA_BROKER} with zookeeper ${LOCAL_ZOOKEEPER_HOST}")
+    if (args.length > 0) timeInterval = args(0).toInt
+    println(s"Message delay ${timeInterval}")
+
+    val sender = KafkaMessageSender(LOCAL_KAFKA_BROKER, LOCAL_ZOOKEEPER_HOST)
+    sender.createTopic(DATA_TOPIC)
     val bos = new ByteArrayOutputStream()
-    val records  = getListOfRecords(file)
+    val records = getListOfRecords(file)
     var nrec = 0
     while (true) {
       records.foreach(r => {
         bos.reset()
         r.writeTo(bos)
-        sender.writeValue(ApplicationKafkaParameters.DATA_TOPIC, bos.toByteArray)
+        sender.writeValue(DATA_TOPIC, bos.toByteArray)
         nrec = nrec + 1
-        if(nrec % 10 == 0)
+        if (nrec % 10 == 0)
           println(s"printed $nrec records")
         pause()
       })
     }
   }
 
-  private def pause() : Unit = {
-    try{
+  private def pause(): Unit = {
+    try {
       Thread.sleep(timeInterval)
-    }
-    catch {
+    } catch {
       case _: Throwable => // Ignore
     }
   }
