@@ -96,7 +96,7 @@ This project contains 4 executables:
 
 Each application can run either locally (on user's machine) or on the server.
 
-##Running locally
+## Running locally
 
 Running locally can be done either using SBT or Intellij (If you run locally, make sure to change 
 kafka configuration `(broker quarum and zookeeper)`), InfluxDB configuration `(host and port)` and 
@@ -119,7 +119,7 @@ To query `kafkaserver` state connect your browser to `host:8888`. This contains 
 in our application is `modelStore`
 * `/state/{storeName}/value` returns current state of the model serving
 
-##Running on the server
+## Running on the server
 The applications are included in `fdp-package-sample-apps` docker image. See documentation there
 for running them on the server
 
