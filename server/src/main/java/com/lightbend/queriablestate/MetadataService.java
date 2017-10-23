@@ -3,6 +3,7 @@ package com.lightbend.queriablestate;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.state.StreamsMetadata;
 
+import java.net.InetAddress;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,11 +45,16 @@ public class MetadataService {
 
 
     private List<HostStoreInfo> mapInstancesToHostStoreInfo(final Collection<StreamsMetadata> metadatas) {
-        return metadatas.stream().map(metadata -> new HostStoreInfo(metadata.host(),
-                metadata.port(),
-                metadata.stateStoreNames()))
-//                addCustomStore(metadata.stateStoreNames())))
-                .collect(Collectors.toList());
+
+        return metadatas.stream().map(metadata -> convertMetadata(metadata)).collect(Collectors.toList());
     }
 
+    private HostStoreInfo convertMetadata(StreamsMetadata metadata){
+        String currentHost = metadata.host();
+        try {
+            if (currentHost.equalsIgnoreCase("localhost"))
+                currentHost = InetAddress.getLocalHost().getHostAddress();
+        }catch (Throwable t){}
+        return new HostStoreInfo(currentHost, metadata.port(), metadata.stateStoreNames());
+    }
 }

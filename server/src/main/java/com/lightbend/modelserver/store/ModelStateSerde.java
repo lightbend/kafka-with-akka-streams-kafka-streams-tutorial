@@ -53,7 +53,7 @@ public class ModelStateSerde implements Serde<StoreState> {
 
         @Override public byte[] serialize(String topic, StoreState state) {
 
-            System.out.println("Serializing Store !!");
+//            System.out.println("Serializing Store !!");
 
             bos.reset();
             DataOutputStream output = new DataOutputStream(bos);
@@ -129,7 +129,7 @@ public class ModelStateSerde implements Serde<StoreState> {
         @Override
         public StoreState deserialize(String topic, byte[] data) {
 
-            System.out.println("Deserializing Store !!");
+//            System.out.println("Deserializing Store !!");
 
             ByteArrayInputStream bis = new ByteArrayInputStream(data);
             DataInputStream input = new DataInputStream(bis);

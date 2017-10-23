@@ -18,7 +18,7 @@ The stage implements stream processor functionality from the overall architectur
 With such component in place, the overall implementation is going to look as follows:
 
 
-![Akka streams model serving](images/Akka join.png)
+![Akka streams model serving](images/Akkajoin.png)
 
 
 # Kafka Streams
@@ -28,7 +28,7 @@ With this store in place, implementation of the model serving using Kafka
 Streams becomes very simple, it’s basically two independent streams coordinated via a shared store. 
 
 
-![Kafka streams model serving](images/Kafka Streams join.png)
+![Kafka streams model serving](images/kafkastreamsJoin.png)
 
 
 # Queryable state
@@ -39,7 +39,7 @@ This feature allows to treat the stream processing layer as a
 lightweight embedded database and, more concretely, to directly query the latest state of your stream processing application, without needing to materialize that state to external databases or external storage first.
 
 
-![Queriable state](images/queryable state.png)
+![Queriable state](images/queryablestate.png)
 
 Both Akka Streams and Kafka streams implementation support queryable state
 
@@ -49,7 +49,7 @@ Both Akka and Kafka Streams implementations are in JVM implementations.
 If the source of streams is Kafka, they both can be deployed as a cluster.
 Fig below shows Kafka Streams cluster. Akka Streams implementation can be scaled the same way
 
-![scaling](images/Kafka streams clusters.png)
+![scaling](images/Kafkastreamsclusters.png)
 
 
 # Prerequisites

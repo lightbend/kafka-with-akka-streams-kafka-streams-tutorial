@@ -1,6 +1,6 @@
 {
   "id": "/kafkamodelserver",
-  "cmd": "env; export PATH=$(ls -d $MESOS_SANDBOX/jre*/bin):$PATH && ./server-836b2dcf+20171021-2328/bin/server",
+  "cmd": "env; export PATH=$(ls -d $MESOS_SANDBOX/jre*/bin):$PATH && ./server-72311e6d+20171022-1924/bin/server",
   "instances": 1,
   "cpus": 0.2,
   "mem": 2048,
@@ -11,7 +11,7 @@
       "uri": "https://downloads.mesosphere.com/java/jre-8u112-linux-x64.tar.gz"
     },
     {
-      "uri": "http://jim-lab.marathon.mesos/server-836b2dcf+20171021-2328.tgz"
+      "uri": "http://jim-lab.marathon.mesos/server-72311e6d+20171022-1924.tgz"
     }
   ]
 }

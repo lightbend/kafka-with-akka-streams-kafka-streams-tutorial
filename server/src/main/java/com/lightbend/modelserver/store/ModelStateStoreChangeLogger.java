@@ -35,7 +35,14 @@ public class ModelStateStoreChangeLogger<K,V> {
         if (collector != null) {
             Serializer<K> keySerializer = serialization.keySerializer();
             Serializer<V> valueSerializer = serialization.valueSerializer();
-            collector.send(this.topic, key, value, this.partition, context.timestamp(), keySerializer, valueSerializer);
+            long ts = 0;
+            try {
+                ts = context.timestamp();
+            }
+            catch (Throwable t){
+                ts = System.currentTimeMillis();
+            }
+            collector.send(this.topic, key, value, this.partition, ts, keySerializer, valueSerializer);
         }
     }
 }
