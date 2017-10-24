@@ -9,5 +9,4 @@ images/
 model/
 project/
 protobufs/
-release/
 server/
