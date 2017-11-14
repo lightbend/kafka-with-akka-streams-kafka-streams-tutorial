@@ -38,7 +38,7 @@ class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: Ka
         zooKeeperServer.start()
         val kafkaServer = kafkaServerRef.get()
         kafkaServer.startup()
-        zkUtils = ZkUtils.apply(s"localhost:${zooKeeperServer.getPort()}", DEFAULT_ZK_SESSION_TIMEOUT_MS, DEFAULT_ZK_CONNECTION_TIMEOUT_MS, false)
+        zkUtils = ZkUtils.apply(s"127.0.0.1:${zooKeeperServer.getPort()}", DEFAULT_ZK_SESSION_TIMEOUT_MS, DEFAULT_ZK_CONNECTION_TIMEOUT_MS, false)
       } else newKafkaServer.shutdown()
     }
     // else it's already running
@@ -126,7 +126,7 @@ object KafkaLocalServer {
   private def createKafkaProperties(kafkaPropertiesFile: String, kafkaPort: Int, zookeeperServerPort: Int, dataDir: File): Properties = {
     val kafkaProperties = new Properties
     kafkaProperties.put(KafkaConfig.ListenersProp, s"PLAINTEXT://:$kafkaPort")
-    kafkaProperties.put(KafkaConfig.ZkConnectProp, s"localhost:$zookeeperServerPort")
+    kafkaProperties.put(KafkaConfig.ZkConnectProp, s"127.0.0.1:$zookeeperServerPort")
     kafkaProperties.put(KafkaConfig.BrokerIdProp, "0")
     kafkaProperties.put(KafkaConfig.HostNameProp, "127.0.0.1")
     kafkaProperties.put(KafkaConfig.NumPartitionsProp, "1")

@@ -1,4 +1,4 @@
-package com.lightbend.modelserver.store;
+package com.lightbend.modelserver.custom.store;
 
 import com.lightbend.model.Model;
 import com.lightbend.queriablestate.ModelServingInfo;

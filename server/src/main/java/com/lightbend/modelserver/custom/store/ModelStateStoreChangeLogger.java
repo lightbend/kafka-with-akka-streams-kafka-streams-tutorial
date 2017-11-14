@@ -1,4 +1,4 @@
-package com.lightbend.modelserver.store;
+package com.lightbend.modelserver.custom.store;
 
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.streams.processor.ProcessorContext;

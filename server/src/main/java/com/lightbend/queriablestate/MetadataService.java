@@ -1,11 +1,12 @@
 package com.lightbend.queriablestate;
 
+import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.StreamsMetadata;
 
 import java.net.InetAddress;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -21,15 +22,6 @@ public class MetadataService {
         this.streams = streams;
     }
 
-    /**
-     * Get the metadata for all of the instances of this Kafka Streams application
-     * @return List of {@link HostStoreInfo}
-     */
-    public List<HostStoreInfo> streamsMetadata() {
-        // Get metadata for all of the instances of this Kafka Streams application
-        final Collection<StreamsMetadata> metadata = streams.allMetadata();
-        return mapInstancesToHostStoreInfo(metadata);
-    }
 
     /**
      * Get the metadata for all instances of this Kafka Streams application that currently
@@ -37,9 +29,13 @@ public class MetadataService {
      * @param store   The store to locate
      * @return  List of {@link HostStoreInfo}
      */
-    public List<HostStoreInfo> streamsMetadataForStore(final  String store) {
+    public List<HostStoreInfo> streamsMetadataForStore(final  String store, int port) {
         // Get metadata for all of the instances of this Kafka Streams application hosting the store
-        final Collection<StreamsMetadata> metadata = streams.allMetadataForStore(store);
+        Collection<StreamsMetadata> metadata = streams.allMetadataForStore(store);
+        if (metadata.isEmpty())
+            metadata = Arrays.asList(new StreamsMetadata(new HostInfo("localhost", port),
+                        new HashSet<>(Arrays.asList(ApplicationKafkaParameters.STORE_NAME)),
+                        Collections.emptySet()));
         return mapInstancesToHostStoreInfo(metadata);
     }
 

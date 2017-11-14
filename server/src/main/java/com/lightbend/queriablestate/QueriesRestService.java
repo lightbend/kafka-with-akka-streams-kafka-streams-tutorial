@@ -1,7 +1,8 @@
 package com.lightbend.queriablestate;
 
-import com.lightbend.modelserver.store.ModelStateStore;
-import com.lightbend.modelserver.store.ReadableModelStateStore;
+import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
+import com.lightbend.modelserver.custom.store.ModelStateStore;
+import com.lightbend.modelserver.custom.store.ReadableModelStateStore;
 import org.apache.kafka.streams.KafkaStreams;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -26,6 +27,7 @@ public class QueriesRestService {
     private final KafkaStreams streams;
     private final MetadataService metadataService;
     private Server jettyServer;
+    private int port;
 
     public QueriesRestService(final KafkaStreams streams) {
         this.streams = streams;
@@ -40,20 +42,7 @@ public class QueriesRestService {
     @Path("/instances")
     @Produces(MediaType.APPLICATION_JSON)
     public List<HostStoreInfo> streamsMetadata() {
-        return metadataService.streamsMetadata();
-    }
-
-    /**
-     * Get the metadata for all instances of this Kafka Streams application that currently
-     * has the provided store.
-     * @param store   The store to locate
-     * @return  List of {@link HostStoreInfo}
-     */
-    @GET()
-    @Path("/instances/{storeName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<HostStoreInfo> streamsMetadataForStore(@PathParam("storeName") String store) {
-        return metadataService.streamsMetadataForStore(store);
+        return metadataService.streamsMetadataForStore(ApplicationKafkaParameters.STORE_NAME, port);
     }
 
     /**
@@ -61,12 +50,11 @@ public class QueriesRestService {
      * @return {@link ModelServingInfo} representing the key-value pair
      */
     @GET
-    @Path("{storeName}/value")
+    @Path("/value")
     @Produces(MediaType.APPLICATION_JSON)
-    public ModelServingInfo servingInfo(@PathParam("storeName") final String storeName) {
-//        return ModelState.getInstance().getCurrentServingInfo();
+    public ModelServingInfo servingInfo() {
         // Get the  Store
-        final ReadableModelStateStore store = streams.store(storeName, new ModelStateStore.ModelStateStoreType());
+        final ReadableModelStateStore store = streams.store(ApplicationKafkaParameters.STORE_NAME, new ModelStateStore.ModelStateStoreType());
         if (store == null) {
             throw new NotFoundException();
         }
@@ -79,6 +67,8 @@ public class QueriesRestService {
      * @throws Exception
      */
     public void start(final int port) throws Exception {
+
+        this.port = port;
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
 

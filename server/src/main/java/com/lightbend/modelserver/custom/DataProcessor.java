@@ -1,8 +1,8 @@
-package com.lightbend.modelserver.withstore;
+package com.lightbend.modelserver.custom;
 
-import com.lightbend.model.DataConverter;
+import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.model.Winerecord;
-import com.lightbend.modelserver.store.ModelStateStore;
+import com.lightbend.modelserver.custom.store.ModelStateStore;
 import com.lightbend.queriablestate.ModelServingInfo;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 import org.apache.kafka.streams.processor.ProcessorContext;
@@ -15,16 +15,18 @@ import java.util.Optional;
  * used
  * https://github.com/bbejeck/kafka-streams/blob/master/src/main/java/bbejeck/processor/stocks/StockSummaryProcessor.java
  */
-public class DataProcessor extends AbstractProcessor<byte[], byte[]> {
+//public class DataProcessor extends AbstractProcessor<byte[], byte[]> {
+public class DataProcessor extends AbstractProcessor<byte[], Optional<Winerecord.WineRecord>> {
 
     private ModelStateStore modelStore;
 
     @Override
-    public void process(byte[] key, byte[] value) {
-        Optional<Winerecord.WineRecord> dataRecord = DataConverter.convertData(value);
+//    public void process(byte[] key, byte[] value) {
+    public void process(byte[] key, Optional<Winerecord.WineRecord> dataRecord) {
+/*        Optional<Winerecord.WineRecord> dataRecord = DataConverter.convertData(value);
         if(!dataRecord.isPresent()) {
             return;                                 // Bad record
-        }
+        } */
         if(modelStore.getNewModel() != null){
             // update the model
             if(modelStore.getCurrentModel() != null)
@@ -53,7 +55,7 @@ public class DataProcessor extends AbstractProcessor<byte[], byte[]> {
 
     @Override
     public void init(ProcessorContext context) {
-        modelStore = (ModelStateStore) context.getStateStore("modelStore");
+        modelStore = (ModelStateStore) context.getStateStore(ApplicationKafkaParameters.STORE_NAME);
         Objects.requireNonNull(modelStore, "State store can't be null");
 
     }

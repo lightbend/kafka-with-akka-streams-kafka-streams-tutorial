@@ -1,5 +1,6 @@
-package com.lightbend.modelserver.store;
+package com.lightbend.modelserver.custom.store;
 
+import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.model.Model;
 import com.lightbend.queriablestate.ModelServingInfo;
 import org.apache.kafka.common.serialization.Serdes;
@@ -29,10 +30,10 @@ public class ModelStateStore implements StateStore, ReadableModelStateStore {
      */
     private StoreState state = null;
     private boolean open = false;
-    private int changelogKey = 42;
+    private int changelogKey = ApplicationKafkaParameters.STORE_ID;
 
     /*
-     * @param name            The name of this store instance
+     * @param name The name of this store instance
      */
 
     public ModelStateStore(String name, boolean loggingEnabled) {
