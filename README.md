@@ -23,13 +23,19 @@ With such component in place, the overall implementation is going to look as fol
 
 # Kafka Streams
 
+The project contains three versions of Kafka Stream implementation:
+* Naive - implementation based on internal memory and [Process Topology](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_processor_topology)
+* Usage of standard store - implementation based on Kafka Streams key/value Store and Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl)
+* Usage of a custom store - implementation based on a Custom Store and Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl)
+
+Reffer to [discussion](http://mkuthan.github.io/) on differences between Process Topology and DSL
+
 Kafka Streams implementation leverages custom store containing current execution state.
 With this store in place, implementation of the model serving using Kafka 
 Streams becomes very simple, it’s basically two independent streams coordinated via a shared store. 
 
 
 ![Kafka streams model serving](images/kafkastreamsJoin.png)
-
 
 # Queryable state
 
@@ -54,7 +60,7 @@ Fig below shows Kafka Streams cluster. Akka Streams implementation can be scaled
 
 # Prerequisites
 
-Overall implement relies on Kafka (current version is 11) and requires kafka to be installed.
+Overall implement relies on Kafka (current version is 1.0) and requires kafka to be installed.
 It uses 2 queues:
 * `models_data` - queue used for sending data
 * `models_models` - queue used for sending models
@@ -78,7 +84,9 @@ We recommend using [IntelliJ IDEA](https://www.jetbrains.com/idea/) for managing
 * `configuration` - Shared configurations anf InfluxDB support (see prerequisites)
 * `model` - Implementation of both Tensorflow anf PMML models.
 * `protobufs` - Shared models in protobuf format.
-* `server` -  Kafka Streams implementation of model serving.
+* `naiveserver` -  Kafka Streams implementation of model serving using in memory storage.
+* `serverstandardstore` -  Kafka Streams implementation of model serving using standard data store.
+* `server` -  Kafka Streams implementation of model serving using custom data store.
 
 The build is done via SBT
 
@@ -88,11 +96,12 @@ The build is done via SBT
 
 # Deploy and Run
 
-This project contains 4 executables:
-* `akkaserver`    - Akka Streams implementation of model serving
-* `kafkaserver`   - Kafka Streams implementation of model serving
-* `dataprovider`  - Data publisher
-* `modelprovider` - Model publisher
+This project contains 6 executables:
+* `akkaserver` - Akka Streams implementation of model serving
+* `naivekafkaserver` - Kafka Streams implementation of model serving using in memory store
+* `standardstorekafkaserver`- Kafka Streams implementation of model serving using key/value store
+* `customstorekafkaserver` - Kafka Streams implementation of model serving using custom store
+* `dataprovider` - Data and model publisher
 
 Each application can run either locally (on user's machine) or on the server.
 
@@ -114,14 +123,8 @@ queried (with the same port)
 
 
 To query `kafkaserver` state connect your browser to `host:8888`. This contains several URLs:
-* `/state/instances` returns the list of instances participating in the cluster
-* `/state/instances/{storeName}` returns the list of instances containing a store. Store name used 
-in our application is `modelStore`
-* `/state/{storeName}/value` returns current state of the model serving
-
-## Running on the server
-The applications are included in `fdp-package-sample-apps` docker image. See documentation there
-for running them on the server
+* `/state/instances` returns the list of instances containing a store Naive implementation does not support this one. 
+* `/state/value` returns current state of the model serving
 
 
 
