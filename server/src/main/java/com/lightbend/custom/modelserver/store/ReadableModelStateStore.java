@@ -1,6 +1,6 @@
-package com.lightbend.modelserver.custom.store;
+package com.lightbend.custom.modelserver.store;
 
-import com.lightbend.queriablestate.ModelServingInfo;
+import com.lightbend.custom.queriablestate.ModelServingInfo;
 
 /**
  * Created by boris on 7/13/17.

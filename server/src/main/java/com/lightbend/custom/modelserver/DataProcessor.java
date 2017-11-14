@@ -1,9 +1,9 @@
-package com.lightbend.modelserver.custom;
+package com.lightbend.custom.modelserver;
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.model.Winerecord;
-import com.lightbend.modelserver.custom.store.ModelStateStore;
-import com.lightbend.queriablestate.ModelServingInfo;
+import com.lightbend.custom.modelserver.store.ModelStateStore;
+import com.lightbend.custom.queriablestate.ModelServingInfo;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 import org.apache.kafka.streams.processor.ProcessorContext;
 

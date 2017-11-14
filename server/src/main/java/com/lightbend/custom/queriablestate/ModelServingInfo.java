@@ -1,4 +1,4 @@
-package com.lightbend.queriablestate;
+package com.lightbend.custom.queriablestate;
 
 import java.util.Objects;
 

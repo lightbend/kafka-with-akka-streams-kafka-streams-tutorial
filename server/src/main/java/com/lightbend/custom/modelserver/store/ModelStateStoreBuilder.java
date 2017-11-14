@@ -1,4 +1,4 @@
-package com.lightbend.modelserver.custom.store;
+package com.lightbend.custom.modelserver.store;
 
 import org.apache.kafka.streams.state.StoreBuilder;
 

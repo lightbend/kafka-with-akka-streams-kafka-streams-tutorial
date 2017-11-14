@@ -1,7 +1,7 @@
-package com.lightbend.modelserver.custom.store;
+package com.lightbend.naive.modelserver.store;
 
 import com.lightbend.model.Model;
-import com.lightbend.queriablestate.ModelServingInfo;
+import com.lightbend.naive.modelserver.queriablestate.ModelServingInfo;
 
 /**
  * Created by boris on 7/18/17.
@@ -11,26 +11,20 @@ public class StoreState {
     private Model newModel = null;
     private ModelServingInfo currentServingInfo = null;
     private ModelServingInfo newServingInfo = null;
+    private static StoreState current = null;
 
-    public StoreState() {
+    private StoreState() {
         currentModel = null;
         newModel = null;
         currentServingInfo = null;
         newServingInfo = null;
     }
 
-    public StoreState(Model currentModel, Model newModel, ModelServingInfo currentServingInfo, ModelServingInfo newServingInfo) {
+    private StoreState(Model currentModel, Model newModel, ModelServingInfo currentServingInfo, ModelServingInfo newServingInfo) {
         this.currentModel = currentModel;
         this.newModel = newModel;
         this.currentServingInfo = currentServingInfo;
         this.newServingInfo = newServingInfo;
-    }
-
-    public void zero() {
-        currentModel = null;
-        newModel = null;
-        currentServingInfo = null;
-        newServingInfo = null;
     }
 
     public Model getCurrentModel() {
@@ -63,5 +57,11 @@ public class StoreState {
 
     public void setNewServingInfo(ModelServingInfo newServingInfo) {
         this.newServingInfo = newServingInfo;
+    }
+
+    public static synchronized StoreState getInstance(){
+        if(current == null)
+            current = new StoreState();
+        return current;
     }
 }

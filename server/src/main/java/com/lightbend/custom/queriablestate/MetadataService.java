@@ -1,4 +1,4 @@
-package com.lightbend.queriablestate;
+package com.lightbend.custom.queriablestate;
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import org.apache.kafka.streams.KafkaStreams;

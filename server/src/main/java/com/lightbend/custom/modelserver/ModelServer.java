@@ -1,10 +1,10 @@
-package com.lightbend.modelserver.custom;
+package com.lightbend.custom.modelserver;
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.model.DataConverter;
-import com.lightbend.modelserver.custom.store.ModelStateStoreBuilder;
-import com.lightbend.modelserver.custom.store.ModelStateStoreSupplier;
-import com.lightbend.queriablestate.QueriesRestService;
+import com.lightbend.custom.modelserver.store.ModelStateStoreBuilder;
+import com.lightbend.custom.modelserver.store.ModelStateStoreSupplier;
+import com.lightbend.custom.queriablestate.QueriesRestService;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
