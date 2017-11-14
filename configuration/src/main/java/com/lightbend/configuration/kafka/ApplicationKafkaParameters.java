@@ -8,8 +8,7 @@ public class ApplicationKafkaParameters {
 
     private ApplicationKafkaParameters(){}
 
-    public static final String LOCAL_ZOOKEEPER_HOST = "localhost:2181";
-    public static final String LOCAL_KAFKA_BROKER = "localhost:9022";
+    public static final String KAFKA_BROKER = "127.0.0.1:9092";
 
     public static final String STORE_NAME = "ModelStore";
     public static final int STORE_ID = 42;

@@ -1,12 +1,17 @@
 package com.lightbend.kafka.client
 
-import java.io.ByteArrayOutputStream
+import java.io.{ByteArrayOutputStream, File}
+import java.nio.file.{Files, Paths}
 
+import com.google.protobuf.ByteString
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters._
-import com.lightbend.kafka.KafkaMessageSender
+import com.lightbend.kafka.{KafkaLocalServer, MessageSender}
+import com.lightbend.model.modeldescriptor.ModelDescriptor
 import com.lightbend.model.winerecord.WineRecord
 
+import scala.concurrent.Future
 import scala.io.Source
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
  * Created by boris on 5/10/17.
@@ -16,18 +21,36 @@ import scala.io.Source
 object DataProvider {
 
   val file = "data/winequality_red.csv"
-  var timeInterval = 1000 * 1 // 1 sec
+  var dataTimeInterval = 1000 * 1 // 1 sec
+  val directory = "data/"
+  val tensorfile = "data/optimized_WineQuality.pb"
+  var modelTimeInterval = 1000 * 60 * 3 // 5 mins
 
   def main(args: Array[String]) {
 
-    println(s"Using kafka brokers at ${LOCAL_KAFKA_BROKER} with zookeeper ${LOCAL_ZOOKEEPER_HOST}")
-    if (args.length > 0) timeInterval = args(0).toInt
-    println(s"Message delay ${timeInterval}")
+    println(s"Using kafka brokers at ${KAFKA_BROKER}")
+    println(s"Data Message delay $dataTimeInterval")
+    println(s"Model Message delay $modelTimeInterval")
+/*
+    val kafka = KafkaLocalServer(true)
+    kafka.start()
+    kafka.createTopic(DATA_TOPIC)
+    kafka.createTopic(MODELS_TOPIC)
 
-    val sender = KafkaMessageSender(LOCAL_KAFKA_BROKER, LOCAL_ZOOKEEPER_HOST)
-    sender.createTopic(DATA_TOPIC)
+    println(s"Cluster created")
+*/
+    publishData()
+    publishModels()
+
+    while(true)
+      pause(600000)
+  }
+
+  def publishData() : Future[Unit] = Future {
+
+    val sender = MessageSender(KAFKA_BROKER)
     val bos = new ByteArrayOutputStream()
-    val records = getListOfRecords(file)
+    val records = getListOfDataRecords(file)
     var nrec = 0
     while (true) {
       records.foreach(r => {
@@ -37,12 +60,45 @@ object DataProvider {
         nrec = nrec + 1
         if (nrec % 10 == 0)
           println(s"printed $nrec records")
-        pause()
+        pause(dataTimeInterval)
       })
     }
   }
 
-  private def pause(): Unit = {
+  def publishModels() : Future[Unit] = Future {
+
+    val sender = MessageSender(KAFKA_BROKER)
+    val files = getListOfModelFiles(directory)
+    val bos = new ByteArrayOutputStream()
+    while (true) {
+      files.foreach(f => {
+        // PMML
+        val pByteArray = Files.readAllBytes(Paths.get(directory + f))
+        val pRecord = ModelDescriptor(
+          name = f.dropRight(5),
+          description = "generated from SparkML", modeltype = ModelDescriptor.ModelType.PMML,
+          dataType = "wine"
+        ).withData(ByteString.copyFrom(pByteArray))
+        bos.reset()
+        pRecord.writeTo(bos)
+        sender.writeValue(MODELS_TOPIC, bos.toByteArray)
+        println(s"Published Model ${pRecord.description}")
+        pause(modelTimeInterval)
+        // TF
+        val tByteArray = Files.readAllBytes(Paths.get(tensorfile))
+        val tRecord = ModelDescriptor(name = tensorfile.dropRight(3),
+          description = "generated from TensorFlow", modeltype = ModelDescriptor.ModelType.TENSORFLOW,
+          dataType = "wine").withData(ByteString.copyFrom(tByteArray))
+        bos.reset()
+        tRecord.writeTo(bos)
+        sender.writeValue(MODELS_TOPIC, bos.toByteArray)
+        println(s"Published Model ${pRecord.description}")
+        pause(modelTimeInterval)
+      })
+    }
+  }
+
+  private def pause(timeInterval : Long): Unit = {
     try {
       Thread.sleep(timeInterval)
     } catch {
@@ -50,7 +106,7 @@ object DataProvider {
     }
   }
 
-  def getListOfRecords(file: String): Seq[WineRecord] = {
+  def getListOfDataRecords(file: String): Seq[WineRecord] = {
 
     var result = Seq.empty[WineRecord]
     val bufferedSource = Source.fromFile(file)
@@ -74,5 +130,14 @@ object DataProvider {
     }
     bufferedSource.close
     result
+  }
+
+  private def getListOfModelFiles(dir: String): Seq[String] = {
+    val d = new File(dir)
+    if (d.exists && d.isDirectory) {
+      d.listFiles.filter(f => (f.isFile) && (f.getName.endsWith(".pmml"))).map(_.getName)
+    } else {
+      Seq.empty[String]
+    }
   }
 }

@@ -10,41 +10,38 @@ import java.util.concurrent.atomic.AtomicReference
 
 import org.apache.curator.test.TestingServer
 import org.slf4j.LoggerFactory
-
-import com.lightbend.lagom.internal.util.PropertiesLoader
-
 import javax.management.InstanceNotFoundException
-import kafka.server.KafkaServerStartable
+
+import kafka.server.{KafkaConfig, KafkaServerStartable}
 
 import scala.collection.JavaConverters._
 import java.util.Comparator
 
+import kafka.admin.{AdminUtils, RackAwareMode}
+import kafka.utils.ZkUtils
+
 class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: KafkaLocalServer.ZooKeeperLocalServer) {
 
   private val kafkaServerRef = new AtomicReference[KafkaServerStartable](null)
+  private var zkUtils : ZkUtils = null
+
+  import KafkaLocalServer._
+
 
   def start(): Unit = {
     if (kafkaServerRef.get == null) {
-      // There is a possible race condition here. However, instead of attempting to avoid it
-      // by using a lock, we are working with it and do the necessary clean up if indeed we
+      // There is a possible race condition here. However, instead of attempting to avoid it 
+      // by using a lock, we are working with it and do the necessary clean up if indeed we 
       // end up creating two Kafka server instances.
       val newKafkaServer = KafkaServerStartable.fromProps(kafkaProperties)
       if (kafkaServerRef.compareAndSet(null, newKafkaServer)) {
         zooKeeperServer.start()
         val kafkaServer = kafkaServerRef.get()
         kafkaServer.startup()
+        zkUtils = ZkUtils.apply(s"localhost:${zooKeeperServer.getPort()}", DEFAULT_ZK_SESSION_TIMEOUT_MS, DEFAULT_ZK_CONNECTION_TIMEOUT_MS, false)
       } else newKafkaServer.shutdown()
     }
     // else it's already running
-  }
-
-  // this exists only for testing purposes
-  private[lagom] def restart(): Unit = {
-    val kafkaServer = kafkaServerRef.get()
-    if (kafkaServer != null) {
-      kafkaServer.shutdown()
-      kafkaServer.startup()
-    }
   }
 
   def stop(): Unit = {
@@ -62,12 +59,47 @@ class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: Ka
     // else it's already stopped
   }
 
+  /**
+    * Create a Kafka topic with 1 partition and a replication factor of 1.
+    *
+    * @param topic The name of the topic.
+    */
+  def createTopic(topic: String): Unit = {
+    createTopic(topic, 1, 1, new Properties)
+  }
+
+  /**
+    * Create a Kafka topic with the given parameters.
+    *
+    * @param topic       The name of the topic.
+    * @param partitions  The number of partitions for this topic.
+    * @param replication The replication factor for (the partitions of) this topic.
+    */
+  def createTopic(topic: String, partitions: Int, replication: Int): Unit = {
+    createTopic(topic, partitions, replication, new Properties)
+  }
+
+  /**
+    * Create a Kafka topic with the given parameters.
+    *
+    * @param topic       The name of the topic.
+    * @param partitions  The number of partitions for this topic.
+    * @param replication The replication factor for (partitions of) this topic.
+    * @param topicConfig Additional topic-level configuration settings.
+    */
+  def createTopic(topic: String, partitions: Int, replication: Int, topicConfig: Properties): Unit = {
+    AdminUtils.createTopic(zkUtils, topic, partitions, replication, topicConfig, RackAwareMode.Enforced)
+  }
 }
 
 object KafkaLocalServer {
   final val DefaultPort = 9092
   final val DefaultPropertiesFile = "/kafka-server.properties"
   final val DefaultResetOnStart = true
+  private val DEFAULT_ZK_CONNECT = "127.0.0.1:2181"
+  private val DEFAULT_ZK_SESSION_TIMEOUT_MS = 10 * 1000
+  private val DEFAULT_ZK_CONNECTION_TIMEOUT_MS = 8 * 1000
+
 
   private final val KafkaDataFolderName = "kafka_data"
 
@@ -92,10 +124,16 @@ object KafkaLocalServer {
     * Creates a Properties instance for Kafka customized with values passed in argument.
     */
   private def createKafkaProperties(kafkaPropertiesFile: String, kafkaPort: Int, zookeeperServerPort: Int, dataDir: File): Properties = {
-    val kafkaProperties = PropertiesLoader.from(kafkaPropertiesFile)
-    kafkaProperties.setProperty("log.dirs", dataDir.getAbsolutePath)
-    kafkaProperties.setProperty("listeners", s"PLAINTEXT://:$kafkaPort")
-    kafkaProperties.setProperty("zookeeper.connect", s"localhost:$zookeeperServerPort")
+    val kafkaProperties = new Properties
+    kafkaProperties.put(KafkaConfig.ListenersProp, s"PLAINTEXT://:$kafkaPort")
+    kafkaProperties.put(KafkaConfig.ZkConnectProp, s"localhost:$zookeeperServerPort")
+    kafkaProperties.put(KafkaConfig.BrokerIdProp, "0")
+    kafkaProperties.put(KafkaConfig.HostNameProp, "127.0.0.1")
+    kafkaProperties.put(KafkaConfig.NumPartitionsProp, "1")
+    kafkaProperties.put(KafkaConfig.AutoCreateTopicsEnableProp, "true")
+    kafkaProperties.put(KafkaConfig.MessageMaxBytesProp, "1000000")
+    kafkaProperties.put(KafkaConfig.ControlledShutdownEnableProp, "true")
+    kafkaProperties.setProperty(KafkaConfig.LogDirProp, dataDir.getAbsolutePath)
     kafkaProperties
   }
 
@@ -175,6 +213,7 @@ object KafkaLocalServer {
         }
       // else it's already stopped
     }
+    def getPort() : Int = port
   }
 
   object ZooKeeperLocalServer {

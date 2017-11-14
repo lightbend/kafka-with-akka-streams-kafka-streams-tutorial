@@ -25,8 +25,7 @@ public class ModelServer {
 
     public static void main(String [ ] args) throws Throwable {
 
-        System.out.println("Using kafka brokers at " + ApplicationKafkaParameters.LOCAL_KAFKA_BROKER +
-                " with zookeeper " + ApplicationKafkaParameters.LOCAL_ZOOKEEPER_HOST);
+        System.out.println("Using kafka brokers at " + ApplicationKafkaParameters.KAFKA_BROKER);
 
         Properties streamsConfiguration = new Properties();
         // Give the Streams application a unique name.  The name must be unique in the Kafka cluster
@@ -34,7 +33,7 @@ public class ModelServer {
         streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "interactive-queries-example");
         streamsConfiguration.put(StreamsConfig.CLIENT_ID_CONFIG, "interactive-queries-example-client");
         // Where to find Kafka broker(s).
-        streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, ApplicationKafkaParameters.LOCAL_KAFKA_BROKER);
+        streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, ApplicationKafkaParameters.KAFKA_BROKER);
         // Provide the details of our embedded http service that we'll use to connect to this streams
         // instance and discover locations of stores.
         streamsConfiguration.put(StreamsConfig.APPLICATION_SERVER_CONFIG, "localhost:" + port);

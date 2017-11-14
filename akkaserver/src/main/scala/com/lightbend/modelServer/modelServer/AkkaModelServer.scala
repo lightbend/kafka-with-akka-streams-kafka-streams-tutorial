@@ -30,17 +30,17 @@ object AkkaModelServer {
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  println(s"Using kafka brokers at ${LOCAL_KAFKA_BROKER} with zookeeper ${LOCAL_ZOOKEEPER_HOST}")
+  println(s"Using kafka brokers at ${KAFKA_BROKER}")
 
   val dataConsumerSettings = ConsumerSettings(system, new ByteArrayDeserializer, new ByteArrayDeserializer)
-    .withBootstrapServers(LOCAL_KAFKA_BROKER)
+    .withBootstrapServers(KAFKA_BROKER)
     .withGroupId(DATA_GROUP)
-    .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+    .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
   val modelConsumerSettings = ConsumerSettings(system, new ByteArrayDeserializer, new ByteArrayDeserializer)
-    .withBootstrapServers(LOCAL_KAFKA_BROKER)
+    .withBootstrapServers(KAFKA_BROKER)
     .withGroupId(MODELS_GROUP)
-    .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+    .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
   def main(args: Array[String]): Unit = {
 

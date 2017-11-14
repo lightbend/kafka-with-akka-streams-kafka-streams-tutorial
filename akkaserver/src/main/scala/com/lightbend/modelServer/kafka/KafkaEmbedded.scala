@@ -48,7 +48,7 @@ class KafkaEmbedded(val config: Properties) {
     val effectiveConfig = new Properties
     effectiveConfig.put(KafkaConfig.BrokerIdProp, "0")
     effectiveConfig.put(KafkaConfig.HostNameProp, "127.0.0.1")
-    effectiveConfig.put(KafkaConfig.PortProp, "9090")
+    effectiveConfig.put(KafkaConfig.PortProp, "9092")
     effectiveConfig.put(KafkaConfig.NumPartitionsProp, "1")
     effectiveConfig.put(KafkaConfig.AutoCreateTopicsEnableProp, "true")
     effectiveConfig.put(KafkaConfig.MessageMaxBytesProp, "1000000")
