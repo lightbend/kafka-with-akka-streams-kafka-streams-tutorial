@@ -11,7 +11,7 @@ object Versions {
   val akkaHttpJsonVersion = "1.17.0"
 
   val Curator        = "3.2.0"
-  val kafkaVersion = "0.11.0.1"
+  val kafkaVersion = "1.0.0"
   val tensorflowVersion = "1.1.0"
   val PMMLVersion = "1.3.5"
   val jettyVersion = "9.2.12.v20150709"
@@ -19,8 +19,4 @@ object Versions {
   val jerseyVersion = "2.25"
   val gsonVersion = "2.6.2"
   val wsrsVersion = "2.0.1"
-
-  val influxDBClientVersion   = "2.7"
-
-  val codecVersion = "1.10"
 }

@@ -30,10 +30,6 @@ object Dependencies {
   val jpmml         = "org.jpmml"                       % "pmml-evaluator"                % PMMLVersion
   val jpmmlextras   = "org.jpmml"                       % "pmml-evaluator-extension"      % PMMLVersion
 
-  val influxDBClient    = "org.influxdb"            % "influxdb-java"                   % influxDBClientVersion
-
-  val codecBase64   = "commons-codec"               % "commons-codec"                   % codecVersion
-
 
   val modelsDependencies    = Seq(jpmml, jpmmlextras, tensorflow)
   val kafkabaseDependencies = Seq(reactiveKafka) ++ Seq(kafka, kafkaclients)

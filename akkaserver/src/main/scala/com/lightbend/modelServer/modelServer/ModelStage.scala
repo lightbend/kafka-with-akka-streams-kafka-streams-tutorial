@@ -2,7 +2,6 @@ package com.lightbend.modelServer.modelServer
 
 import akka.stream._
 import akka.stream.stage.{ GraphStageLogicWithLogging, _ }
-import com.lightbend.influxdb.InfluxDBClient
 import com.lightbend.model.modeldescriptor.ModelDescriptor
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.modelServer.model.Model
@@ -19,7 +18,6 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
     ModelDescriptor.ModelType.TENSORFLOW -> TensorFlowModel
   )
 
-  private val influx = new InfluxDBClient
 
   override val shape: ModelStageShape = new ModelStageShape
 
@@ -73,8 +71,7 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
               val start = System.currentTimeMillis()
               val quality = model.score(record.asInstanceOf[AnyVal]).asInstanceOf[Double]
               val duration = System.currentTimeMillis() - start
-              //              println(s"Calculated quality - $quality calculated in $duration ms")
-              influx.writePoint("Akka", currentState.get.name, quality, duration)
+              println(s"Calculated quality - $quality calculated in $duration ms")
               currentState.get.incrementUsage(duration)
               push(shape.scoringResultOut, Some(quality))
             }

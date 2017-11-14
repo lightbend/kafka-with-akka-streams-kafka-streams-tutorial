@@ -19,7 +19,7 @@ import java.util.Properties;
  * Created by boris on 6/28/17.
  */
 @SuppressWarnings("Duplicates")
-public class ModelServerWithStore {
+public class ModelServer {
 
     final static int port=8888;                             // Port for queryable state
 
@@ -68,9 +68,9 @@ public class ModelServerWithStore {
         // Data input streams
 
         builder.addSource("data-source", deserializer, deserializer, ApplicationKafkaParameters.DATA_TOPIC)
-                .addProcessor("ProcessData", DataProcessorWithStore::new, "data-source");
+                .addProcessor("ProcessData", DataProcessor::new, "data-source");
         builder.addSource("model-source", deserializer, deserializer, ApplicationKafkaParameters.MODELS_TOPIC)
-                .addProcessor("ProcessModels", ModelProcessorWithStore::new, "model-source");
+                .addProcessor("ProcessModels", ModelProcessor::new, "model-source");
         builder.addStateStore(storeSupplier, "ProcessData", "ProcessModels");
 
 

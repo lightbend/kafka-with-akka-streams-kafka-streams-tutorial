@@ -1,8 +1,9 @@
-package com.lightbend.kafka
+package com.lightbend.kafka.client
 
 import java.io.ByteArrayOutputStream
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters._
+import com.lightbend.kafka.KafkaMessageSender
 import com.lightbend.model.winerecord.WineRecord
 
 import scala.io.Source

@@ -1,10 +1,11 @@
-package com.lightbend.kafka
+package com.lightbend.kafka.client
 
-import java.io.{ ByteArrayOutputStream, File }
-import java.nio.file.{ Files, Paths }
+import java.io.{ByteArrayOutputStream, File}
+import java.nio.file.{Files, Paths}
 
 import com.google.protobuf.ByteString
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters._
+import com.lightbend.kafka.KafkaMessageSender
 import com.lightbend.model.modeldescriptor.ModelDescriptor
 
 /**
