@@ -1,11 +1,12 @@
 package com.lightbend.standard.modelserver;
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
-import com.lightbend.custom.modelserver.store.ModelStateStore;
-import com.lightbend.custom.queriablestate.ModelServingInfo;
 import com.lightbend.model.Winerecord;
+import com.lightbend.standard.modelserver.queriablestate.ModelServingInfo;
+import com.lightbend.standard.modelserver.store.StoreState;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -17,39 +18,43 @@ import java.util.Optional;
  */
 public class DataProcessor extends AbstractProcessor<byte[], Optional<Winerecord.WineRecord>> {
 
-    private ModelStateStore modelStore;
+    private KeyValueStore<Integer, StoreState> modelStore;
 
     @Override
     public void process(byte[] key, Optional<Winerecord.WineRecord> dataRecord) {
-        if(modelStore.getNewModel() != null){
+
+        StoreState state = modelStore.get(ApplicationKafkaParameters.STORE_ID);
+        if(state == null)
+            state = new StoreState();
+        if(state.getNewModel() != null){
             // update the model
-            if(modelStore.getCurrentModel() != null)
-                modelStore.getCurrentModel().cleanup();
-            modelStore.setCurrentModel(modelStore.getNewModel());
-            modelStore.setCurrentServingInfo(new ModelServingInfo(modelStore.getNewServingInfo().getName(),
-                    modelStore.getNewServingInfo().getDescription(), System.currentTimeMillis()));
-            modelStore.setNewServingInfo(null);
-            modelStore.setNewModel(null);
+            if(state.getCurrentModel() != null)
+                state.getCurrentModel().cleanup();
+            state.setCurrentModel(state.getNewModel());
+            state.setCurrentServingInfo(new ModelServingInfo( state.getNewServingInfo().getName(),
+                     state.getNewServingInfo().getDescription(), System.currentTimeMillis()));
+            state.setNewServingInfo(null);
+            state.setNewModel(null);
         }
         // Actually score
-        if(modelStore.getCurrentModel() == null) {
+        if( state.getCurrentModel() == null) {
             // No model currently
             System.out.println("No model available - skipping");
         }
         else{
             // Score the model
             long start = System.currentTimeMillis();
-            double quality = (double) modelStore.getCurrentModel().score(dataRecord.get());
+            double quality = (double)  state.getCurrentModel().score(dataRecord.get());
             long duration = System.currentTimeMillis() - start;
-            modelStore.getCurrentServingInfo().update(duration);
+             state.getCurrentServingInfo().update(duration);
             System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
-         }
-
+        }
+        modelStore.put(ApplicationKafkaParameters.STORE_ID, state);
     }
 
     @Override
     public void init(ProcessorContext context) {
-        modelStore = (ModelStateStore) context.getStateStore(ApplicationKafkaParameters.STORE_NAME);
+        modelStore = (KeyValueStore<Integer, StoreState>) context.getStateStore(ApplicationKafkaParameters.STORE_NAME);
         Objects.requireNonNull(modelStore, "State store can't be null");
 
     }

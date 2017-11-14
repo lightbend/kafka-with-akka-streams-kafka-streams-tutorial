@@ -1,10 +1,10 @@
 package com.lightbend.standard.modelserver;
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
-import com.lightbend.custom.modelserver.store.ModelStateStoreBuilder;
-import com.lightbend.custom.modelserver.store.ModelStateStoreSupplier;
-import com.lightbend.custom.queriablestate.QueriesRestService;
 import com.lightbend.model.DataConverter;
+import com.lightbend.standard.modelserver.queriablestate.QueriesRestService;
+import com.lightbend.standard.modelserver.store.ModelStateSerde;
+import com.lightbend.standard.modelserver.store.StoreState;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -12,6 +12,10 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.state.KeyValueBytesStoreSupplier;
+import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.StoreBuilder;
+import org.apache.kafka.streams.state.Stores;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,11 +78,14 @@ public class ModelServer {
 
         // Store definition
         Map<String, String> logConfig = new HashMap<>();
-        ModelStateStoreSupplier storeSupplier = new ModelStateStoreSupplier(ApplicationKafkaParameters.STORE_NAME);
-        ModelStateStoreBuilder storeBuilder = new ModelStateStoreBuilder(storeSupplier).withLoggingEnabled(logConfig);
+        KeyValueBytesStoreSupplier storeSupplier = Stores.inMemoryKeyValueStore(ApplicationKafkaParameters.STORE_NAME);
+        StoreBuilder<KeyValueStore<Integer, StoreState>> storeBuilder =
+                Stores.keyValueStoreBuilder(storeSupplier, Serdes.Integer(),new ModelStateSerde())
+                        .withLoggingEnabled(logConfig);
 
         // Create Stream builder
         StreamsBuilder builder = new StreamsBuilder();
+
         // Data input streams
         KStream<byte[], byte[]> data = builder.stream(ApplicationKafkaParameters.DATA_TOPIC);
         KStream<byte[], byte[]> models = builder.stream(ApplicationKafkaParameters.MODELS_TOPIC);

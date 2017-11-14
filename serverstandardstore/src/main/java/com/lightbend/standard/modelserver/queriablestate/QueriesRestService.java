@@ -1,9 +1,10 @@
 package com.lightbend.standard.modelserver.queriablestate;
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
-import com.lightbend.custom.modelserver.store.ModelStateStore;
-import com.lightbend.custom.modelserver.store.ReadableModelStateStore;
+import com.lightbend.standard.modelserver.store.StoreState;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.state.QueryableStoreTypes;
+import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -57,11 +58,12 @@ public class QueriesRestService {
     @Produces(MediaType.APPLICATION_JSON)
     public ModelServingInfo servingInfo() {
         // Get the  Store
-        final ReadableModelStateStore store = streams.store(ApplicationKafkaParameters.STORE_NAME, new ModelStateStore.ModelStateStoreType());
+        final ReadOnlyKeyValueStore<Integer, StoreState> store =
+                streams.store(ApplicationKafkaParameters.STORE_NAME, QueryableStoreTypes.<Integer, StoreState>keyValueStore());
         if (store == null) {
             throw new NotFoundException();
         }
-        return store.getCurrentServingInfo();
+        return store.get(ApplicationKafkaParameters.STORE_ID).getCurrentServingInfo();
     }
 
     /**

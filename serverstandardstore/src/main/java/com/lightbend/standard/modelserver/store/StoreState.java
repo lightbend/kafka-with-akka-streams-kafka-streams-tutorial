@@ -1,7 +1,7 @@
 package com.lightbend.standard.modelserver.store;
 
-import com.lightbend.custom.queriablestate.ModelServingInfo;
 import com.lightbend.model.Model;
+import com.lightbend.standard.modelserver.queriablestate.ModelServingInfo;
 
 /**
  * Created by boris on 7/18/17.

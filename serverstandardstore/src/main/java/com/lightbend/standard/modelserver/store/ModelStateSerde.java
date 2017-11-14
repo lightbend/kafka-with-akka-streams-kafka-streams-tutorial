@@ -1,11 +1,11 @@
 package com.lightbend.standard.modelserver.store;
 
-import com.lightbend.custom.queriablestate.ModelServingInfo;
 import com.lightbend.model.Model;
 import com.lightbend.model.ModelFactory;
 import com.lightbend.model.Modeldescriptor;
 import com.lightbend.model.PMML.PMMLModelFactory;
 import com.lightbend.model.tensorflow.TensorflowModelFactory;
+import com.lightbend.standard.modelserver.queriablestate.ModelServingInfo;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;
