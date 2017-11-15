@@ -18,7 +18,7 @@ object MessageListener {
       ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG -> AUTOCOMMITINTERVAL,
       ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG -> SESSIONTIMEOUT,
       ConsumerConfig.MAX_POLL_RECORDS_CONFIG -> MAXPOLLRECORDS,
-      ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> "latest",
+      ConsumerConfig.AUTO_OFFSET_RESET_CONFIG -> "earliest",
       ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> keyDeserealizer,
       ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> valueDeserealizer
     )
@@ -33,6 +33,8 @@ class MessageListener[K, V](brokers: String, topic: String, group: String, keyDe
                             processor: RecordProcessorTrait[K, V]) extends Runnable {
 
   import MessageListener._
+  import scala.collection.JavaConversions._
+
   val consumer = new KafkaConsumer[K, V](consumerProperties(brokers, group, keyDeserealizer, valueDeserealizer))
   consumer.subscribe(Seq(topic))
   var completed = false
@@ -44,7 +46,6 @@ class MessageListener[K, V](brokers: String, topic: String, group: String, keyDe
   override def run(): Unit = {
     while (!completed) {
       val records = consumer.poll(100)
-      import scala.collection.JavaConversions._
       for (record <- records) {
         processor.processRecord(record)
       }

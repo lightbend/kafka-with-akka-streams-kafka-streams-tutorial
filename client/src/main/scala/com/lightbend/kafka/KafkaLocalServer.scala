@@ -6,11 +6,9 @@ import java.nio.file.FileVisitOption
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.Properties
-import java.util.concurrent.atomic.AtomicReference
 
 import org.apache.curator.test.TestingServer
 import org.slf4j.LoggerFactory
-import javax.management.InstanceNotFoundException
 
 import kafka.server.{KafkaConfig, KafkaServerStartable}
 
@@ -20,43 +18,26 @@ import java.util.Comparator
 import kafka.admin.{AdminUtils, RackAwareMode}
 import kafka.utils.ZkUtils
 
-class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: KafkaLocalServer.ZooKeeperLocalServer) {
-
-  private val kafkaServerRef = new AtomicReference[KafkaServerStartable](null)
-  private var zkUtils : ZkUtils = null
+class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: ZooKeeperLocalServer) {
 
   import KafkaLocalServer._
 
+  private var broker = null.asInstanceOf[KafkaServerStartable]
+  private var zkUtils : ZkUtils =
+    ZkUtils.apply(s"localhost:${zooKeeperServer.getPort()}", DEFAULT_ZK_SESSION_TIMEOUT_MS, DEFAULT_ZK_CONNECTION_TIMEOUT_MS, false)
 
   def start(): Unit = {
-    if (kafkaServerRef.get == null) {
-      // There is a possible race condition here. However, instead of attempting to avoid it 
-      // by using a lock, we are working with it and do the necessary clean up if indeed we 
-      // end up creating two Kafka server instances.
-      val newKafkaServer = KafkaServerStartable.fromProps(kafkaProperties)
-      if (kafkaServerRef.compareAndSet(null, newKafkaServer)) {
-        zooKeeperServer.start()
-        val kafkaServer = kafkaServerRef.get()
-        kafkaServer.startup()
-        zkUtils = ZkUtils.apply(s"127.0.0.1:${zooKeeperServer.getPort()}", DEFAULT_ZK_SESSION_TIMEOUT_MS, DEFAULT_ZK_CONNECTION_TIMEOUT_MS, false)
-      } else newKafkaServer.shutdown()
-    }
-    // else it's already running
+
+    broker = KafkaServerStartable.fromProps(kafkaProperties)
+    broker.startup()
   }
 
   def stop(): Unit = {
-    val kafkaServer = kafkaServerRef.getAndSet(null)
-    if (kafkaServer != null) {
-      try kafkaServer.shutdown()
-      catch {
-        case _: Throwable => ()
-      }
-      try zooKeeperServer.stop()
-      catch {
-        case _: InstanceNotFoundException => () // swallow, see https://github.com/Netflix/curator/issues/121 for why it's ok to do so
-      }
+    if (broker != null) {
+      broker.shutdown()
+      zooKeeperServer.stop()
+      broker = null.asInstanceOf[KafkaServerStartable]
     }
-    // else it's already stopped
   }
 
   /**
@@ -94,50 +75,50 @@ class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: Ka
 
 object KafkaLocalServer {
   final val DefaultPort = 9092
-  final val DefaultPropertiesFile = "/kafka-server.properties"
   final val DefaultResetOnStart = true
-  private val DEFAULT_ZK_CONNECT = "127.0.0.1:2181"
+  private val DEFAULT_ZK_CONNECT = "localhost:2181"
   private val DEFAULT_ZK_SESSION_TIMEOUT_MS = 10 * 1000
   private val DEFAULT_ZK_CONNECTION_TIMEOUT_MS = 8 * 1000
 
+  private final val basDir = "tmp/"
 
   private final val KafkaDataFolderName = "kafka_data"
 
-  private val Log = LoggerFactory.getLogger(classOf[KafkaLocalServer])
+  val Log = LoggerFactory.getLogger(classOf[KafkaLocalServer])
 
-  private lazy val tempDir = System.getProperty("java.io.tmpdir")
+  def apply(cleanOnStart: Boolean): KafkaLocalServer = this(DefaultPort, ZooKeeperLocalServer.DefaultPort, cleanOnStart)
 
-  def apply(cleanOnStart: Boolean): KafkaLocalServer = this(DefaultPort, ZooKeeperLocalServer.DefaultPort, DefaultPropertiesFile, Some(tempDir), cleanOnStart)
-
-  def apply(kafkaPort: Int, zookeeperServerPort: Int, kafkaPropertiesFile: String, targetDir: Option[String], cleanOnStart: Boolean): KafkaLocalServer = {
-    val kafkaDataDir = dataDirectory(targetDir, KafkaDataFolderName)
+  def apply(kafkaPort: Int, zookeeperServerPort: Int, cleanOnStart: Boolean): KafkaLocalServer = {
+    val kafkaDataDir = dataDirectory(KafkaDataFolderName)
     Log.info(s"Kafka data directory is $kafkaDataDir.")
 
-    val kafkaProperties = createKafkaProperties(kafkaPropertiesFile, kafkaPort, zookeeperServerPort, kafkaDataDir)
+    val kafkaProperties = createKafkaProperties(kafkaPort, zookeeperServerPort, kafkaDataDir)
 
     if (cleanOnStart) deleteDirectory(kafkaDataDir)
-
-    new KafkaLocalServer(kafkaProperties, new ZooKeeperLocalServer(zookeeperServerPort, cleanOnStart, targetDir))
+    val zk = new ZooKeeperLocalServer(zookeeperServerPort, cleanOnStart)
+    zk.start()
+    new KafkaLocalServer(kafkaProperties, zk)
   }
 
   /**
     * Creates a Properties instance for Kafka customized with values passed in argument.
     */
-  private def createKafkaProperties(kafkaPropertiesFile: String, kafkaPort: Int, zookeeperServerPort: Int, dataDir: File): Properties = {
+  private def createKafkaProperties(kafkaPort: Int, zookeeperServerPort: Int, dataDir: File): Properties = {
     val kafkaProperties = new Properties
-    kafkaProperties.put(KafkaConfig.ListenersProp, s"PLAINTEXT://:$kafkaPort")
-    kafkaProperties.put(KafkaConfig.ZkConnectProp, s"127.0.0.1:$zookeeperServerPort")
-    kafkaProperties.put(KafkaConfig.BrokerIdProp, "0")
-    kafkaProperties.put(KafkaConfig.HostNameProp, "127.0.0.1")
-    kafkaProperties.put(KafkaConfig.NumPartitionsProp, "1")
+    kafkaProperties.put(KafkaConfig.ListenersProp, s"PLAINTEXT://localhost:$kafkaPort")
+//    kafkaProperties.put(KafkaConfig.PortProp, s"$kafkaPort")
+    kafkaProperties.put(KafkaConfig.ZkConnectProp, s"localhost:$zookeeperServerPort")
+//    kafkaProperties.put(KafkaConfig.BrokerIdProp, "0")
+//    kafkaProperties.put(KafkaConfig.HostNameProp, "localhost")
+//    kafkaProperties.put(KafkaConfig.AdvertisedHostNameProp, "localhost")
     kafkaProperties.put(KafkaConfig.AutoCreateTopicsEnableProp, "true")
-    kafkaProperties.put(KafkaConfig.MessageMaxBytesProp, "1000000")
     kafkaProperties.put(KafkaConfig.ControlledShutdownEnableProp, "true")
-    kafkaProperties.setProperty(KafkaConfig.LogDirProp, dataDir.getAbsolutePath)
+    kafkaProperties.put(KafkaConfig.LogDirProp, dataDir.getAbsolutePath)
+
     kafkaProperties
   }
 
-  private def deleteDirectory(directory: File): Unit = {
+  def deleteDirectory(directory: File): Unit = {
     if (directory.exists()) try {
       val rootPath = Paths.get(directory.getAbsolutePath)
 
@@ -149,75 +130,48 @@ object KafkaLocalServer {
     }
   }
 
-  /**
-    * If the passed `baseDirPath` points to an existing directory for which the application has write access,
-    * return a File instance that points to `baseDirPath/directoryName`. Otherwise, return a File instance that
-    * points to `tempDir/directoryName` where `tempDir` is the system temporary folder returned by the system
-    * property "java.io.tmpdir".
-    *
-    * @param baseDirPath The path to the base directory.
-    * @param directoryName The name to use for the child folder in the base directory.
-    * @throws IllegalArgumentException If the passed `directoryName` is not a valid directory name.
-    * @return A file directory that points to either `baseDirPath/directoryName` or `tempDir/directoryName`.
-    */
-  private def dataDirectory(baseDirPath: Option[String], directoryName: String): File = {
-    lazy val tempDirMessage = s"Will attempt to create folder $directoryName in the system temporary directory: $tempDir"
+  def dataDirectory(directoryName: String): File = {
 
-    val maybeBaseDir = baseDirPath.map(new File(_)).filter(f => f.exists())
-
-    val baseDir = {
-      maybeBaseDir match {
-        case None =>
-          Log.warn(s"Directory $baseDirPath doesn't exist. $tempDirMessage.")
-          new File(tempDir)
-        case Some(directory) =>
-          if (!directory.isDirectory()) {
-            Log.warn(s"$baseDirPath is not a directory. $tempDirMessage.")
-            new File(tempDir)
-          } else if (!directory.canWrite()) {
-            Log.warn(s"The application does not have write access to directory $baseDirPath. $tempDirMessage.")
-            new File(tempDir)
-          } else directory
-      }
-    }
-
-    val dataDirectory = new File(baseDir, directoryName)
+    val dataDirectory = new File(basDir + directoryName)
     if (dataDirectory.exists() && !dataDirectory.isDirectory())
       throw new IllegalArgumentException(s"Cannot use $directoryName as a directory name because a file with that name already exists in $dataDirectory.")
 
     dataDirectory
   }
+}
 
-  private class ZooKeeperLocalServer(port: Int, cleanOnStart: Boolean, targetDir: Option[String]) {
-    private val zooKeeperServerRef = new AtomicReference[TestingServer](null)
+private class ZooKeeperLocalServer(port: Int, cleanOnStart: Boolean) {
 
-    def start(): Unit = {
-      val zookeeperDataDir = dataDirectory(targetDir, ZooKeeperLocalServer.ZookeeperDataFolderName)
-      if (zooKeeperServerRef.compareAndSet(null, new TestingServer(port, zookeeperDataDir, /*start=*/ false))) {
-        Log.info(s"Zookeeper data directory is $zookeeperDataDir.")
+  import KafkaLocalServer._
+  import ZooKeeperLocalServer._
 
-        if (cleanOnStart) deleteDirectory(zookeeperDataDir)
+  private var zooKeeper = null.asInstanceOf[TestingServer]
 
-        val zooKeeperServer = zooKeeperServerRef.get
-        zooKeeperServer.start() // blocking operation
+  def start(): Unit = {
+    val zookeeperDataDir = dataDirectory(ZookeeperDataFolderName)
+    zooKeeper = new TestingServer(port, zookeeperDataDir, false)
+    Log.info(s"Zookeeper data directory is $zookeeperDataDir.")
+
+    if (cleanOnStart) deleteDirectory(zookeeperDataDir)
+
+    zooKeeper.start() // blocking operation
+   }
+
+  def stop(): Unit = {
+    if (zooKeeper != null)
+      try {
+        zooKeeper.stop()
+        zooKeeper = null.asInstanceOf[TestingServer]
       }
-      // else it's already running
-    }
-
-    def stop(): Unit = {
-      val zooKeeperServer = zooKeeperServerRef.getAndSet(null)
-      if (zooKeeperServer != null)
-        try zooKeeperServer.stop()
-        catch {
-          case _: IOException => () // nothing to do if an exception is thrown while shutting down
-        }
-      // else it's already stopped
-    }
-    def getPort() : Int = port
+      catch {
+        case _: IOException => () // nothing to do if an exception is thrown while shutting down
+      }
   }
 
-  object ZooKeeperLocalServer {
-    final val DefaultPort = 2181
-    private final val ZookeeperDataFolderName = "zookeeper_data"
-  }
+  def getPort() : Int = port
+}
+
+object ZooKeeperLocalServer {
+  final val DefaultPort = 2181
+  private final val ZookeeperDataFolderName = "zookeeper_data"
 }

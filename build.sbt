@@ -12,7 +12,7 @@ lazy val protobufs = (project in file("./protobufs"))
     )
 
 lazy val client = (project in file("./client"))
-  .settings(libraryDependencies ++= Dependencies.kafkabaseDependencies ++ Seq(Dependencies.curator))
+  .settings(libraryDependencies ++=  Seq(Dependencies.kafka, Dependencies.curator))
   .dependsOn(protobufs, configuration)
 
 lazy val model = (project in file("./model"))
@@ -20,22 +20,22 @@ lazy val model = (project in file("./model"))
   .dependsOn(protobufs)
 
 lazy val naiveserver = (project in file("./naiveserver"))
-  .settings(libraryDependencies ++= Dependencies.kafkaDependencies ++ Dependencies.webDependencies)
+  .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies)
   .dependsOn(model, configuration)
 
 lazy val serverstandardstore = (project in file("./serverstandardstore"))
-  .settings(libraryDependencies ++= Dependencies.kafkaDependencies ++ Dependencies.webDependencies)
+  .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies)
   .dependsOn(model, configuration)
 
 lazy val server = (project in file("./server"))
-  .settings(libraryDependencies ++= Dependencies.kafkaDependencies ++ Dependencies.webDependencies)
+  .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies)
   .dependsOn(model, configuration)
 
 lazy val akkaServer = (project in file("./akkaserver"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.8.4",
             dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.4"
   )
-  .settings(libraryDependencies ++= Dependencies.kafkaDependencies ++ Dependencies.akkaServerDependencies
+  .settings(libraryDependencies ++= Dependencies.kafkabaseDependencies ++ Dependencies.akkaServerDependencies
     ++ Dependencies.modelsDependencies ++ Seq(Dependencies.curator))
   .dependsOn(protobufs, configuration)
 

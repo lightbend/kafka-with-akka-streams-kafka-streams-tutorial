@@ -8,7 +8,7 @@ public class ApplicationKafkaParameters {
 
     private ApplicationKafkaParameters(){}
 
-    public static final String KAFKA_BROKER = "127.0.0.1:9092";
+    public static final String KAFKA_BROKER = "localhost:9092";
 
     public static final String STORE_NAME = "ModelStore";
     public static final int STORE_ID = 42;
