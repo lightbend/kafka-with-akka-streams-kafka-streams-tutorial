@@ -3,7 +3,6 @@ package com.lightbend.custom.modelserver;
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.model.DataConverter;
 import com.lightbend.custom.modelserver.store.ModelStateStoreBuilder;
-import com.lightbend.custom.modelserver.store.ModelStateStoreSupplier;
 import com.lightbend.custom.queriablestate.QueriesRestService;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
@@ -74,8 +73,7 @@ public class ModelServer {
 
         // Store definition
         Map<String, String> logConfig = new HashMap<>();
-        ModelStateStoreSupplier storeSupplier = new ModelStateStoreSupplier(ApplicationKafkaParameters.STORE_NAME);
-        ModelStateStoreBuilder storeBuilder = new ModelStateStoreBuilder(storeSupplier).withLoggingEnabled(logConfig);
+        ModelStateStoreBuilder storeBuilder = new ModelStateStoreBuilder(ApplicationKafkaParameters.STORE_NAME).withLoggingEnabled(logConfig);
 
         // Create Stream builder
         StreamsBuilder builder = new StreamsBuilder();

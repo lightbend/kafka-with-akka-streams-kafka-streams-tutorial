@@ -8,20 +8,21 @@ import java.util.Objects;
 
 public class ModelStateStoreBuilder implements StoreBuilder<ModelStateStore> {
 
-    private final ModelStateStoreSupplier storeSupplier;
+    private final String name;
+
     private Map<String, String> logConfig = new HashMap<>();
     boolean enableCaching;
     boolean enableLogging = true;
 
 
-    public ModelStateStoreBuilder(final ModelStateStoreSupplier storeSupplier) {
-        Objects.requireNonNull(storeSupplier, "bytesStoreSupplier can't be null");
-        this.storeSupplier = storeSupplier;
+    public ModelStateStoreBuilder(final String name) {
+        Objects.requireNonNull(name, "name can't be null");
+        this.name = name;
     }
 
     @Override
     public ModelStateStore build() {
-        return new ModelStateStore(storeSupplier.name(), enableLogging);
+        return new ModelStateStore(name(), enableLogging);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class ModelStateStoreBuilder implements StoreBuilder<ModelStateStore> {
 
     @Override
     public String name() {
-        return storeSupplier.name();
+        return name;
     }
 
 }
