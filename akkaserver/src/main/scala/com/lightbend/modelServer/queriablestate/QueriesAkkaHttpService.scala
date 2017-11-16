@@ -42,21 +42,10 @@ class QueriesAkkaHttpService(
       //      instancesRoutes ~
       storeRoutes
     }
-  /*
-  def instancesRoutes: Route =
-    pathPrefix("instances") {
-      path(StoreName) { storeName =>
-        complete(???) // FIXME not sure what to do here... seems that service only makes sense if using kafka streams?
-      } ~
-        pathEnd {
-          complete(???) // FIXME not sure what to do here... seems that service only makes sense if using kafka streams?
-        }
-    } */
 
   def storeRoutes: Route =
     path(StoreName / "value") { storeName =>
-      // TODO so we should start one streaming instance for each of the store names?
-      val info: ModelToServeStats = readableModelStateStore.getCurrentServingInfo
+       val info: ModelToServeStats = readableModelStateStore.getCurrentServingInfo
       complete(info)
     }
 
