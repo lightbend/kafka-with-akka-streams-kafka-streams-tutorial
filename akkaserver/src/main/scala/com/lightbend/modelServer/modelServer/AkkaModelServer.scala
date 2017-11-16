@@ -5,17 +5,16 @@ import java.net.InetAddress
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Route
-import akka.kafka.{ ConsumerSettings, Subscriptions }
+import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.kafka.scaladsl.Consumer
-import akka.stream.{ ActorMaterializer, SourceShape }
-import akka.stream.scaladsl.{ GraphDSL, Sink, Source }
+import akka.stream.{ActorMaterializer, SourceShape}
+import akka.stream.scaladsl.{GraphDSL, Sink, Source}
 import akka.util.Timeout
 
 import scala.concurrent.duration._
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters._
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.ModelToServe
-import com.lightbend.modelServer.model.DataRecord
+import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import akka.http.scaladsl.Http
@@ -44,9 +43,10 @@ object AkkaModelServer {
 
   def main(args: Array[String]): Unit = {
 
-    val modelStream: Source[ModelToServe, Consumer.Control] =
+    val modelStream: Source[ModelWithDescriptor, Consumer.Control] =
       Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))
         .map(record => ModelToServe.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
+        .map(record => ModelWithDescriptor.fromModelToServe(record)).filter(_.isSuccess).map(_.get)
 
     val dataStream: Source[WineRecord, Consumer.Control] =
       Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(DATA_TOPIC))

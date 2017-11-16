@@ -2,9 +2,8 @@ package com.lightbend.modelServer.model.tensorflow
 
 import com.lightbend.model.modeldescriptor.ModelDescriptor
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.ModelToServe
-import org.tensorflow.{ Graph, Session, Tensor }
-import com.lightbend.modelServer.model.{ Model, ModelFactory }
+import org.tensorflow.{Graph, Session, Tensor}
+import com.lightbend.modelServer.model.{Model, ModelFactory, ModelToServe}
 
 /**
  * Created by boris on 5/26/17.
@@ -75,12 +74,8 @@ object TensorFlowModel extends ModelFactory {
     }
   }
 
-  override def create(input: ModelToServe): Option[Model] = {
-    try {
-      Some(new TensorFlowModel(input.model))
-    } catch {
-      case t: Throwable => None
-    }
+  override def create(input: ModelToServe): Model = {
+    new TensorFlowModel(input.model)
   }
 
   override def restore(bytes: Array[Byte]): Model = new TensorFlowModel(bytes)

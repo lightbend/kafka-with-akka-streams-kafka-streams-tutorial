@@ -37,7 +37,7 @@ lazy val akkaServer = (project in file("./akkaserver"))
   )
   .settings(libraryDependencies ++= Dependencies.kafkabaseDependencies ++ Dependencies.akkaServerDependencies
     ++ Dependencies.modelsDependencies ++ Seq(Dependencies.curator))
-  .dependsOn(protobufs, configuration)
+  .dependsOn(model, configuration)
 
 lazy val configuration = (project in file("./configuration"))
 

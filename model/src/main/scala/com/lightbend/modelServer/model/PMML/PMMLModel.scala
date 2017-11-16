@@ -6,16 +6,15 @@ package com.lightbend.modelServer.model.PMML
  * Class for PMML model
  */
 
-import java.io.{ ByteArrayInputStream, ByteArrayOutputStream }
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 
 import com.lightbend.model.modeldescriptor.ModelDescriptor
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.ModelToServe
-import org.dmg.pmml.{ FieldName, PMML }
+import org.dmg.pmml.{FieldName, PMML}
 import org.jpmml.evaluator.visitors._
-import org.jpmml.evaluator.{ Computable, FieldValue, ModelEvaluatorFactory, TargetField }
+import org.jpmml.evaluator.{Computable, FieldValue, ModelEvaluatorFactory, TargetField}
 import org.jpmml.model.PMMLUtil
-import com.lightbend.modelServer.model.{ Model, ModelFactory }
+import com.lightbend.modelServer.model.{Model, ModelFactory, ModelToServe}
 
 import scala.collection.JavaConversions._
 import scala.collection._
@@ -88,6 +87,7 @@ object PMMLModel extends ModelFactory {
         case t: Throwable => {
           println(s"Error optimizing model for optimizer $opt")
           t.printStackTrace()
+          throw t
         }
       })
   }
@@ -98,12 +98,8 @@ object PMMLModel extends ModelFactory {
     "density" -> 7, "pH" -> 8, "sulphates" -> 9, "alcohol" -> 10
   )
 
-  override def create(input: ModelToServe): Option[Model] = {
-    try {
-      Some(new PMMLModel(input.model))
-    } catch {
-      case t: Throwable => None
-    }
+  override def create(input: ModelToServe): Model = {
+      new PMMLModel(input.model)
   }
 
   override def restore(bytes: Array[Byte]): Model = new PMMLModel(bytes)

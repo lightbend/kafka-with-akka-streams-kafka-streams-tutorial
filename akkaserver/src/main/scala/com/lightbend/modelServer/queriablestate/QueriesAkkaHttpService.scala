@@ -4,12 +4,12 @@ import java.util.OptionalDouble
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.server.{ HttpApp, Route }
+import akka.http.scaladsl.server.{HttpApp, Route}
 import akka.http.scaladsl.settings.ServerSettings
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{ Sink, Source }
+import akka.stream.scaladsl.{Sink, Source}
 import com.lightbend.model.Winerecord
-import com.lightbend.modelServer.ModelToServeStats
+import com.lightbend.modelServer.model.ModelToServeStats
 import com.lightbend.modelServer.modelServer.ReadableModelStateStore
 import de.heikoseeberger.akkahttpjackson.JacksonSupport
 

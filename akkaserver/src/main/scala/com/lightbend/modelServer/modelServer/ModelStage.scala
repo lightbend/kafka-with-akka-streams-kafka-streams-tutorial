@@ -1,23 +1,13 @@
 package com.lightbend.modelServer.modelServer
 
 import akka.stream._
-import akka.stream.stage.{ GraphStageLogicWithLogging, _ }
-import com.lightbend.model.modeldescriptor.ModelDescriptor
+import akka.stream.stage.{GraphStageLogicWithLogging, _}
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.model.Model
-import com.lightbend.modelServer.model.PMML.PMMLModel
-import com.lightbend.modelServer.model.tensorflow.TensorFlowModel
-import com.lightbend.modelServer.{ ModelToServe, ModelToServeStats }
+import com.lightbend.modelServer.model.{Model, ModelToServe, ModelToServeStats, ModelWithDescriptor}
 
 import scala.collection.immutable
 
 class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, ReadableModelStateStore] {
-
-  private val factories = Map(
-    ModelDescriptor.ModelType.PMML -> PMMLModel,
-    ModelDescriptor.ModelType.TENSORFLOW -> TensorFlowModel
-  )
-
 
   override val shape: ModelStageShape = new ModelStageShape
 
@@ -30,7 +20,6 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
       var currentState: Option[ModelToServeStats] = None // exposed in materialized value
       private var newState: Option[ModelToServeStats] = None
 
-      // TODO the pulls needed to get the stage actually pulling from the input streams
       override def preStart(): Unit = {
         tryPull(shape.modelRecordIn)
         tryPull(shape.dataRecordIn)
@@ -39,12 +28,8 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
       setHandler(shape.modelRecordIn, new InHandler {
         override def onPush(): Unit = {
           val model = grab(shape.modelRecordIn)
-          println(s"New model - $model")
-          newState = Some(new ModelToServeStats(model))
-          newModel = factories.get(model.modelType) match {
-            case Some(factory) => factory.create(model)
-            case _ => None
-          }
+          newState = Some(new ModelToServeStats(model.descriptor))
+          newModel = Some(model.model)
           pull(shape.modelRecordIn)
         }
       })
@@ -99,10 +84,10 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
 
 class ModelStageShape() extends Shape {
   var dataRecordIn = Inlet[WineRecord]("dataRecordIn")
-  var modelRecordIn = Inlet[ModelToServe]("modelRecordIn")
+  var modelRecordIn = Inlet[ModelWithDescriptor]("modelRecordIn")
   var scoringResultOut = Outlet[Option[Double]]("scoringOut")
 
-  def this(dataRecordIn: Inlet[WineRecord], modelRecordIn: Inlet[ModelToServe], scoringResultOut: Outlet[Option[Double]]) {
+  def this(dataRecordIn: Inlet[WineRecord], modelRecordIn: Inlet[ModelWithDescriptor], scoringResultOut: Outlet[Option[Double]]) {
     this()
     this.dataRecordIn = dataRecordIn
     this.modelRecordIn = modelRecordIn
@@ -114,7 +99,7 @@ class ModelStageShape() extends Shape {
   override def copyFromPorts(inlets: immutable.Seq[Inlet[_]], outlets: immutable.Seq[Outlet[_]]): Shape =
     new ModelStageShape(
       inlets(0).asInstanceOf[Inlet[WineRecord]],
-      inlets(1).asInstanceOf[Inlet[ModelToServe]],
+      inlets(1).asInstanceOf[Inlet[ModelWithDescriptor]],
       outlets(0).asInstanceOf[Outlet[Option[Double]]]
     )
 
