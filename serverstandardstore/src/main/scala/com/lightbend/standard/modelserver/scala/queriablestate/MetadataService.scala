@@ -38,6 +38,7 @@ class MetadataService(streams: KafkaStreams) {
       case host if host equalsIgnoreCase("localhost") =>
         try{InetAddress.getLocalHost.getHostAddress}
         catch {case t: Throwable => ""}
+      case host => host
     }
      new HostStoreInfo(currentHost, metadata.port, metadata.stateStoreNames.toSeq)
   }

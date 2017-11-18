@@ -19,14 +19,14 @@ object QueriesResource extends JacksonSupport {
     get {
       pathPrefix("state") {
         path("instances") {
-          val info = metadataService.streamsMetadataForStore(STORE_NAME, port)
-          complete(info)
-        }
+          complete(
+            metadataService.streamsMetadataForStore(STORE_NAME, port)
+          )
+        } ~
         path("value") {
           val store = streams.store(ApplicationKafkaParameters.STORE_NAME, QueryableStoreTypes.keyValueStore[Integer,StoreState])
           if (store == null) throw new NotFoundException
-          val info = store.get(STORE_ID).currentState
-          complete(info)
+          complete(store.get(STORE_ID).currentState)
         }
       }
     }
