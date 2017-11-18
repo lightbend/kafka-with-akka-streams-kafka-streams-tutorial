@@ -34,6 +34,7 @@ object Dependencies {
   val modelsDependencies    = Seq(jpmml, jpmmlextras, tensorflow)
   val kafkabaseDependencies = Seq(reactiveKafka) ++ Seq(kafkaclients)
   val webDependencies       = Seq(gson, jersey, jerseymedia, jettyserver, jettyservlet, wsrs)
-  val akkaServerDependencies = Seq(reactiveKafka) ++ Seq(akkaStream, akkaHttp, akkaHttpJsonJackson, reactiveKafka)
+  val akkHTTPPSupport       = Seq(akkaHttp, akkaHttpJsonJackson)
+  val akkaServerDependencies = Seq(akkaStream, akkaHttp, akkaHttpJsonJackson, reactiveKafka)
 
 }

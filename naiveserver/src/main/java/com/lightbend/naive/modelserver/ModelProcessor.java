@@ -30,7 +30,6 @@ public class ModelProcessor extends AbstractProcessor<byte[], byte[]> {
            modelStore.setNewModel(modelWithDescriptor.get().getModel());
            modelStore.setNewServingInfo(new ModelServingInfo(modelWithDescriptor.get().getDescriptor().getName(),
                     modelWithDescriptor.get().getDescriptor().getDescription(), 0));
-           return;
         }
     }
 

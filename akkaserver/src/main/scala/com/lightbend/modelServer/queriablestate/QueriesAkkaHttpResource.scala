@@ -10,7 +10,7 @@ object QueriesAkkaHttpResource extends JacksonSupport {
 
   def storeRoutes(predictions: ReadableModelStateStore): Route =
     get {
-      path("stats") {
+      path("state") {
         val info: ModelToServeStats = predictions.getCurrentServingInfo
         complete(info)
       }

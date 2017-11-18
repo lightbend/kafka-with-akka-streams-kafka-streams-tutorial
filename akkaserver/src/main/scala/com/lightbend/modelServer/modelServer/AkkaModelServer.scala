@@ -1,8 +1,5 @@
 package com.lightbend.modelServer.modelServer
 
-import java.net.InetAddress
-
-import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Route
 import akka.kafka.{ConsumerSettings, Subscriptions}

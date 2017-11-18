@@ -20,15 +20,24 @@ lazy val model = (project in file("./model"))
   .dependsOn(protobufs)
 
 lazy val naiveserver = (project in file("./naiveserver"))
-  .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies)
+  .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.8.4",
+            dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.4"
+  )
+  .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
   .dependsOn(model, configuration)
 
 lazy val serverstandardstore = (project in file("./serverstandardstore"))
-  .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies)
+  .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.8.4",
+            dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.4"
+  )
+  .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
   .dependsOn(model, configuration)
 
 lazy val server = (project in file("./server"))
-  .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies)
+  .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.8.4",
+            dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.4"
+  )
+  .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
   .dependsOn(model, configuration)
 
 lazy val akkaServer = (project in file("./akkaserver"))

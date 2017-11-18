@@ -1,19 +1,30 @@
-package com.lightbend.naive.modelserver.scala
+package com.lightbend.standard.modelserver.scala
 
 import java.util.Properties
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.standard.modelserver.scala.queriablestate.QueriesResource
+import com.lightbend.standard.modelserver.scala.store.ModelStateSerde
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.Serdes
-import org.apache.kafka.streams.{KafkaStreams, StreamsConfig, Topology}
-import akka.http.scaladsl.Http
-import com.lightbend.naive.modelserver.scala.queriablestate.QueriesResource
+import org.apache.kafka.streams.{KafkaStreams, StreamsBuilder, StreamsConfig}
 
 import scala.concurrent.duration._
+import java.util.HashMap
+
+import com.lightbend.model.winerecord.WineRecord
+import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
+import org.apache.kafka.streams.kstream.KStream
+import org.apache.kafka.streams.state.Stores
+import org.apache.kafka.streams.kstream.{Predicate, ValueMapper}
+
+import scala.util.Try
+
 
 object ModelServer {
 
@@ -62,16 +73,40 @@ object ModelServer {
   }
 
   private def createStreams(streamsConfiguration: Properties) : KafkaStreams = { // Create topology
-    val topology = new Topology
+
+    // Store definition
+    val logConfig = new HashMap[String, String]
+    val storeSupplier = Stores.inMemoryKeyValueStore(STORE_NAME)
+    val storeBuilder = Stores.keyValueStoreBuilder(storeSupplier, Serdes.Integer, new ModelStateSerde).withLoggingEnabled(logConfig)
+
+    // Create Stream builder
+    val builder = new StreamsBuilder
     // Data input streams
-    topology.addSource("data", DATA_TOPIC)
-    topology.addSource("models", MODELS_TOPIC)
-    // Processors
-    topology.addProcessor("data processor", new DataProcessor(), "data")
-    topology.addProcessor("model processor", new ModelProcessor(), "models")
-    // print topology
+    val data : KStream[Array[Byte], Array[Byte]] = builder.stream(DATA_TOPIC)
+    val models : KStream[Array[Byte], Array[Byte]] = builder.stream(MODELS_TOPIC)
+
+    // DataStore
+    builder.addStateStore(storeBuilder)
+
+    // Data Processor
+    data
+      .mapValues[Try[WineRecord]](new DataValueMapper().asInstanceOf[ValueMapper[Array[Byte], Try[WineRecord]]])
+      .filter(new DataValueFilter().asInstanceOf[Predicate[Array[Byte], Try[WineRecord]]])
+      .process(new DataProcessor, STORE_NAME)
+    // Value Processor
+    models
+      .mapValues[Try[ModelToServe]](new ModelValueMapper().asInstanceOf[ValueMapper[Array[Byte],Try[ModelToServe]]])
+      .filter(new ModelValueFilter().asInstanceOf[Predicate[Array[Byte], Try[ModelToServe]]])
+      .mapValues[Try[ModelWithDescriptor]](new ModelDescriptorMapper().asInstanceOf[ValueMapper[Try[ModelToServe],Try[ModelWithDescriptor]]])
+      .filter((new ModelDescriptorFilter().asInstanceOf[Predicate[Array[Byte], Try[ModelWithDescriptor]]]))
+      .process(new ModelProcessor, STORE_NAME)
+
+    // Create and build topology
+    val topology = builder.build
     println(topology.describe)
-    new KafkaStreams(topology, streamsConfiguration)
+
+    return new KafkaStreams(topology, streamsConfiguration)
+
   }
 
   private def startRestProxy(streams: KafkaStreams, port: Int) = {
@@ -82,7 +117,7 @@ object ModelServer {
     implicit val timeout = Timeout(10 seconds)
     val host = "127.0.0.1"
     val port = 8888
-    val routes: Route = QueriesResource.storeRoutes()
+    val routes: Route = QueriesResource.storeRoutes(streams, port)
 
     Http().bindAndHandle(routes, host, port) map
       { binding => println(s"Starting models observer on port ${binding.localAddress}") } recover {

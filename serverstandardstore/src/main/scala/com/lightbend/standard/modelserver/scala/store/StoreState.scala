@@ -1,4 +1,4 @@
-package com.lightbend.naive.modelserver.scala.store
+package com.lightbend.standard.modelserver.scala.store
 
 import com.lightbend.modelServer.model._
 
@@ -8,4 +8,8 @@ case class StoreState(var currentModel: Option[Model] = None, var newModel: Opti
 object StoreState{
   val instance = new StoreState()
   def apply(): StoreState = instance
+}
+
+case class HostStoreInfo (host: String, port: Int, storeNames: Seq[String]){
+  override def toString: String = s"HostStoreInfo{host= + $host + port=$port storeNames= ${storeNames.mkString(",")}}"
 }
