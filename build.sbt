@@ -24,21 +24,21 @@ lazy val naiveserver = (project in file("./naiveserver"))
             dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.4"
   )
   .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
-  .dependsOn(model, configuration)
+  .dependsOn(model, configuration, scalakafkastreamswrapper)
 
 lazy val serverstandardstore = (project in file("./serverstandardstore"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.8.4",
             dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.4"
   )
   .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
-  .dependsOn(model, configuration)
+  .dependsOn(model, configuration, scalakafkastreamswrapper)
 
 lazy val server = (project in file("./server"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.8.4",
             dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.4"
   )
   .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
-  .dependsOn(model, configuration)
+  .dependsOn(model, configuration, scalakafkastreamswrapper)
 
 lazy val akkaServer = (project in file("./akkaserver"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.8.4",
@@ -58,5 +58,12 @@ lazy val akkaServerpersistent = (project in file("./akkaserverpersistent"))
 
 lazy val configuration = (project in file("./configuration"))
 
+lazy val scalakafkastreamswrapper = (project in file("./scalakafkastreamswrapper"))
+  .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.8.4",
+    dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.8.4"
+  )
+  .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
+
+
 lazy val akkakafkatutorial = (project in file(".")).
-  aggregate(protobufs, client, model, configuration, server, akkaServer)
+  aggregate(protobufs, client, model, configuration, server, naiveserver, serverstandardstore, akkaServer, akkaServerpersistent, scalakafkastreamswrapper)

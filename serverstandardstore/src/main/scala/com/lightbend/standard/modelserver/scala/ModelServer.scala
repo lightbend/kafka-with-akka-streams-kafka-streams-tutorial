@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 import java.util.HashMap
 
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
+import com.lightbend.modelServer.model.{ModelToServe, ModelWithDescriptor}
 import org.apache.kafka.streams.kstream.KStream
 import org.apache.kafka.streams.state.Stores
 import org.apache.kafka.streams.kstream.{Predicate, ValueMapper}
@@ -93,7 +93,7 @@ object ModelServer {
       .mapValues[Try[WineRecord]](new DataValueMapper().asInstanceOf[ValueMapper[Array[Byte], Try[WineRecord]]])
       .filter(new DataValueFilter().asInstanceOf[Predicate[Array[Byte], Try[WineRecord]]])
       .process(new DataProcessor, STORE_NAME)
-    // Value Processor
+    // Models Processor
     models
       .mapValues[Try[ModelToServe]](new ModelValueMapper().asInstanceOf[ValueMapper[Array[Byte],Try[ModelToServe]]])
       .filter(new ModelValueFilter().asInstanceOf[Predicate[Array[Byte], Try[ModelToServe]]])

@@ -11,17 +11,17 @@ import com.lightbend.configuration.kafka.ApplicationKafkaParameters
 import com.lightbend.custom.scala.queriablestate.QueriesResource
 import com.lightbend.custom.scala.store.ModelStateStoreBuilder
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.model.{ModelToServe, ModelWithDescriptor}
+import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
+import lightbend.kafka.scala.streams.StreamsBuilderS
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.Serdes
-import org.apache.kafka.streams.kstream.{KStream, Predicate, ValueMapper}
-import org.apache.kafka.streams.{KafkaStreams, StreamsBuilder, StreamsConfig}
+import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
 
 import scala.concurrent.duration._
 import scala.util.Try
 
 
-object ModelServer {
+object ModelServerFluent {
 
   private val port = 8888 // Port for queryable state
 
@@ -74,26 +74,27 @@ object ModelServer {
     val storeBuilder: ModelStateStoreBuilder = new ModelStateStoreBuilder(ApplicationKafkaParameters.STORE_NAME).withLoggingEnabled(logConfig)
 
     // Create Stream builder
-    val builder = new StreamsBuilder
+    val builder = new StreamsBuilderS
     // Data input streams
-    val data : KStream[Array[Byte], Array[Byte]] = builder.stream(DATA_TOPIC)
-    val models : KStream[Array[Byte], Array[Byte]] = builder.stream(MODELS_TOPIC)
+    val data  = builder.streamS[Array[Byte], Array[Byte]](DATA_TOPIC)
+    val models  = builder.streamS[Array[Byte], Array[Byte]](MODELS_TOPIC)
 
     // DataStore
     builder.addStateStore(storeBuilder)
 
+
     // Data Processor
     data
-      .mapValues[Try[WineRecord]](new DataValueMapper().asInstanceOf[ValueMapper[Array[Byte], Try[WineRecord]]])
-      .filter(new DataValueFilter().asInstanceOf[Predicate[Array[Byte], Try[WineRecord]]])
-      .process(new DataProcessor, STORE_NAME)
-    // Value Processor
+      .mapValues((value: Array[Byte]) => DataRecord.fromByteArray(value))
+      .filter((key: Array[Byte], value: Try[WineRecord]) => (value.isSuccess))
+      .process(() => new DataProcessor, STORE_NAME)
+    //Models Processor
     models
-      .mapValues[Try[ModelToServe]](new ModelValueMapper().asInstanceOf[ValueMapper[Array[Byte],Try[ModelToServe]]])
-      .filter(new ModelValueFilter().asInstanceOf[Predicate[Array[Byte], Try[ModelToServe]]])
-      .mapValues[Try[ModelWithDescriptor]](new ModelDescriptorMapper().asInstanceOf[ValueMapper[Try[ModelToServe],Try[ModelWithDescriptor]]])
-      .filter((new ModelDescriptorFilter().asInstanceOf[Predicate[Array[Byte], Try[ModelWithDescriptor]]]))
-      .process(new ModelProcessor, STORE_NAME)
+      .mapValues((value: Array[Byte]) => ModelToServe.fromByteArray(value))
+      .filter((key: Array[Byte], value: Try[ModelToServe]) => (value.isSuccess))
+      .mapValues((value: Try[ModelToServe]) => ModelWithDescriptor.fromModelToServe(value.get))
+      .filter((key: Array[Byte], value: Try[ModelWithDescriptor]) => (value.isSuccess))
+      .process(() => new ModelProcessor, STORE_NAME)
 
     // Create and build topology
     val topology = builder.build
@@ -119,5 +120,4 @@ object ModelServer {
         println(s"Models observer could not bind to $host:$port", ex.getMessage)
     }
   }
-
 }
