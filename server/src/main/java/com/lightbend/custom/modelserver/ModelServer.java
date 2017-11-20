@@ -1,10 +1,9 @@
 package com.lightbend.custom.modelserver;
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
-import com.lightbend.model.DataConverter;
 import com.lightbend.custom.modelserver.store.ModelStateStoreBuilder;
 import com.lightbend.custom.queriablestate.QueriesRestService;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
+import com.lightbend.model.DataConverter;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -43,7 +42,7 @@ public class ModelServer {
         streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.ByteArray().getClass());
 
         // Add a topic config by prefixing with topic
-        streamsConfiguration.put(StreamsConfig.topicPrefix(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG), "earliest");
+//        streamsConfiguration.put(StreamsConfig.topicPrefix(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG), "earliest");
 
         // Create topology
         final KafkaStreams streams = createStreams(streamsConfiguration);

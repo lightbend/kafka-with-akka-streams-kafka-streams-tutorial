@@ -31,14 +31,14 @@ object DataProvider {
     println(s"Using kafka brokers at ${KAFKA_BROKER}")
     println(s"Data Message delay $dataTimeInterval")
     println(s"Model Message delay $modelTimeInterval")
-/*
+
     val kafka = KafkaLocalServer(true)
     kafka.start()
     kafka.createTopic(DATA_TOPIC)
     kafka.createTopic(MODELS_TOPIC)
 
     println(s"Cluster created")
-*/
+
     publishData()
     publishModels()
 
