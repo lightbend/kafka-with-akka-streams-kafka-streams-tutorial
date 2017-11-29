@@ -8,19 +8,15 @@ import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters
-import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
-import com.lightbend.standard.modelserver.DataProcessor
 import com.lightbend.standard.modelserver.scala.queriablestate.QueriesResource
 import com.lightbend.standard.modelserver.scala.store.ModelStateSerde
-import lightbend.kafka.scala.streams.StreamsBuilderS
-import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.state.Stores
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
+import streams.StreamsBuilderS
 
 import scala.concurrent.duration._
-import scala.util.Try
 
 
 object ModelServerFluent {
@@ -79,8 +75,8 @@ object ModelServerFluent {
     // Create Stream builder
     val builder = new StreamsBuilderS
     // Data input streams
-    val data  = builder.streamS[Array[Byte], Array[Byte]](DATA_TOPIC)
-    val models  = builder.streamS[Array[Byte], Array[Byte]](MODELS_TOPIC)
+    val data  = builder.stream[Array[Byte], Array[Byte]](DATA_TOPIC)
+    val models  = builder.stream[Array[Byte], Array[Byte]](MODELS_TOPIC)
 
     // DataStore
     builder.addStateStore(storeBuilder)
@@ -88,15 +84,15 @@ object ModelServerFluent {
 
     // Data Processor
     data
-      .mapValues((value: Array[Byte]) => DataRecord.fromByteArray(value))
-      .filter((key: Array[Byte], value: Try[WineRecord]) => (value.isSuccess))
+      .mapValues(value => DataRecord.fromByteArray(value))
+      .filter((key, value) => (value.isSuccess))
       .process(() => new DataProcessor, STORE_NAME)
     //Models Processor
     models
-      .mapValues((value: Array[Byte]) => ModelToServe.fromByteArray(value))
-      .filter((key: Array[Byte], value: Try[ModelToServe]) => (value.isSuccess))
-      .mapValues((value: Try[ModelToServe]) => ModelWithDescriptor.fromModelToServe(value.get))
-      .filter((key: Array[Byte], value: Try[ModelWithDescriptor]) => (value.isSuccess))
+      .mapValues(value => ModelToServe.fromByteArray(value))
+      .filter((key, value) => (value.isSuccess))
+      .mapValues(value => ModelWithDescriptor.fromModelToServe(value.get))
+      .filter((key, value) => (value.isSuccess))
       .process(() => new ModelProcessor, STORE_NAME)
 
     // Create and build topology

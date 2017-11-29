@@ -1,8 +1,6 @@
-package lightbend.kafka.scala.streams
+package streams
 
-// Based on https://github.com/aseigneurin/kafka-streams-scala/blob/master/src/main/scala/com/github/aseigneurin/kafka/streams/scala/ImplicitConversions.scala
-
-import org.apache.kafka.streams.kstream.{KGroupedStream, KGroupedTable, KStream, KTable}
+import org.apache.kafka.streams.kstream._
 
 import scala.language.implicitConversions
 
@@ -14,10 +12,15 @@ object ImplicitConversions {
   implicit def wrapKGroupedStream[K, V](inner: KGroupedStream[K, V]): KGroupedStreamS[K, V] =
     new KGroupedStreamS[K, V](inner)
 
+  implicit def wrapSessionWindowedKStream[K, V](inner: SessionWindowedKStream[K, V]): SessionWindowedKStreamS[K, V] =
+    new SessionWindowedKStreamS[K, V](inner)
+
+  implicit def wrapTimeWindowedKStream[K, V](inner: TimeWindowedKStream[K, V]): TimeWindowedKStreamS[K, V] =
+    new TimeWindowedKStreamS[K, V](inner)
+
   implicit def wrapKTable[K, V](inner: KTable[K, V]): KTableS[K, V] =
     new KTableS[K, V](inner)
 
   implicit def wrapKGroupedTable[K, V](inner: KGroupedTable[K, V]): KGroupedTableS[K, V] =
     new KGroupedTableS[K, V](inner)
-
 }
