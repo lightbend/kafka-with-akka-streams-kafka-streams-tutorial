@@ -49,7 +49,7 @@ object ModelServerFluent {
       override def uncaughtException(t: Thread, e: Throwable): Unit = {
         System.out.println("Uncaught exception on thread " + t + " " + e.toString)
       }
-    })
+    }) 
     // Start streams
     streams.start()
     // Start the Restful proxy for servicing remote access to state stores
