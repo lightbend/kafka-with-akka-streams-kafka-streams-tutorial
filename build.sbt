@@ -1,10 +1,10 @@
 
 import Dependencies._
 
-scalaVersion in ThisBuild := "2.12.4"
+scalaVersion in ThisBuild := "2.11.8"
 
-scalacOptions := Seq("-Xexperimental", "-unchecked", "-deprecation")
-javaOptions := Seq("Xlint:unchecked")
+scalacOptions in ThisBuild := Seq("-Xexperimental", "-unchecked", "-deprecation")
+javaOptions in ThisBuild := Seq("Xlint:unchecked")
 
 lazy val protobufs = (project in file("./protobufs"))
     .settings(

@@ -1,10 +1,10 @@
-package streams
+package com.lightbend.kafka.scala.streams
 
 import org.apache.kafka.common.utils.Bytes
 import org.apache.kafka.streams.KeyValue
 import org.apache.kafka.streams.kstream._
 import org.apache.kafka.streams.state.KeyValueStore
-import streams.ImplicitConversions._
+import ImplicitConversions._
 
 class KTableS[K, V](val inner: KTable[K, V]) {
 

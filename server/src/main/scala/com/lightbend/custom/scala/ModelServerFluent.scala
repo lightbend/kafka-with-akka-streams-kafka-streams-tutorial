@@ -10,10 +10,10 @@ import akka.util.Timeout
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters
 import com.lightbend.custom.scala.queriablestate.QueriesResource
 import com.lightbend.custom.scala.store.ModelStateStoreBuilder
+import com.lightbend.kafka.scala.streams.StreamsBuilderS
 import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
-import streams.StreamsBuilderS
 
 import scala.concurrent.duration._
 

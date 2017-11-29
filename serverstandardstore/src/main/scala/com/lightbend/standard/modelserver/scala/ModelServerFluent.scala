@@ -8,13 +8,13 @@ import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.kafka.scala.streams.StreamsBuilderS
 import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
 import com.lightbend.standard.modelserver.scala.queriablestate.QueriesResource
 import com.lightbend.standard.modelserver.scala.store.ModelStateSerde
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.state.Stores
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
-import streams.StreamsBuilderS
 
 import scala.concurrent.duration._
 
@@ -49,7 +49,7 @@ object ModelServerFluent {
       override def uncaughtException(t: Thread, e: Throwable): Unit = {
         System.out.println("Uncaught exception on thread " + t + " " + e.toString)
       }
-    }) 
+    })
     // Start streams
     streams.start()
     // Start the Restful proxy for servicing remote access to state stores

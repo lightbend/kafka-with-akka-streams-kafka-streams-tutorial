@@ -1,5 +1,6 @@
-package streams
+package com.lightbend.kafka.scala.streams
 
+import org.apache.kafka.streams.KeyValue
 import org.apache.kafka.streams.kstream._
 
 import scala.language.implicitConversions
@@ -23,4 +24,6 @@ object ImplicitConversions {
 
   implicit def wrapKGroupedTable[K, V](inner: KGroupedTable[K, V]): KGroupedTableS[K, V] =
     new KGroupedTableS[K, V](inner)
+
+  implicit def Tuple2ToKeyValue[K, V](tuple: (K, V)): KeyValue[K, V] = new KeyValue(tuple._1, tuple._2)
 }

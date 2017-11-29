@@ -1,6 +1,7 @@
 package com.lightbend.modelServer.model
 
 import com.lightbend.model.modeldescriptor.ModelDescriptor
+import scala.collection.Map
 import com.lightbend.modelServer.model.PMML.PMMLModel
 import com.lightbend.modelServer.model.tensorflow.TensorFlowModel
 
@@ -20,8 +21,7 @@ object ModelToServe {
 }
 
 case class ModelToServe(name: String, description: String,
-  modelType: ModelDescriptor.ModelType,
-  model: Array[Byte], dataType: String) {}
+  modelType: ModelDescriptor.ModelType, model: Array[Byte], dataType: String) {}
 
 case class ModelToServeStats(name: String = "", description: String = "",
     since: Long = 0, var usage: Long = 0, var duration: Double = .0,
@@ -43,14 +43,15 @@ object ModelToServeStats {
 case class ModelWithDescriptor(model: Model, descriptor: ModelToServe){}
 
 object ModelWithDescriptor {
+
   private val factories = Map(
-    ModelDescriptor.ModelType.PMML -> PMMLModel,
-    ModelDescriptor.ModelType.TENSORFLOW -> TensorFlowModel
+    ModelDescriptor.ModelType.PMML.name -> PMMLModel,
+    ModelDescriptor.ModelType.TENSORFLOW.name -> TensorFlowModel
   )
 
   def fromModelToServe(descriptor : ModelToServe): Try[ModelWithDescriptor] = Try{
     println(s"New model - $descriptor")
-    factories.get(descriptor.modelType) match {
+    factories.get(descriptor.modelType.name) match {
       case Some(factory) => ModelWithDescriptor(factory.create(descriptor),descriptor)
       case _ => throw new Throwable("Undefined model type")
     }
