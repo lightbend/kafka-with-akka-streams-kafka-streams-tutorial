@@ -1,6 +1,5 @@
 package com.lightbend.modelserver.actor.actors
 
-import java.util.concurrent.TimeUnit
 
 import akka.actor.{Actor, ActorRef, Props}
 import akka.util.Timeout
@@ -8,14 +7,15 @@ import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.modelServer.model.ModelWithDescriptor
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.duration.FiniteDuration
 import scala.util.{Failure, Success}
+
+import scala.concurrent.duration._
 
 // Router actor, routing both model and data to an appropriate actor
 
 class ModelServingManager(implicit executionContext: ExecutionContext) extends Actor {
 
-  implicit val timeout : Timeout = Timeout(FiniteDuration.apply(500, TimeUnit.MILLISECONDS))   // Timeout for the resolveOne call
+  implicit val timeout = Timeout(500 millisecond)
 
   private def getModelServer(dataType: String): ActorRef = {
 
