@@ -6,7 +6,7 @@ import com.lightbend.modelServer.model.{Model, ModelToServeStats, ModelWithDescr
 
 // Workhorse - doing model serving for a given data type
 
-class ModelServingActor extends Actor {
+class ModelServingActor(dataType : String) extends Actor {
 
   private var currentModel: Option[Model] = None
   private var newModel: Option[Model] = None
@@ -59,7 +59,7 @@ class ModelServingActor extends Actor {
 }
 
 object ModelServingActor{
-  def props : Props = Props[ModelServingActor]
+  def props(dataType : String) : Props = Props(new ModelServingActor(dataType))
 }
 
 case class GetState(dataType : String)

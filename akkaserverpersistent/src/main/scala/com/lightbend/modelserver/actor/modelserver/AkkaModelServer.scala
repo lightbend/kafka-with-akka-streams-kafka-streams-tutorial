@@ -13,6 +13,7 @@ import com.lightbend.modelserver.actor.actors.ModelServingManager
 import com.lightbend.modelserver.actor.queryablestate.QueriesAkkaHttpResource
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
+import akka.pattern.ask
 
 import scala.concurrent.duration._
 
@@ -24,6 +25,7 @@ object AkkaModelServer {
   implicit val system = ActorSystem("ModelServing")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
+  implicit val askTimeout = Timeout(30 seconds)
 
   println(s"Using kafka brokers at ${KAFKA_BROKER}")
 
@@ -42,14 +44,17 @@ object AkkaModelServer {
     val modelserver = system.actorOf(ModelServingManager.props)
     startRest(modelserver)
 
+    // Model stream processing
     Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))
       .map(record => ModelToServe.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
       .map(record => ModelWithDescriptor.fromModelToServe(record)).filter(_.isSuccess).map(_.get)
-      .map(modelserver ! _)
+      .mapAsync(1)(elem => (modelserver ? elem))
 
-    Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(DATA_TOPIC))
-      .map(record => DataRecord.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
-      .map(modelserver ! _)
+    // Result stream processing
+    val resultStream =
+      Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(DATA_TOPIC))
+        .map(record => DataRecord.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
+        .mapAsync(1)(elem => (modelserver ? elem).mapTo[Double])
   }
 
   def startRest(modelserver: ActorRef): Unit = {

@@ -1,6 +1,5 @@
 package com.lightbend.modelserver.actor.actors
 
-
 import akka.actor.{Actor, ActorRef, Props}
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.modelServer.model.{ModelToServeStats, ModelWithDescriptor}
@@ -12,7 +11,7 @@ import scala.concurrent.ExecutionContext
 class ModelServingManager(implicit executionContext: ExecutionContext) extends Actor {
 
   private def getModelServer(dataType: String): ActorRef = {
-    context.child(dataType).getOrElse(context.actorOf(ModelServingActor.props, dataType))
+    context.child(dataType).getOrElse(context.actorOf(ModelServingActor.props(dataType), dataType))
   }
 
   override def receive = {
