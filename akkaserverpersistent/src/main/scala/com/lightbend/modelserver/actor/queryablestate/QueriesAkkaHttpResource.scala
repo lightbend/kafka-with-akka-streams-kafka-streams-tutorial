@@ -11,11 +11,10 @@ object QueriesAkkaHttpResource extends JacksonSupport {
 
   def storeRoutes(modelserver: ActorRef): Route =
     get {
-      pathPrefix("state") {
-        path(_) {
-          val info: ModelToServeStats = (modelserver ! GetState(_)).asInstanceOf[ModelToServeStats]
-          complete(info)
-        }
+      path("state"/Segment) { datatype =>
+        val info: ModelToServeStats = (modelserver ! GetState(datatype)).asInstanceOf[ModelToServeStats]
+        complete(info)
       }
     }
+
 }

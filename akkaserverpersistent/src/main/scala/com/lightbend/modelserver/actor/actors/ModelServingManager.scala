@@ -2,30 +2,17 @@ package com.lightbend.modelserver.actor.actors
 
 
 import akka.actor.{Actor, ActorRef, Props}
-import akka.util.Timeout
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.modelServer.model.ModelWithDescriptor
 
 import scala.concurrent.ExecutionContext
-import scala.util.{Failure, Success}
-
-import scala.concurrent.duration._
 
 // Router actor, routing both model and data to an appropriate actor
 
 class ModelServingManager(implicit executionContext: ExecutionContext) extends Actor {
 
-  implicit val timeout = Timeout(500 millisecond)
-
   private def getModelServer(dataType: String): ActorRef = {
-
-    var actorRef : ActorRef = null.asInstanceOf[ActorRef]
-
-    context.actorSelection(s"./$dataType").resolveOne().onComplete{
-      case Success(actor) => actorRef = actor
-      case Failure(ex) => actorRef = context.actorOf(ModelServingActor.props, dataType)
-    }
-    actorRef
+    context.child(dataType).getOrElse(context.actorOf(ModelServingActor.props, dataType))
   }
 
   override def receive = {
