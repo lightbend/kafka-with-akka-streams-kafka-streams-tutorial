@@ -3,7 +3,7 @@ package com.lightbend.modelserver.actor.actors
 
 import akka.actor.{Actor, ActorRef, Props}
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.model.ModelWithDescriptor
+import com.lightbend.modelServer.model.{ModelToServeStats, ModelWithDescriptor}
 
 import scala.concurrent.ExecutionContext
 
@@ -18,7 +18,12 @@ class ModelServingManager(implicit executionContext: ExecutionContext) extends A
   override def receive = {
     case model: ModelWithDescriptor => getModelServer(model.descriptor.dataType) ! model
     case record : WineRecord => sender() ! (getModelServer(record.dataType) ! record)
-    case getState : GetState => sender() ! (getModelServer(getState.dataType) ! getState)
+    case getState : GetState => {
+      context.child(getState.dataType) match {
+        case Some(actorRef) => sender() ! (actorRef ! getState)
+        case _ => ModelToServeStats()
+      }
+    }
   }
 }
 
