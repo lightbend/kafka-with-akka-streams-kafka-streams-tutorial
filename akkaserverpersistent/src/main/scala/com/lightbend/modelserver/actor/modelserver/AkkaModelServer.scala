@@ -10,6 +10,7 @@ import akka.util.Timeout
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters._
 import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
 import com.lightbend.modelserver.actor.actors.ModelServingManager
+import com.lightbend.modelserver.actor.queryablestate.QueriesAkkaHttpResource
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 
@@ -56,7 +57,7 @@ object AkkaModelServer {
     implicit val timeout = Timeout(10 seconds)
     val host = "127.0.0.1"
     val port = 5500
-    val routes: Route = null // QueriesAkkaHttpResource.storeRoutes(service)
+    val routes: Route = QueriesAkkaHttpResource.storeRoutes(modelserver)
 
     Http().bindAndHandle(routes, host, port) map
       { binding => println(s"Starting models observer on port ${binding.localAddress}") } recover {
