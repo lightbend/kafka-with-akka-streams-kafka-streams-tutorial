@@ -48,14 +48,14 @@ object AkkaModelServer {
     Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))
       .map(record => ModelToServe.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
       .map(record => ModelWithDescriptor.fromModelToServe(record)).filter(_.isSuccess).map(_.get)
-      .mapAsync(5)(elem => (modelserver ? elem))
+      .mapAsync(1)(elem => (modelserver ? elem))
       .to(Sink.ignore) // we do not read the results directly
       .run() // we run the stream
 
     // Result stream processing
     Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(DATA_TOPIC))
       .map(record => DataRecord.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
-      .mapAsync(5)(elem => (modelserver ? elem).mapTo[Option[Double]])
+      .mapAsync(1)(elem => (modelserver ? elem).mapTo[Option[Double]])
       .filter(_.isDefined).map(_.get)
       .map(println(_))
       .to(Sink.ignore) // we do not read the results directly

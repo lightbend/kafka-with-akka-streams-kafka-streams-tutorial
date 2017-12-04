@@ -20,6 +20,7 @@ class ModelServingActor(dataType : String) extends Actor {
       println(s"Using model serving actor $dataType, processing model")
       newState = Some(new ModelToServeStats(model.descriptor))
       newModel = Some(model.model)
+      sender() ! "Done"
     }
     case record : WineRecord => {
       // Process data
