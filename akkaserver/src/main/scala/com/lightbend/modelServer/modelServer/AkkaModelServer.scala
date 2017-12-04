@@ -85,7 +85,7 @@ object AkkaModelServer {
   def startRest(service: ReadableModelStateStore): Unit = {
 
     implicit val timeout = Timeout(10 seconds)
-    val host = InetAddress.getLocalHost.getHostAddress
+    val host = "localhost"//InetAddress.getLocalHost.getHostAddress
     val port = 5500
     val routes: Route = QueriesAkkaHttpResource.storeRoutes(service)
 
