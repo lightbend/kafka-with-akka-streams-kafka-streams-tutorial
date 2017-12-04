@@ -99,11 +99,11 @@ class ModelStageShape() extends Shape {
 
   override val inlets = List(dataRecordIn, modelRecordIn)
   override val outlets = List(scoringResultOut)
-
+/*
   override def copyFromPorts(inlets: immutable.Seq[Inlet[_]], outlets: immutable.Seq[Outlet[_]]): Shape =
     new ModelStageShape(
       inlets(0).asInstanceOf[Inlet[WineRecord]],
       inlets(1).asInstanceOf[Inlet[ModelWithDescriptor]],
       outlets(0).asInstanceOf[Outlet[Option[Double]]]
-    )
+    ) */
 }
