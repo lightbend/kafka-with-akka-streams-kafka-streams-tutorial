@@ -17,14 +17,12 @@ class ModelServingActor(dataType : String) extends Actor {
   override def receive = {
     case model : ModelWithDescriptor => {
       // Update model
-      println(s"Using model serving actor $dataType, processing model")
       newState = Some(new ModelToServeStats(model.descriptor))
       newModel = Some(model.model)
       sender() ! "Done"
     }
     case record : WineRecord => {
       // Process data
-      println(s"Using model serving actor $dataType, processing data")
       newModel match {
         // Update model
         case Some(model) => {
@@ -55,9 +53,8 @@ class ModelServingActor(dataType : String) extends Actor {
         }
       }
     }
-    case GetState => {
+    case request : GetState => {
       // State query
-      println(s"Using model serving actor $dataType, processing state")
       sender() ! currentState.getOrElse(ModelToServeStats())
     }
   }

@@ -24,7 +24,7 @@ object QueriesAkkaHttpResource extends JacksonSupport {
         }
       } ~
       path("models") {
-        onSuccess(modelserver ? GetModels) {
+        onSuccess(modelserver ? GetModels()) {
           case models: Seq[String] =>
             complete(models)
         }
