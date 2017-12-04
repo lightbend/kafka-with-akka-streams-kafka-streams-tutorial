@@ -8,6 +8,7 @@ import com.lightbend.modelServer.model.{Model, ModelToServeStats, ModelWithDescr
 
 class ModelServingActor(dataType : String) extends Actor {
 
+  println(s"Creating model serving actor $dataType")
   private var currentModel: Option[Model] = None
   private var newModel: Option[Model] = None
   var currentState: Option[ModelToServeStats] = None // exposed in materialized value
@@ -16,11 +17,13 @@ class ModelServingActor(dataType : String) extends Actor {
   override def receive = {
     case model : ModelWithDescriptor => {
       // Update model
+      println(s"Using model serving actor $dataType, processing model")
       newState = Some(new ModelToServeStats(model.descriptor))
       newModel = Some(model.model)
     }
     case record : WineRecord => {
       // Process data
+      println(s"Using model serving actor $dataType, processing data")
       newModel match {
         // Update model
         case Some(model) => {
@@ -43,16 +46,17 @@ class ModelServingActor(dataType : String) extends Actor {
           val duration = System.currentTimeMillis() - start
           println(s"Calculated quality - $quality calculated in $duration ms")
           currentState.get.incrementUsage(duration)
-          sender() ! quality
+          sender() ! Some(quality)
         }
         case _ => {
           println("No model available - skipping")
-          sender() ! null
+          sender() ! None
         }
       }
     }
     case GetState => {
       // State query
+      println(s"Using model serving actor $dataType, processing state")
       sender() ! currentState.getOrElse(ModelToServeStats())
     }
   }

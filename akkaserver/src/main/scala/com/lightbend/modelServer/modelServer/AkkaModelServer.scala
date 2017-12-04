@@ -1,5 +1,8 @@
 package com.lightbend.modelServer.modelServer
 
+import java.net.InetAddress
+
+import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Route
 import akka.kafka.{ConsumerSettings, Subscriptions}
@@ -18,15 +21,15 @@ import akka.http.scaladsl.Http
 import com.lightbend.modelServer.queriablestate.QueriesAkkaHttpResource
 
 /**
- * Created by boris on 7/21/17.
- */
+  * Created by boris on 7/21/17.
+  */
 object AkkaModelServer {
 
   implicit val system = ActorSystem("ModelServing")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
-  println(s"Using kafka brokers at ${KAFKA_BROKER}")
+  println(s"Using kafka brokers at ${KAFKA_BROKER} ")
 
   val dataConsumerSettings = ConsumerSettings(system, new ByteArrayDeserializer, new ByteArrayDeserializer)
     .withBootstrapServers(KAFKA_BROKER)
@@ -82,14 +85,14 @@ object AkkaModelServer {
   def startRest(service: ReadableModelStateStore): Unit = {
 
     implicit val timeout = Timeout(10 seconds)
-    val host = "127.0.0.1"
+    val host = InetAddress.getLocalHost.getHostAddress
     val port = 5500
     val routes: Route = QueriesAkkaHttpResource.storeRoutes(service)
 
     Http().bindAndHandle(routes, host, port) map
       { binding => println(s"Starting models observer on port ${binding.localAddress}") } recover {
-        case ex =>
-          println(s"Models observer could not bind to $host:$port", ex.getMessage)
-      }
+      case ex =>
+        println(s"Models observer could not bind to $host:$port", ex.getMessage)
+    }
   }
 }
