@@ -9,7 +9,11 @@ import scala.collection.immutable
 
 class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, ReadableModelStateStore] {
 
-  override val shape: ModelStageShape = new ModelStageShape
+  val dataRecordIn = Inlet[WineRecord]("dataRecordIn")
+  val modelRecordIn = Inlet[ModelWithDescriptor]("modelRecordIn")
+  val scoringResultOut = Outlet[Option[Double]]("scoringOut")
+
+  override val shape: ModelStageShape = new ModelStageShape(dataRecordIn, modelRecordIn, scoringResultOut)
 
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, ReadableModelStateStore) = {
 
@@ -82,18 +86,7 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
   }
 }
 
-class ModelStageShape() extends Shape {
-
-  var dataRecordIn = Inlet[WineRecord]("dataRecordIn")
-  var modelRecordIn = Inlet[ModelWithDescriptor]("modelRecordIn")
-  var scoringResultOut = Outlet[Option[Double]]("scoringOut")
-
-  def this(dataRecordIn: Inlet[WineRecord], modelRecordIn: Inlet[ModelWithDescriptor], scoringResultOut: Outlet[Option[Double]]) {
-    this()
-    this.dataRecordIn = dataRecordIn
-    this.modelRecordIn = modelRecordIn
-    this.scoringResultOut = scoringResultOut
-  }
+class ModelStageShape(val dataRecordIn: Inlet[WineRecord], val modelRecordIn: Inlet[ModelWithDescriptor], val scoringResultOut: Outlet[Option[Double]]) extends Shape {
 
   override def deepCopy(): Shape = new ModelStageShape(dataRecordIn.carbonCopy(), modelRecordIn.carbonCopy(), scoringResultOut)
 
