@@ -16,7 +16,6 @@ class ModelServingActor(dataType : String) extends Actor {
   private var newState: Option[ModelToServeStats] = None
 
   override def preStart {
-    println("Restoring")
     val state = FilePersistence.restoreState(dataType)
     newState = state._2
     newModel = state._1

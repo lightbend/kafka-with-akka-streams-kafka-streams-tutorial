@@ -1,6 +1,7 @@
 package com.lightbend.modelserver.actor.persistence
 
-import java.io._
+
+import java.io.{DataInputStream, DataOutputStream, FileInputStream, FileOutputStream, File}
 
 import com.lightbend.model.modeldescriptor.ModelDescriptor
 import com.lightbend.modelServer.model.{Model, ModelToServeStats}
@@ -9,7 +10,7 @@ import com.lightbend.modelServer.model.tensorflow.TensorFlowModel
 
 object FilePersistence {
 
-  private final val basDir = "persistence/"
+  private final val basDir = "persistence"
 
   private val factories = Map(
     ModelDescriptor.ModelType.PMML.index -> PMMLModel,
@@ -24,7 +25,7 @@ object FilePersistence {
    }
 
   private def getDataInputStream(fileName: String) : Option[DataInputStream] = {
-    val file = new File(basDir + fileName)
+    val file = new File(basDir + "/" + fileName)
     file.exists() match {
       case true => Some(new DataInputStream(new FileInputStream(file)))
       case _ => None
@@ -72,14 +73,18 @@ object FilePersistence {
 
 
   def saveState(dataType: String, model: Model, servingInfo: ModelToServeStats) : Unit = {
-    println("Saving state")
     val output = getDataOutputStream(dataType)
     writeModel(output, model)
     writeServingInfo(output, servingInfo)
   }
 
   private def getDataOutputStream(fileName: String) : DataOutputStream = {
-    val file = new File(basDir + fileName)
+
+    val dir = new File(basDir)
+    if(!dir.exists()) {
+      dir.mkdir()
+    }
+    val file = new File(dir, fileName)
     if(!file.exists())
       file.createNewFile()
     new DataOutputStream(new FileOutputStream(file))
