@@ -114,15 +114,7 @@ Each application can run either locally (on user's machine) or on the server.
 
 ## Running locally
 
-Running locally can be done either using SBT or Intellij (If you run locally, make sure to change 
-kafka configuration `(broker quarum and zookeeper)`), InfluxDB configuration `(host and port)` and 
-Grafana configuration `(host and port)`
-
-Both `dataprovider` and `modelprovider` applications allow for changing of frequency of sending data, by
-specifying desired frequency (in ms) as an application parameter. If the parameter is not specified
-data is send once a sec and model - once every 5 mins.
-
-Both `akkaserver` and `kafkaserver` implement queryable state. 
+Running locally can be done either using SBT or Intellij 
 
 To query `akkaserver` state connect your browser to `host:5500/stats` to get statistics of the current execution
 Currently `akkaserver` supports only statistics for a given server. If a cluster is used, each server needs to be
