@@ -76,6 +76,8 @@ object FilePersistence {
     val output = getDataOutputStream(dataType)
     writeModel(output, model)
     writeServingInfo(output, servingInfo)
+    output.flush()
+    output.close()
   }
 
   private def getDataOutputStream(fileName: String) : DataOutputStream = {

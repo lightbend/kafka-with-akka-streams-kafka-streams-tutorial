@@ -1,6 +1,7 @@
 package com.lightbend.naive.modelserver.queriablestate;
 
 import com.lightbend.naive.modelserver.store.StoreState;
+import com.lightbend.model.ModelServingInfo;
 import org.apache.kafka.streams.KafkaStreams;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;

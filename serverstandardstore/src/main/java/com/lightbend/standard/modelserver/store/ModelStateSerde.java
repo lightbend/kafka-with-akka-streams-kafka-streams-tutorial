@@ -5,7 +5,7 @@ import com.lightbend.model.ModelFactory;
 import com.lightbend.model.Modeldescriptor;
 import com.lightbend.model.PMML.PMMLModelFactory;
 import com.lightbend.model.tensorflow.TensorflowModelFactory;
-import com.lightbend.standard.modelserver.queriablestate.ModelServingInfo;
+import com.lightbend.model.ModelServingInfo;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;

@@ -1,4 +1,4 @@
-package com.lightbend.standard.modelserver.queriablestate;
+package com.lightbend.model;
 
 import java.util.Objects;
 

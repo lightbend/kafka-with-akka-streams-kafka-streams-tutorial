@@ -2,7 +2,7 @@ package com.lightbend.standard.modelserver;
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.model.Winerecord;
-import com.lightbend.standard.modelserver.queriablestate.ModelServingInfo;
+import com.lightbend.model.ModelServingInfo;
 import com.lightbend.standard.modelserver.store.StoreState;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 import org.apache.kafka.streams.processor.ProcessorContext;

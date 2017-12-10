@@ -14,7 +14,7 @@ import com.lightbend.modelserver.actor.queryablestate.QueriesAkkaHttpResource
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import akka.pattern.ask
-import akka.stream.scaladsl.{Sink, Source}
+import akka.stream.scaladsl.Sink
 
 import scala.concurrent.duration._
 
@@ -52,7 +52,7 @@ object AkkaModelServer {
       .to(Sink.ignore) // we do not read the results directly
       .run() // we run the stream
 
-    // Result stream processing
+    // Data stream processing
     Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(DATA_TOPIC))
       .map(record => DataRecord.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
       .mapAsync(1)(elem => (modelserver ? elem).mapTo[Option[Double]])

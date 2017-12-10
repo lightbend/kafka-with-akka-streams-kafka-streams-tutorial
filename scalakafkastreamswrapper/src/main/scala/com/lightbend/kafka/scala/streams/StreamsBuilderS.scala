@@ -2,12 +2,12 @@ package com.lightbend.kafka.scala.streams
 
 import java.util.regex.Pattern
 
-import org.apache.kafka.common.utils.Bytes
-import org.apache.kafka.streams.kstream.{GlobalKTable, Materialized}
-import org.apache.kafka.streams.processor.{ProcessorSupplier, StateStore}
-import org.apache.kafka.streams.state.{KeyValueStore, StoreBuilder}
-import org.apache.kafka.streams.{Consumed, StreamsBuilder, Topology}
 import ImplicitConversions._
+import org.apache.kafka.streams.kstream.{ GlobalKTable, Materialized }
+import org.apache.kafka.streams.processor.{ProcessorSupplier, StateStore}
+import org.apache.kafka.streams.state.{ StoreBuilder, KeyValueStore }
+import org.apache.kafka.streams.{Consumed, StreamsBuilder, Topology}
+import org.apache.kafka.common.utils.Bytes
 
 import scala.collection.JavaConverters._
 

@@ -56,8 +56,11 @@ public class DataConverter {
     }
 
     public static Optional<ModelWithDescriptor> convertModel(Optional<CurrentModelDescriptor> descriptor){
+        return convertModel(descriptor.get());
+    }
 
-        CurrentModelDescriptor model = descriptor.get();
+    public static Optional<ModelWithDescriptor> convertModel(CurrentModelDescriptor model){
+
         System.out.println("New scoring model " + model);
         if(model.getModelData() == null) {
             System.out.println("Location based model is not yet supported");

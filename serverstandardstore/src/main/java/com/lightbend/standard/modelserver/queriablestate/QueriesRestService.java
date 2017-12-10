@@ -1,6 +1,7 @@
 package com.lightbend.standard.modelserver.queriablestate;
 
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
+import com.lightbend.model.ModelServingInfo;
 import com.lightbend.standard.modelserver.store.StoreState;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.state.QueryableStoreTypes;

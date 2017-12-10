@@ -3,6 +3,7 @@ package com.lightbend.custom.queriablestate;
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.custom.modelserver.store.ModelStateStore;
 import com.lightbend.custom.modelserver.store.ReadableModelStateStore;
+import com.lightbend.model.ModelServingInfo;
 import org.apache.kafka.streams.KafkaStreams;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;

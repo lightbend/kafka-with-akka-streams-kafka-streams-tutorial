@@ -3,7 +3,7 @@ package com.lightbend.custom.modelserver;
 import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.model.ModelWithDescriptor;
 import com.lightbend.custom.modelserver.store.ModelStateStore;
-import com.lightbend.custom.queriablestate.ModelServingInfo;
+import com.lightbend.model.ModelServingInfo;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 import org.apache.kafka.streams.processor.ProcessorContext;
 

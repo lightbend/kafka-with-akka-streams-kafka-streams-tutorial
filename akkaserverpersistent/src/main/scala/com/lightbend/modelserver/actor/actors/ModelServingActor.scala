@@ -40,7 +40,7 @@ class ModelServingActor(dataType : String) extends Actor {
             case _ =>
           }
           // Update model
-          currentModel = Some(model)
+          currentModel = newModel
           currentState = newState
           newModel = None
         }
