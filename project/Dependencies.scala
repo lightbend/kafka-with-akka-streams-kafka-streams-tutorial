@@ -8,6 +8,7 @@ object Dependencies {
   val reactiveKafka = "com.typesafe.akka"               % "akka-stream-kafka_2.11"        % reactiveKafkaVersion
   
   val akkaStream    = "com.typesafe.akka"               % "akka-stream_2.11"              % akkaVersion
+  val akkaTyped     = "com.typesafe.akka"               %% "akka-typed"                   % akkaVersion
   val akkaHttp      = "com.typesafe.akka"               % "akka-http_2.11"                % akkaHttpVersion
   val akkaHttpJsonJackson = "de.heikoseeberger"         % "akka-http-jackson_2.11"        % akkaHttpJsonVersion
   

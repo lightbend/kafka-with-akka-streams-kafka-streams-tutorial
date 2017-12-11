@@ -3,9 +3,8 @@ package com.lightbend.modelServer.modelServer
 import akka.stream._
 import akka.stream.stage.{GraphStageLogicWithLogging, _}
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.model.{Model, ModelToServe, ModelToServeStats, ModelWithDescriptor}
+import com.lightbend.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
 
-import scala.collection.immutable
 
 class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, ReadableModelStateStore] {
 
@@ -25,22 +24,22 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
       private var newState: Option[ModelToServeStats] = None
 
       override def preStart(): Unit = {
-        tryPull(shape.modelRecordIn)
-        tryPull(shape.dataRecordIn)
+        tryPull(modelRecordIn)
+        tryPull(dataRecordIn)
       }
 
-      setHandler(shape.modelRecordIn, new InHandler {
+      setHandler(modelRecordIn, new InHandler {
         override def onPush(): Unit = {
-          val model = grab(shape.modelRecordIn)
+          val model = grab(modelRecordIn)
           newState = Some(new ModelToServeStats(model.descriptor))
           newModel = Some(model.model)
-          pull(shape.modelRecordIn)
+          pull(modelRecordIn)
         }
       })
 
-      setHandler(shape.dataRecordIn, new InHandler {
+      setHandler(dataRecordIn, new InHandler {
         override def onPush(): Unit = {
-          val record = grab(shape.dataRecordIn)
+          val record = grab(dataRecordIn)
           newModel match {
             case Some(model) => {
               // close current model first
@@ -62,18 +61,18 @@ class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, Readab
               val duration = System.currentTimeMillis() - start
               println(s"Calculated quality - $quality calculated in $duration ms")
               currentState.get.incrementUsage(duration)
-              push(shape.scoringResultOut, Some(quality))
+              push(scoringResultOut, Some(quality))
             }
             case _ => {
               println("No model available - skipping")
-              push(shape.scoringResultOut, None)
+              push(scoringResultOut, None)
             }
           }
-          pull(shape.dataRecordIn)
+          pull(dataRecordIn)
         }
       })
 
-      setHandler(shape.scoringResultOut, new OutHandler {
+      setHandler(scoringResultOut, new OutHandler {
         override def onPull(): Unit = {
         }
       })

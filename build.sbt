@@ -48,7 +48,7 @@ lazy val akkaServer = (project in file("./akkaserver"))
     dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
   )
   .settings(libraryDependencies ++= Dependencies.kafkabaseDependencies ++ Dependencies.akkaServerDependencies
-    ++ Dependencies.modelsDependencies ++ Seq(Dependencies.curator))
+    ++ Dependencies.modelsDependencies)
   .dependsOn(model, configuration)
 
 lazy val akkaServerpersistent = (project in file("./akkaserverpersistent"))
@@ -56,7 +56,7 @@ lazy val akkaServerpersistent = (project in file("./akkaserverpersistent"))
     dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
   )
   .settings(libraryDependencies ++= Dependencies.kafkabaseDependencies ++ Dependencies.akkaServerDependencies
-    ++ Dependencies.modelsDependencies ++ Seq(Dependencies.curator))
+    ++ Dependencies.modelsDependencies ++ Seq(Dependencies.akkaTyped))
   .dependsOn(model, configuration)
 
 lazy val configuration = (project in file("./configuration"))

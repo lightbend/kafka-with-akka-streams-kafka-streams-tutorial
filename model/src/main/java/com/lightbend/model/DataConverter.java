@@ -3,6 +3,8 @@ package com.lightbend.model;
 import com.lightbend.model.PMML.PMMLModelFactory;
 import com.lightbend.model.tensorflow.TensorflowModelFactory;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -75,5 +77,82 @@ public class DataConverter {
         if(current.isPresent())
             return Optional.of(new ModelWithDescriptor(current.get(),model));
         return Optional.empty();
+    }
+
+    public static Optional<Model> readModel(DataInputStream input) {
+
+        try {
+            int length = (int)input.readLong();
+            if (length == 0)
+                return Optional.empty();
+            int type = (int) input.readLong();
+            byte[] bytes = new byte[length];
+            input.read(bytes);
+            ModelFactory factory = factories.get(type);
+            return Optional.of(factory.restore(bytes));
+        } catch (Throwable t) {
+            System.out.println("Error Deserializing model");
+            t.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public static Optional<ModelServingInfo> readServingInfo(DataInputStream input){
+        try {
+            long length = input.readLong();
+            if (length == 0)
+                return null;
+            String descriprtion = input.readUTF();
+            String name = input.readUTF();
+            double duration = input.readDouble();
+            long invocations = input.readLong();
+            long max  = input.readLong();
+            long min = input.readLong();
+            long since = input.readLong();
+            return Optional.of(new ModelServingInfo(name, descriprtion, since, invocations, duration, min, max));
+        } catch (Throwable t) {
+            System.out.println("Error Deserializing serving info");
+            t.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+
+    public static void writeModel(Model model, DataOutputStream output){
+        try{
+            if(model == null){
+                output.writeLong(0);
+                return;
+            }
+            byte[] bytes = model.getBytes();
+            output.writeLong(bytes.length);
+            output.writeLong(model.getType());
+            output.write(bytes);
+        }
+        catch (Throwable t){
+            System.out.println("Error Serializing model");
+            t.printStackTrace();
+        }
+    }
+
+    public static void writeServingInfo(ModelServingInfo servingInfo, DataOutputStream output){
+        try{
+            if(servingInfo == null) {
+                output.writeLong(0);
+                return;
+            }
+            output.writeLong(5);
+            output.writeUTF(servingInfo.getDescription());
+            output.writeUTF(servingInfo.getName());
+            output.writeDouble(servingInfo.getDuration());
+            output.writeLong(servingInfo.getInvocations());
+            output.writeLong(servingInfo.getMax());
+            output.writeLong(servingInfo.getMin());
+            output.writeLong(servingInfo.getSince());
+        }
+        catch (Throwable t){
+            System.out.println("Error Serializing servingInfo");
+            t.printStackTrace();
+        }
     }
 }

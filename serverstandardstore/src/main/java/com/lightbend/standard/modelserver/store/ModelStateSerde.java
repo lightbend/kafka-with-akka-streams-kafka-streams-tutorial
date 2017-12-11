@@ -1,11 +1,8 @@
 package com.lightbend.standard.modelserver.store;
 
-import com.lightbend.model.Model;
-import com.lightbend.model.ModelFactory;
-import com.lightbend.model.Modeldescriptor;
+import com.lightbend.model.*;
 import com.lightbend.model.PMML.PMMLModelFactory;
 import com.lightbend.model.tensorflow.TensorflowModelFactory;
-import com.lightbend.model.ModelServingInfo;
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serializer;
@@ -58,11 +55,11 @@ public class ModelStateSerde implements Serde<StoreState> {
             bos.reset();
             DataOutputStream output = new DataOutputStream(bos);
 
-            writeModel(state.getCurrentModel(), output);
-            writeModel(state.getNewModel(), output);
+            DataConverter.writeModel(state.getCurrentModel(), output);
+            DataConverter.writeModel(state.getNewModel(), output);
 
-            writeServingInfo(state.getCurrentServingInfo(), output);
-            writeServingInfo(state.getNewServingInfo(), output);
+            DataConverter.writeServingInfo(state.getCurrentServingInfo(), output);
+            DataConverter.writeServingInfo(state.getNewServingInfo(), output);
 
             try {
                 output.flush();
@@ -73,43 +70,6 @@ public class ModelStateSerde implements Serde<StoreState> {
 
         }
 
-        private void writeModel(Model model, DataOutputStream output){
-            try{
-                if(model == null){
-                    output.writeLong(0);
-                    return;
-                }
-                byte[] bytes = model.getBytes();
-                output.writeLong(bytes.length);
-                output.writeLong(model.getType());
-                output.write(bytes);
-            }
-            catch (Throwable t){
-                System.out.println("Error Serializing model");
-                t.printStackTrace();
-            }
-        }
-
-        private void writeServingInfo(ModelServingInfo servingInfo, DataOutputStream output){
-            try{
-                if(servingInfo == null) {
-                    output.writeLong(0);
-                    return;
-                }
-                output.writeLong(5);
-                output.writeUTF(servingInfo.getDescription());
-                output.writeUTF(servingInfo.getName());
-                output.writeDouble(servingInfo.getDuration());
-                output.writeLong(servingInfo.getInvocations());
-                output.writeLong(servingInfo.getMax());
-                output.writeLong(servingInfo.getMin());
-                output.writeLong(servingInfo.getSince());
-            }
-            catch (Throwable t){
-                System.out.println("Error Serializing servingInfo");
-                t.printStackTrace();
-            }
-        }
 
         @Override public void close() {}
     }
@@ -134,11 +94,11 @@ public class ModelStateSerde implements Serde<StoreState> {
             ByteArrayInputStream bis = new ByteArrayInputStream(data);
             DataInputStream input = new DataInputStream(bis);
 
-            Model currentModel = readModel(input);
-            Model newModel = readModel(input);
+            Model currentModel = DataConverter.readModel(input).orElse(null);
+            Model newModel = DataConverter.readModel(input).orElse(null);
 
-            ModelServingInfo currentServingInfo = readServingInfo(input);
-            ModelServingInfo newServingInfo = readServingInfo(input);
+            ModelServingInfo currentServingInfo = DataConverter.readServingInfo(input).orElse(null);
+            ModelServingInfo newServingInfo = DataConverter.readServingInfo(input).orElse(null);
 
             return new StoreState(currentModel, newModel, currentServingInfo, newServingInfo);
         }
@@ -147,41 +107,5 @@ public class ModelStateSerde implements Serde<StoreState> {
         public void close() {
         }
 
-        private Model readModel(DataInputStream input) {
-            try {
-                int length = (int)input.readLong();
-                if (length == 0)
-                    return null;
-                int type = (int) input.readLong();
-                byte[] bytes = new byte[length];
-                input.read(bytes);
-                ModelFactory factory = factories.get(type);
-                return factory.restore(bytes);
-            } catch (Throwable t) {
-                System.out.println("Error Deserializing model");
-                t.printStackTrace();
-                return null;
-            }
-        }
-
-        private ModelServingInfo readServingInfo(DataInputStream input) {
-            try {
-                long length = input.readLong();
-                if (length == 0)
-                    return null;
-                String descriprtion = input.readUTF();
-                String name = input.readUTF();
-                double duration = input.readDouble();
-                long invocations = input.readLong();
-                long max  = input.readLong();
-                long min = input.readLong();
-                long since = input.readLong();
-                return new ModelServingInfo(name, descriprtion, since, invocations, duration, min, max);
-            } catch (Throwable t) {
-                System.out.println("Error Deserializing serving info");
-                t.printStackTrace();
-                return null;
-            }
-        }
-    }
+   }
 }
