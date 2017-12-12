@@ -77,6 +77,8 @@ public class ModelStage extends AbstractGraphStageWithMaterializedValue<ModelSta
                             System.out.println("No model available - skipping");
                             push(scoringResultOut, Optional.empty());
                         }
+                        pull(dataRecordIn);
+
                     }
                 });
                 setHandler(scoringResultOut, new AbstractOutHandler() {
