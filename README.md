@@ -30,7 +30,7 @@ SBT is used to build the code. We recommend using [IntelliJ IDEA](https://www.je
 * `akkaserver` - Akka Streams implementation of model serving (using a custom stage)
 * `akkaserverpersistent` - Akka Streams implementation of model serving (using a router and actors)
 * `client` - Data and model loader used to run either the Akka Streams or Kafka Streams application. This process has to be started first to ensure that the Kafka embedded server is running.
-* `configuration` - Shared configurations and InfluxDB support (see prerequisites). DeanW - you don't mention InfluxDB in the prereqs.
+* `configuration` - Shared configurations.
 * `model` - Implementation of both Tensorflow and PMML models.
 * `protobufs` - Shared models in protobuf format.
 * `naiveserver` -  Kafka Streams implementation of model serving using in-memory storage.
