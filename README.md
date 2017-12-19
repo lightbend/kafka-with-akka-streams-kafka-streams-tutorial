@@ -7,7 +7,7 @@ _Boris Lublinsky and Dean Wampler, Lightbend_
 
 This tutorial provides an introduction to streaming data applications using Kafka with Akka Streams and Kafka Streams. Hence, the tutorial helps you compare and contrast these streaming libraries for your own use.
 
-We describe how to build and run the applications. Then we discuss their designs.
+We describe first describe how to build and run the applications. Then we will discuss their designs.
 
 # Prerequisites
 
@@ -18,8 +18,8 @@ They use 2 queues:
 * `models_data` - queue used for sending data
 * `models_models` - queue used for sending models
 
-The model and data "provider" applications we'll use will check if their corresponding queues exist. Run them
-first if you are not sure if the queues already exist.
+The model and data "provider" applications we'll use will create an embedded Kafka server and required queues, 
+as a result it has to be started before running any of the implementation.
 
 # Building the Code
 
@@ -27,8 +27,8 @@ SBT is used to build the code. We recommend using [IntelliJ IDEA](https://www.je
 
 * `data` - some data files for running the applications
 * `images` - diagrams used for this document
-* `akkaserverpersistent` - Akka Streams implementation of model serving (using a router and actors)
 * `akkaserver` - Akka Streams implementation of model serving (using a custom stage)
+* `akkaserverpersistent` - Akka Streams implementation of model serving (using a router and actors)
 * `client` - Data and model loader used to run either the Akka Streams or Kafka Streams application. This process has to be started first to ensure that the Kafka embedded server is running.
 * `configuration` - Shared configurations and InfluxDB support (see prerequisites). DeanW - you don't mention InfluxDB in the prereqs.
 * `model` - Implementation of both Tensorflow and PMML models.
@@ -53,22 +53,38 @@ This project contains many executables:
 * `standardstorekafkaserver`- Kafka Streams implementation of model serving using a key/value store (both Scala and Java)
 * `customstorekafkaserver` - Kafka Streams implementation of model serving using a custom store (both Scala and Java)
 * `dataprovider` - Data and model publisher. This executable contains an embedded Kafka server and has to be started
-first to ensure that Kafka is running and the necessary topics are created.
+dataprovider application has always to be start first to ensure that embedded Kafka is running and the necessary topics are created.
 
-Each application can run either locally (on user's machine) or on a server.
+## Running applications
 
-## Running locally
-
-Running locally can be done either using SBT or IntelliJ:
-
-DeanW - what apps do you actually run and when?? Not all of them at once, right?
-
-Once running, to query the `akkaserver` state, connect your browser to `http://localhost:5500/stats` (when running locally) to get statistics of the current execution. Currently `akkaserver` does not aggregate statistics across servers. When running in a cluster, each server must to be queried (with the same port) individually.
-
-To query the `kafkaserver` state, connect your browser to `http://localhost:8888`. The page contains several URLs:
-
-* `http://localhost:8888/state/instances` returns the list of instances containing a store. The naive implementation does not support this feature.
-* `http://localhost:8888/state/value` returns the current state of the model being served.
+Running applications can be done either using SBT or IntelliJ
+The application that should always be running first is DataProvider - `com.lightbend.kafka.client.DataProvider`
+Once this application is running, the following can be started (one at a time)
+* DataReader - `com.lightbend.kafka.client.DataReader` - verifies that messages are published correctly.
+* Akka Server - `com.lightbend.modelServer.modelServer.AkkaModelServer` for Scala version and `com.lightbend.java.modelserver.modelserver.AkkaModelServer` for a java version.
+Both implementations provide exactly the same functionality. Once either one of them is running, you can go to 
+`localhost:5500/state` to obtain the current state of execution
+* Akka Server Persistent - `com.lightbend.modelserver.actor.modelserver.AkkaModelServer` for Scala version and `com.lightbend.java.modelserver.actor.modelServer.AkkaModelServer` for a java version.
+Both implementations provide exactly the same functionality. Once either one of them is running, you can get more information about current execution
+by going to `localhost:5500/models` to obtain information about currently used models 
+and to `localhost:5500/state/"model"` to obtain the current state of execution for a given model.
+* Naive Kafka Streams (naive server) - `com.lightbend.naive.modelserver.scala.AkkaModelServer` for Scala version and `com.lightbend.naive.modelserver.AkkaModelServer` for a java version.
+Both implementations provide exactly the same functionality. Once either one of them is running, you can get more information about current execution
+by going to `localhost:8888/state/value` to obtain the current state of execution for a given model.
+* Kafka Streams with Standard Store (server standard store). This project has 2 Scala implementations
+`com.lightbend.standard.modelserver.scala.AkkaModelServer` and `com.lightbend.standard.modelserver.scala.ModelServerFluent`. These two implementations are here
+to demonstrate the difference between using existing Java APIs from Scala (1) and usage of the fluent scala APIs (2)
+Java version of the code is at com.lightbend.standard.modelserver.AkkaModelServer.
+All three implementations provide exactly the same functionality. Once either one of them is running, you can get more information about current execution
+by going to `localhost:8888/state/instance` to get the list of currently deployed instances and 
+to `localhost:8888/state/instance` to obtain the current state of execution for a given model.
+* Kafka Streams with Custom Store (server). This project has 2 Scala implementations
+`com.lightbend.custom.scala.AkkaModelServer` and `com.lightbend.custom.scala.ModelServerFluent`. These two implementations are here
+to demonstrate the difference between using existing Java APIs from Scala (1) and usage of the fluent scala APIs (2)
+Java version of the code is at `com.lightbend.custom.modelserver.AkkaModelServer`.
+All three implementations provide exactly the same functionality. Once either one of them is running, you can get more information about current execution
+by going to `localhost:8888/state/instance` to get the list of currently deployed instances and 
+to `localhost:8888/state/instance` to obtain the current state of execution for a given model.
 
 # Overall Architecture
 
