@@ -7,7 +7,7 @@ _Boris Lublinsky and Dean Wampler, Lightbend_
 
 This tutorial provides an introduction to streaming data applications using Kafka with Akka Streams and Kafka Streams. Hence, the tutorial helps you compare and contrast these streaming libraries for your own use.
 
-We describe first describe how to build and run the applications. Then we will discuss their designs.
+We will first describe how to build and run the applications. Then we will discuss their designs.
 
 # Prerequisites
 
