@@ -84,17 +84,17 @@ object DataProvider {
         sender.writeValue(MODELS_TOPIC, bos.toByteArray)
         println(s"Published Model ${pRecord.description}")
         pause(modelTimeInterval)
-        // TF
-        val tByteArray = Files.readAllBytes(Paths.get(tensorfile))
-        val tRecord = ModelDescriptor(name = tensorfile.dropRight(3),
+      })
+      // TF
+      val tByteArray = Files.readAllBytes(Paths.get(tensorfile))
+      val tRecord = ModelDescriptor(name = tensorfile.dropRight(3),
           description = "generated from TensorFlow", modeltype = ModelDescriptor.ModelType.TENSORFLOW,
           dataType = "wine").withData(ByteString.copyFrom(tByteArray))
-        bos.reset()
-        tRecord.writeTo(bos)
-        sender.writeValue(MODELS_TOPIC, bos.toByteArray)
-        println(s"Published Model ${pRecord.description}")
-        pause(modelTimeInterval)
-      })
+      bos.reset()
+      tRecord.writeTo(bos)
+      sender.writeValue(MODELS_TOPIC, bos.toByteArray)
+      println(s"Published Model ${tRecord.description}")
+      pause(modelTimeInterval)
     }
   }
 
