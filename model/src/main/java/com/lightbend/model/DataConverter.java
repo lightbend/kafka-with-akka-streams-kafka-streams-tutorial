@@ -101,7 +101,7 @@ public class DataConverter {
         try {
             long length = input.readLong();
             if (length == 0)
-                return null;
+                return Optional.empty();
             String descriprtion = input.readUTF();
             String name = input.readUTF();
             double duration = input.readDouble();

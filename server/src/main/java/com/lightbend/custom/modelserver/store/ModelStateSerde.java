@@ -89,17 +89,19 @@ public class ModelStateSerde implements Serde<StoreState> {
         public StoreState deserialize(String topic, byte[] data) {
 
 //            System.out.println("Deserializing Store !!");
+            if(data != null) {
+                ByteArrayInputStream bis = new ByteArrayInputStream(data);
+                DataInputStream input = new DataInputStream(bis);
 
-            ByteArrayInputStream bis = new ByteArrayInputStream(data);
-            DataInputStream input = new DataInputStream(bis);
+                Model currentModel = DataConverter.readModel(input).orElse(null);
+                Model newModel = DataConverter.readModel(input).orElse(null);
 
-            Model currentModel = DataConverter.readModel(input).orElse(null);
-            Model newModel = DataConverter.readModel(input).orElse(null);
+                ModelServingInfo currentServingInfo = DataConverter.readServingInfo(input).orElse(null);
+                ModelServingInfo newServingInfo = DataConverter.readServingInfo(input).orElse(null);
 
-            ModelServingInfo currentServingInfo = DataConverter.readServingInfo(input).orElse(null);
-            ModelServingInfo newServingInfo = DataConverter.readServingInfo(input).orElse(null);
-
-            return new StoreState(currentModel, newModel, currentServingInfo, newServingInfo);
+                return new StoreState(currentModel, newModel, currentServingInfo, newServingInfo);
+            }
+            else return new StoreState();
         }
 
         @Override

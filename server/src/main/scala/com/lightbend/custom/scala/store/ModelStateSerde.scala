@@ -35,9 +35,12 @@ class ModelStateDeserializer extends Deserializer[StoreState] {
   override def configure(configs: util.Map[String, _], isKey: Boolean): Unit = {}
 
   override def deserialize(topic: String, data: Array[Byte]): StoreState = {
-    val input = new DataInputStream(new ByteArrayInputStream(data))
-    new StoreState(ModelWithDescriptor.readModel(input), ModelWithDescriptor.readModel(input),
-      ModelToServeStats.readServingInfo(input), ModelToServeStats.readServingInfo(input))
+    if(data != null) {
+      val input = new DataInputStream(new ByteArrayInputStream(data))
+      new StoreState(ModelWithDescriptor.readModel(input), ModelWithDescriptor.readModel(input),
+        ModelToServeStats.readServingInfo(input), ModelToServeStats.readServingInfo(input))
+    }
+    else new StoreState()
   }
 
   override def close(): Unit = {}
