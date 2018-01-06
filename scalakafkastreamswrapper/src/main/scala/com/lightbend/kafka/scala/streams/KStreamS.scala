@@ -1,13 +1,20 @@
+/**
+ * Copyright (C) 2018 Lightbend Inc. <https://www.lightbend.com>
+ */
+
 package com.lightbend.kafka.scala.streams
 
 import org.apache.kafka.streams.KeyValue
 import org.apache.kafka.streams.kstream._
 import org.apache.kafka.streams.processor.{Processor, ProcessorContext, ProcessorSupplier}
-import ImplicitConversions._
 import FunctionConversions._
+import ImplicitConversions._
 
 import scala.collection.JavaConverters._
 
+/**
+ * Wraps the Java class KStream and delegates method calls to the underlying Java object.
+ */ 
 class KStreamS[K, V](val inner: KStream[K, V]) {
 
   def filter(predicate: (K, V) => Boolean): KStreamS[K, V] = {

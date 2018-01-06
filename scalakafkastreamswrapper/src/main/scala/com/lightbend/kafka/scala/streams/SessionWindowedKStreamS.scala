@@ -1,12 +1,18 @@
+/**
+ * Copyright (C) 2018 Lightbend Inc. <https://www.lightbend.com>
+ */
+
 package com.lightbend.kafka.scala.streams
 
+import org.apache.kafka.common.utils.Bytes
 import org.apache.kafka.streams.kstream._
 import org.apache.kafka.streams.state.SessionStore
-import org.apache.kafka.common.utils.Bytes
 import FunctionConversions._
-
 import ImplicitConversions._
 
+/**
+ * Wraps the Java class SessionWindowedKStream and delegates method calls to the underlying Java object.
+ */ 
 class SessionWindowedKStreamS[K, V](val inner: SessionWindowedKStream[K, V]) {
 
   def aggregate[VR](initializer: () => VR,

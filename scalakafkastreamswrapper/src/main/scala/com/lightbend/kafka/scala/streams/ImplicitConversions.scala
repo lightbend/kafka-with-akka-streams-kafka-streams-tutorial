@@ -1,10 +1,18 @@
+/**
+ * Copyright (C) 2018 Lightbend Inc. <https://www.lightbend.com>
+ */
+
 package com.lightbend.kafka.scala.streams
 
-import org.apache.kafka.streams.kstream._
 import org.apache.kafka.streams.KeyValue
+import org.apache.kafka.streams.kstream._
 
 import scala.language.implicitConversions
 
+/**
+ * Implicit conversions between the Scala wrapper objects and the underlying Java
+ * objects.
+ */ 
 object ImplicitConversions {
 
   implicit def wrapKStream[K, V](inner: KStream[K, V]): KStreamS[K, V] =

@@ -1,12 +1,19 @@
+/**
+ * Copyright (C) 2018 Lightbend Inc. <https://www.lightbend.com>
+ */
+
 package com.lightbend.kafka.scala.streams
 
+import org.apache.kafka.common.serialization.Serde
+import org.apache.kafka.common.utils.Bytes
 import org.apache.kafka.streams.kstream._
 import org.apache.kafka.streams.state.WindowStore
-import org.apache.kafka.common.utils.Bytes
-import org.apache.kafka.common.serialization.Serde
-import ImplicitConversions._
 import FunctionConversions._
+import ImplicitConversions._
 
+/**
+ * Wraps the Java class TimeWindowedKStream and delegates method calls to the underlying Java object.
+ */ 
 class TimeWindowedKStreamS[K, V](val inner: TimeWindowedKStream[K, V]) {
 
   def aggregate[VR](initializer: () => VR,

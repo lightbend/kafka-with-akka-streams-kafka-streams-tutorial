@@ -1,11 +1,18 @@
+/**
+ * Copyright (C) 2018 Lightbend Inc. <https://www.lightbend.com>
+ */
+
 package com.lightbend.kafka.scala.streams
 
-import ImplicitConversions._
+import org.apache.kafka.common.utils.Bytes
 import org.apache.kafka.streams.kstream._
 import org.apache.kafka.streams.state.KeyValueStore
-import org.apache.kafka.common.utils.Bytes
 import FunctionConversions._
+import ImplicitConversions._
 
+/**
+ * Wraps the Java class KGroupedTable and delegates method calls to the underlying Java object.
+ */ 
 class KGroupedTableS[K, V](inner: KGroupedTable[K, V]) {
 
   type ByteArrayKVStore = KeyValueStore[Bytes, Array[Byte]]

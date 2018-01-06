@@ -1,11 +1,18 @@
+/**
+ * Copyright (C) 2018 Lightbend Inc. <https://www.lightbend.com>
+ */
+
 package com.lightbend.kafka.scala.streams
 
+import org.apache.kafka.common.utils.Bytes
 import org.apache.kafka.streams.kstream._
 import org.apache.kafka.streams.state.KeyValueStore
-import org.apache.kafka.common.utils.Bytes
-import ImplicitConversions._
 import FunctionConversions._
+import ImplicitConversions._
 
+/**
+ * Wraps the Java class KTable and delegates method calls to the underlying Java object.
+ */ 
 class KTableS[K, V](val inner: KTable[K, V]) {
 
   def filter(predicate: (K, V) => Boolean): KTableS[K, V] = {

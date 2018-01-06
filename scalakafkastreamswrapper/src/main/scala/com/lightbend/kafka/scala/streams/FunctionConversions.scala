@@ -1,8 +1,17 @@
+/**
+ * Copyright (C) 2018 Lightbend Inc. <https://www.lightbend.com>
+ */
+
 package com.lightbend.kafka.scala.streams
 
 import org.apache.kafka.streams.KeyValue
 import org.apache.kafka.streams.kstream._
 
+/**
+ * Implicit classes that offer conversions of Scala function literals to 
+ * SAM (Single Abstract Method) objects in Java. These make the Scala APIs much
+ * more expressive, with less boilerplate and more succinct.
+ */ 
 object FunctionConversions {
 
   implicit class PredicateFromFunction[K, V](val test: (K, V) => Boolean) extends AnyVal {

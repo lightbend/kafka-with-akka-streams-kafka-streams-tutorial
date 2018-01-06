@@ -1,16 +1,23 @@
+/**
+ * Copyright (C) 2018 Lightbend Inc. <https://www.lightbend.com>
+ */
+
 package com.lightbend.kafka.scala.streams
 
 import java.util.regex.Pattern
 
-import ImplicitConversions._
-import org.apache.kafka.streams.kstream.{ GlobalKTable, Materialized }
-import org.apache.kafka.streams.processor.{ProcessorSupplier, StateStore}
-import org.apache.kafka.streams.state.{ StoreBuilder, KeyValueStore }
-import org.apache.kafka.streams.{Consumed, StreamsBuilder, Topology}
 import org.apache.kafka.common.utils.Bytes
+import org.apache.kafka.streams.kstream.{GlobalKTable, Materialized}
+import org.apache.kafka.streams.processor.{ProcessorSupplier, StateStore}
+import org.apache.kafka.streams.state.{KeyValueStore, StoreBuilder}
+import org.apache.kafka.streams.{Consumed, StreamsBuilder, Topology}
+import ImplicitConversions._
 
 import scala.collection.JavaConverters._
 
+/**
+ * Wraps the Java class StreamsBuilder and delegates method calls to the underlying Java object.
+ */ 
 class StreamsBuilderS {
 
   val inner = new StreamsBuilder
