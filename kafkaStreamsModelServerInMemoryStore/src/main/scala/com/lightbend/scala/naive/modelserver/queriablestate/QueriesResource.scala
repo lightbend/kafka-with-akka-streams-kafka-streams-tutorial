@@ -1,9 +1,9 @@
-package com.lightbend.naive.modelserver.scala.queriablestate
+package com.lightbend.scala.naive.modelserver.queriablestate
 
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
 import com.lightbend.modelServer.model.ModelToServeStats
-import com.lightbend.naive.modelserver.scala.store.StoreState
+import com.lightbend.scala.naive.modelserver.store.StoreState
 import de.heikoseeberger.akkahttpjackson.JacksonSupport
 
 object QueriesResource extends JacksonSupport {

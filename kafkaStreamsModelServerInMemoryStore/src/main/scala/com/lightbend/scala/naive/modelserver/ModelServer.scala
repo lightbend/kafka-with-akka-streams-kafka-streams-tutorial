@@ -1,4 +1,4 @@
-package com.lightbend.naive.modelserver.scala
+package com.lightbend.scala.naive.modelserver
 
 import java.util.Properties
 
@@ -11,7 +11,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig, Topology}
 import akka.http.scaladsl.Http
-import com.lightbend.naive.modelserver.scala.queriablestate.QueriesResource
+import com.lightbend.scala.naive.modelserver.queriablestate.QueriesResource
 
 import scala.concurrent.duration._
 

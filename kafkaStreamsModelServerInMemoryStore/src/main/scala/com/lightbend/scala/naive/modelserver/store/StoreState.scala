@@ -1,4 +1,4 @@
-package com.lightbend.naive.modelserver.scala.store
+package com.lightbend.scala.naive.modelserver.store
 
 import com.lightbend.modelServer.model._
 

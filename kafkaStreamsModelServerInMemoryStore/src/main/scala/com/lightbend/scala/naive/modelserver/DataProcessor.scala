@@ -1,7 +1,7 @@
-package com.lightbend.naive.modelserver.scala
+package com.lightbend.scala.naive.modelserver
 
 import com.lightbend.modelServer.model.DataRecord
-import com.lightbend.naive.modelserver.scala.store.StoreState
+import com.lightbend.scala.naive.modelserver.store.StoreState
 import org.apache.kafka.streams.processor.{AbstractProcessor, ProcessorContext, ProcessorSupplier}
 
 import scala.util.Success

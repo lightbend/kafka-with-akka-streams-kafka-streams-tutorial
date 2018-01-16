@@ -1,4 +1,4 @@
-package com.lightbend.naive.modelserver.store;
+package com.lightbend.java.naive.modelserver.store;
 
 import com.lightbend.model.Model;
 import com.lightbend.model.ModelServingInfo;

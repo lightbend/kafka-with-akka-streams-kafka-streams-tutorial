@@ -1,4 +1,4 @@
-package com.lightbend.naive.modelserver.queriablestate;
+package com.lightbend.java.naive.modelserver.queriablestate;
 
 // https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/WordCountInteractiveQueriesRestService.java
 
