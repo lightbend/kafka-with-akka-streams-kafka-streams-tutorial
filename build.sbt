@@ -8,7 +8,7 @@ javaOptions in ThisBuild := Seq("Xlint:unchecked")
 
 lazy val protobufs = (project in file("./protobufs"))
     .settings(
-      PB.targets in Compile := Seq( 
+      PB.targets in Compile := Seq(
         PB.gens.java -> (sourceManaged in Compile).value,
         scalapb.gen(javaConversions=true) -> (sourceManaged in Compile).value
       )
@@ -51,7 +51,7 @@ lazy val akkaServer = (project in file("./akkaserver"))
     ++ Dependencies.modelsDependencies)
   .dependsOn(model, configuration)
 
-lazy val akkaServerpersistent = (project in file("./akkaserverpersistent"))
+lazy val akkaServerPersistent = (project in file("./akkaserverpersistent"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.9.1",
     dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
   )
@@ -68,5 +68,5 @@ lazy val scalakafkastreamswrapper = (project in file("./scalakafkastreamswrapper
   .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
 
 
-lazy val akkakafkatutorial = (project in file(".")).
-  aggregate(protobufs, client, model, configuration, server, naiveserver, serverstandardstore, akkaServer, akkaServerpersistent, scalakafkastreamswrapper)
+lazy val akkaKafkaTutorial = (project in file(".")).
+  aggregate(protobufs, client, model, configuration, server, naiveserver, serverstandardstore, akkaServer, akkaServerPersistent, scalakafkastreamswrapper)
