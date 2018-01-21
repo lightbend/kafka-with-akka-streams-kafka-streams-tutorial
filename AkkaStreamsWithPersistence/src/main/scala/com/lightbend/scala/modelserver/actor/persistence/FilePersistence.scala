@@ -1,4 +1,4 @@
-package com.lightbend.modelserver.actor.persistence
+package com.lightbend.scala.modelserver.actor.persistence
 
 
 import java.io.{DataInputStream, DataOutputStream, File, FileInputStream, FileOutputStream}

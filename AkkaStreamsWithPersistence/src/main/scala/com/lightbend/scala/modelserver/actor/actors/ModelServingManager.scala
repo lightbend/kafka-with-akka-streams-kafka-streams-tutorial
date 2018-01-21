@@ -1,4 +1,4 @@
-package com.lightbend.modelserver.actor.actors
+package com.lightbend.scala.modelserver.actor.actors
 
 import akka.actor.{Actor, ActorRef, Props}
 import com.lightbend.model.winerecord.WineRecord

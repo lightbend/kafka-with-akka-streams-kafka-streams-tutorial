@@ -1,4 +1,4 @@
-package com.lightbend.modelServer.modelServer
+package com.lightbend.scala.modelServer.modelServer
 
 import com.lightbend.modelServer.model.ModelToServeStats
 

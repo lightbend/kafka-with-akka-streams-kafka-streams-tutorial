@@ -1,4 +1,4 @@
-package com.lightbend.modelserver.actor.modelserver
+package com.lightbend.scala.modelserver.actor.modelserver
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.http.scaladsl.Http

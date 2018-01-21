@@ -1,4 +1,4 @@
-package com.lightbend.modelServer.modelServer
+package com.lightbend.scala.modelServer.modelServer
 
 import akka.stream._
 import akka.stream.stage.{GraphStageLogicWithLogging, _}

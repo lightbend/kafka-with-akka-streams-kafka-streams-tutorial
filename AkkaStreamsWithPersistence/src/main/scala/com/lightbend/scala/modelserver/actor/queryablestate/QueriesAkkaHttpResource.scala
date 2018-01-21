@@ -1,4 +1,4 @@
-package com.lightbend.modelserver.actor.queryablestate
+package com.lightbend.scala.modelserver.actor.queryablestate
 
 import akka.actor.ActorRef
 import akka.http.scaladsl.server.Directives._

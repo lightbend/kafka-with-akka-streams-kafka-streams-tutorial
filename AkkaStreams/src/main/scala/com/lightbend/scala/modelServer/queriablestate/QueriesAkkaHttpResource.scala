@@ -1,4 +1,4 @@
-package com.lightbend.modelServer.queriablestate
+package com.lightbend.scala.modelServer.queriablestate
 
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
