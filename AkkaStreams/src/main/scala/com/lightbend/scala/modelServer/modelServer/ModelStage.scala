@@ -2,8 +2,8 @@ package com.lightbend.scala.modelServer.modelServer
 
 import akka.stream._
 import akka.stream.stage.{GraphStageLogicWithLogging, _}
-import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
+import com.lightbend.scala.model.winerecord.WineRecord
+import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
 
 
 class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, ReadableModelStateStore] {

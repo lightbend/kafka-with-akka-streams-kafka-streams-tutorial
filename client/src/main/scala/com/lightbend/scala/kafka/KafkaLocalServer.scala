@@ -1,4 +1,4 @@
-package com.lightbend.kafka
+package com.lightbend.scala.kafka
 
 import java.io.File
 import java.io.IOException

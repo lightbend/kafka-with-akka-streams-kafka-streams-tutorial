@@ -1,9 +1,9 @@
 package com.lightbend.scala.modelserver.actor.actors
 
 import akka.actor.{Actor, Props}
-import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
-import com.lightbend.modelserver.actor.persistence.FilePersistence
+import com.lightbend.scala.model.winerecord.WineRecord
+import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
+import com.lightbend.scala.modelserver.actor.persistence.FilePersistence
 
 // Workhorse - doing model serving for a given data type
 

@@ -7,10 +7,10 @@ import akka.kafka.scaladsl.Consumer
 import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters._
-import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
-import com.lightbend.modelserver.actor.actors.ModelServingManager
-import com.lightbend.modelserver.actor.queryablestate.QueriesAkkaHttpResource
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters._
+import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
+import com.lightbend.scala.modelserver.actor.actors.ModelServingManager
+import com.lightbend.scala.modelserver.actor.queryablestate.QueriesAkkaHttpResource
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import akka.pattern.ask

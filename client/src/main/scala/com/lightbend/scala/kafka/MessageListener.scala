@@ -1,4 +1,4 @@
-package com.lightbend.kafka
+package com.lightbend.scala.kafka
 
 import org.apache.kafka.clients.consumer.{ConsumerConfig, KafkaConsumer}
 import org.apache.kafka.common.serialization.ByteArrayDeserializer

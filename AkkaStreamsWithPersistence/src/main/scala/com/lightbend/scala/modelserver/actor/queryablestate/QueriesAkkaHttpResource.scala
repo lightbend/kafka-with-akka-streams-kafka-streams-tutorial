@@ -6,8 +6,8 @@ import akka.http.scaladsl.server.Route
 import akka.util.Timeout
 
 import scala.concurrent.duration._
-import com.lightbend.modelServer.model.ModelToServeStats
-import com.lightbend.modelserver.actor.actors.{GetModels, GetState}
+import com.lightbend.scala.modelServer.model.ModelToServeStats
+import com.lightbend.scala.modelserver.actor.actors.{GetModels, GetState}
 import de.heikoseeberger.akkahttpjackson.JacksonSupport
 import akka.pattern.ask
 

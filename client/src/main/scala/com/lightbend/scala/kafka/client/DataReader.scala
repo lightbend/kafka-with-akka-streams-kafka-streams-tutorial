@@ -1,7 +1,7 @@
-package com.lightbend.kafka.client
+package com.lightbend.scala.kafka.client
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters._
-import com.lightbend.kafka.MessageListener
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters._
+import com.lightbend.scala.kafka.MessageListener
 
 object DataReader {
 

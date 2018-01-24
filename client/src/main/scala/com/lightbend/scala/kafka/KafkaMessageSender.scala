@@ -1,4 +1,4 @@
-package com.lightbend.kafka
+package com.lightbend.scala.kafka
 
 /**
  * Created by boris on 5/10/17.

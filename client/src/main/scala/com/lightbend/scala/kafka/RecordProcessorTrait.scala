@@ -1,4 +1,4 @@
-package com.lightbend.kafka
+package com.lightbend.scala.kafka
 
 import org.apache.kafka.clients.consumer.ConsumerRecord
 

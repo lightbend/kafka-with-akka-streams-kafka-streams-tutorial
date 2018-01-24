@@ -3,7 +3,7 @@ package com.lightbend.scala.modelserver.actor.persistence
 
 import java.io.{DataInputStream, DataOutputStream, File, FileInputStream, FileOutputStream}
 
-import com.lightbend.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
+import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
 
 object FilePersistence {
 

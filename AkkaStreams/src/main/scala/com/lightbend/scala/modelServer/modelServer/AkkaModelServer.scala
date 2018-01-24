@@ -9,13 +9,13 @@ import akka.stream.scaladsl.{GraphDSL, Sink, Source}
 import akka.util.Timeout
 
 import scala.concurrent.duration._
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters._
-import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters._
+import com.lightbend.scala.model.winerecord.WineRecord
+import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
+import com.lightbend.scala.modelServer.queriablestate.QueriesAkkaHttpResource
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import akka.http.scaladsl.Http
-import com.lightbend.modelServer.queriablestate.QueriesAkkaHttpResource
 
 /**
   * Created by boris on 7/21/17.
