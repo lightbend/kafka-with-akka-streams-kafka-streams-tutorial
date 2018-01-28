@@ -5,9 +5,9 @@ import java.nio.file.{Files, Paths}
 
 import com.google.protobuf.ByteString
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters._
+import com.lightbend.model.modeldescriptor.ModelDescriptor
+import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.kafka.{KafkaLocalServer, MessageSender}
-import com.lightbend.scala.model.modeldescriptor.ModelDescriptor
-import com.lightbend.scala.model.winerecord.WineRecord
 
 import scala.concurrent.Future
 import scala.io.Source

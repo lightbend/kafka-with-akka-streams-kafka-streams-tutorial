@@ -1,4 +1,4 @@
-package com.lightbend.modelServer.model
+package com.lightbend.scala.modelServer.model
 
 /**
  * Created by boris on 5/9/17.

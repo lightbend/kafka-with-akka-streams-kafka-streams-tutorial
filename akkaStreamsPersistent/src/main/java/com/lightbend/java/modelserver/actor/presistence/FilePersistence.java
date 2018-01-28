@@ -1,8 +1,8 @@
 package com.lightbend.java.modelserver.actor.presistence;
 
-import com.lightbend.model.DataConverter;
-import com.lightbend.model.Model;
-import com.lightbend.model.ModelServingInfo;
+import com.lightbend.java.model.DataConverter;
+import com.lightbend.java.model.Model;
+import com.lightbend.java.model.ModelServingInfo;
 
 import java.io.*;
 import java.util.Optional;

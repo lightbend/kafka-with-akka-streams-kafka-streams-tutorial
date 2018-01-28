@@ -4,8 +4,8 @@ import javax.ws.rs.NotFoundException
 
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Directives._
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters
-import com.lightbend.standard.modelserver.scala.store.StoreState
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.scala.standard.modelserver.scala.store.StoreState
 import de.heikoseeberger.akkahttpjackson.JacksonSupport
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.state.QueryableStoreTypes

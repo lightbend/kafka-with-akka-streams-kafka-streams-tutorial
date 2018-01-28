@@ -2,9 +2,9 @@ package com.lightbend.scala.standard.modelserver.scala
 
 import java.util.Objects
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters
-import com.lightbend.modelServer.model.{ModelToServeStats, ModelWithDescriptor}
-import com.lightbend.standard.modelserver.scala.store.StoreState
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.scala.modelServer.model.{ModelToServeStats, ModelWithDescriptor}
+import com.lightbend.scala.standard.modelserver.scala.store.StoreState
 import org.apache.kafka.streams.processor.{AbstractProcessor, ProcessorContext, ProcessorSupplier}
 import org.apache.kafka.streams.state.KeyValueStore
 

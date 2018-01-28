@@ -9,8 +9,8 @@ import akka.stream.scaladsl.{GraphDSL, Sink, Source}
 import akka.util.Timeout
 
 import scala.concurrent.duration._
+import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters._
-import com.lightbend.scala.model.winerecord.WineRecord
 import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
 import com.lightbend.scala.modelServer.queriablestate.QueriesAkkaHttpResource
 import org.apache.kafka.clients.consumer.ConsumerConfig
@@ -81,7 +81,7 @@ object AkkaModelServer {
 
   def startRest(service: ReadableModelStateStore): Unit = {
 
-    implicit val timeout = Timeout(10 seconds)
+    implicit val timeout = Timeout(10.seconds)
     val host = "localhost"//InetAddress.getLocalHost.getHostAddress
     val port = 5500
     val routes: Route = QueriesAkkaHttpResource.storeRoutes(service)

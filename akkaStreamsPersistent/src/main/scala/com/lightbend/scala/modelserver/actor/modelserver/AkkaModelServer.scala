@@ -26,7 +26,7 @@ object AkkaModelServer {
   implicit val system = ActorSystem("ModelServing")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
-  implicit val askTimeout = Timeout(30 seconds)
+  implicit val askTimeout = Timeout(30.seconds)
 
   println(s"Using kafka brokers at ${KAFKA_BROKER} ")
 
@@ -67,7 +67,7 @@ object AkkaModelServer {
 
   def startRest(modelserver: ActorRef): Unit = {
 
-    implicit val timeout = Timeout(10 seconds)
+    implicit val timeout = Timeout(10.seconds)
     val host = "127.0.0.1"
     val port = 5500
     val routes: Route = QueriesAkkaHttpResource.storeRoutes(modelserver)

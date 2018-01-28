@@ -1,8 +1,8 @@
 package com.lightbend.java.custom.modelserver.store;
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
-import com.lightbend.model.Model;
-import com.lightbend.model.ModelServingInfo;
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
+import com.lightbend.java.model.Model;
+import com.lightbend.java.model.ModelServingInfo;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.StateRestoreCallback;

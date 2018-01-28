@@ -2,9 +2,9 @@ package com.lightbend.scala.custom
 
 import java.util.Objects
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters
-import com.lightbend.modelServer.model.{ModelToServeStats, ModelWithDescriptor}
 import org.apache.kafka.streams.processor.{AbstractProcessor, ProcessorContext, ProcessorSupplier}
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.scala.modelServer.model.{ModelToServeStats, ModelWithDescriptor}
 import com.lightbend.scala.custom.store.ModelStateStore
 
 import scala.util.Try

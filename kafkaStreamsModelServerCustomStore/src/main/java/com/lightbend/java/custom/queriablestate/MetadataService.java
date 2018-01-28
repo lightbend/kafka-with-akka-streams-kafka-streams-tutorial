@@ -1,6 +1,6 @@
 package com.lightbend.java.custom.queriablestate;
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.StreamsMetadata;

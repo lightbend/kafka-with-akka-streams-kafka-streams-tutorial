@@ -1,4 +1,4 @@
-package com.lightbend.modelServer.model
+package com.lightbend.scala.modelServer.model
 
 import com.lightbend.model.winerecord.WineRecord
 

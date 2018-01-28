@@ -3,7 +3,7 @@ package com.lightbend.scala.custom.queriablestate
 import java.net.InetAddress
 import java.util
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters
 import com.lightbend.scala.custom.store.HostStoreInfo
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.streams.KafkaStreams

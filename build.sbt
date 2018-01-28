@@ -2,8 +2,9 @@
 import Dependencies._
 
 scalaVersion in ThisBuild := "2.11.8"
+// scalaVersion in ThisBuild := "2.12.4"
 
-scalacOptions in ThisBuild := Seq("-Xexperimental", "-unchecked", "-deprecation")
+scalacOptions in ThisBuild := Seq("-Xexperimental", "-unchecked", "-deprecation", "-feature")
 javaOptions in ThisBuild := Seq("Xlint:unchecked")
 
 lazy val protobufs = (project in file("./protobufs"))
@@ -43,7 +44,7 @@ lazy val kafkaStreamsModelServerCustomStore = (project in file("./kafkaStreamsMo
   .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
   .dependsOn(model, configuration, scalakafkastreamswrapper)
 
-lazy val akkaServer = (project in file("./akkaserver"))
+lazy val akkaStreamsBasic = (project in file("./akkaStreamsBasic"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.9.1",
     dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
   )
@@ -51,7 +52,7 @@ lazy val akkaServer = (project in file("./akkaserver"))
     ++ Dependencies.modelsDependencies)
   .dependsOn(model, configuration)
 
-lazy val akkaServerPersistent = (project in file("./akkaserverpersistent"))
+lazy val akkaStreamsPersistent = (project in file("./akkaStreamsPersistent"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.9.1",
     dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
   )
@@ -73,6 +74,6 @@ lazy val akkaKafkaTutorial = (project in file(".")).
     kafkaStreamsModelServerCustomStore,
     kafkaStreamsModelServerInMemoryStore,
     kafkaStreamsModelServerKVStore,
-    akkaServer,
-    akkaServerPersistent,
+    akkaStreamsBasic,
+    akkaStreamsPersistent,
     scalakafkastreamswrapper)

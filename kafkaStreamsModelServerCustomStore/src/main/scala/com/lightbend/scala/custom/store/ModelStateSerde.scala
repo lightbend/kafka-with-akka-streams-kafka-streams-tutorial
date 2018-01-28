@@ -4,9 +4,10 @@ import java.io.{ByteArrayInputStream, ByteArrayOutputStream, DataInputStream, Da
 import java.util
 
 import com.lightbend.model.modeldescriptor.ModelDescriptor
-import com.lightbend.modelServer.model.PMML.PMMLModel
-import com.lightbend.modelServer.model._
-import com.lightbend.modelServer.model.tensorflow.TensorFlowModel
+import com.lightbend.scala.modelServer.model.ModelWithDescriptor
+import com.lightbend.scala.modelServer.model.ModelToServeStats
+import com.lightbend.scala.modelServer.model.PMML.PMMLModel
+import com.lightbend.scala.modelServer.model.tensorflow.TensorFlowModel
 import org.apache.kafka.common.serialization.{Deserializer, Serde, Serializer}
 
 class ModelStateSerde extends Serde[StoreState] {

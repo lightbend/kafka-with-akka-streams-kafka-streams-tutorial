@@ -1,4 +1,4 @@
-package com.lightbend.model;
+package com.lightbend.java.model;
 
 import java.io.Serializable;
 

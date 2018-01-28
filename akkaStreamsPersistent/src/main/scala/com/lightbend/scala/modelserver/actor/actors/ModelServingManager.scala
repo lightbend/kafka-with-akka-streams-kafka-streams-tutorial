@@ -1,7 +1,7 @@
 package com.lightbend.scala.modelserver.actor.actors
 
 import akka.actor.{Actor, ActorRef, Props}
-import com.lightbend.scala.model.winerecord.WineRecord
+import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.modelServer.model.{ModelToServeStats, ModelWithDescriptor}
 
 

@@ -3,8 +3,8 @@ package com.lightbend.scala.standard.modelserver.scala.queriablestate
 import java.net.InetAddress
 import java.util
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters
-import com.lightbend.standard.modelserver.scala.store.HostStoreInfo
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.scala.standard.modelserver.scala.store.HostStoreInfo
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.state.{HostInfo, StreamsMetadata}

@@ -1,6 +1,5 @@
 package com.lightbend.java.standard.modelserver.queriablestate;
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.state.HostInfo;
 import org.apache.kafka.streams.state.StreamsMetadata;
@@ -8,6 +7,8 @@ import org.apache.kafka.streams.state.StreamsMetadata;
 import java.net.InetAddress;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
 
 /**
  * Looks up StreamsMetadata from KafkaStreams and converts the results

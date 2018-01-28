@@ -1,10 +1,10 @@
-package com.lightbend.model.tensorflow;
+package com.lightbend.java.model.tensorflow;
 
 /**
  * Created by boris on 5/26/17.
  */
 
-import com.lightbend.model.Model;
+import com.lightbend.java.model.Model;
 import com.lightbend.model.Modeldescriptor;
 import com.lightbend.model.Winerecord;
 import org.tensorflow.Graph;

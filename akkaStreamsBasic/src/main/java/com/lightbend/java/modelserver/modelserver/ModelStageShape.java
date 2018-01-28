@@ -4,8 +4,8 @@ import akka.stream.AbstractShape;
 import akka.stream.Inlet;
 import akka.stream.Outlet;
 import akka.stream.Shape;
-import com.lightbend.model.ModelWithDescriptor;
 import com.lightbend.model.Winerecord;
+import com.lightbend.java.model.ModelWithDescriptor;
 
 import java.util.Arrays;
 import java.util.List;

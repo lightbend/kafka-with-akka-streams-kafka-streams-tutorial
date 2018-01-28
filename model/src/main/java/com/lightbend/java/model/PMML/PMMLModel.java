@@ -1,7 +1,7 @@
-package com.lightbend.model.PMML;
+package com.lightbend.java.model.PMML;
 
 import com.google.protobuf.Descriptors;
-import com.lightbend.model.Model;
+import com.lightbend.java.model.Model;
 import com.lightbend.model.Modeldescriptor;
 import com.lightbend.model.Winerecord;
 import org.dmg.pmml.FieldName;

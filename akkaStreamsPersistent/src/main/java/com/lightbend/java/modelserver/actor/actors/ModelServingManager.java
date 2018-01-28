@@ -5,9 +5,9 @@ import akka.actor.ActorRef;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.google.common.collect.Lists;
-import com.lightbend.model.ModelServingInfo;
-import com.lightbend.model.ModelWithDescriptor;
 import com.lightbend.model.Winerecord;
+import com.lightbend.java.model.ModelServingInfo;
+import com.lightbend.java.model.ModelWithDescriptor;
 import scala.Option;
 
 import java.util.LinkedList;

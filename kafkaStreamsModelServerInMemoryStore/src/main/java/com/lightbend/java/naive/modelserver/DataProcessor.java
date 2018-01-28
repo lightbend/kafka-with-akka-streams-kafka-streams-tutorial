@@ -1,8 +1,8 @@
 package com.lightbend.java.naive.modelserver;
 
-import com.lightbend.model.DataConverter;
 import com.lightbend.model.Winerecord;
-import com.lightbend.model.ModelServingInfo;
+import com.lightbend.java.model.ModelServingInfo;
+import com.lightbend.java.model.DataConverter;
 import com.lightbend.java.naive.modelserver.store.StoreState;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 import org.apache.kafka.streams.processor.ProcessorContext;

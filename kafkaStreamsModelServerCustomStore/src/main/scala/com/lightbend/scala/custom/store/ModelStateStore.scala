@@ -1,11 +1,11 @@
 package com.lightbend.scala.custom.store
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.processor.{ProcessorContext, StateRestoreCallback, StateStore}
 import org.apache.kafka.streams.state.internals.StateStoreProvider
 import org.apache.kafka.streams.state.{QueryableStoreType, StateSerdes}
-import com.lightbend.modelServer.model._
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.scala.modelServer.model._
 
 
 class ModelStateStore(name: String, loggingEnabled: Boolean) extends StateStore with ReadableModelStateStore {

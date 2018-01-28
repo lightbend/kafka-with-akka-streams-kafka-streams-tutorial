@@ -1,4 +1,4 @@
-package com.lightbend.configuration.kafka;
+package com.lightbend.java.configuration.kafka;
 
 /**
  * Created by boris on 5/18/17.

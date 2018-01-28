@@ -1,6 +1,7 @@
-package com.lightbend.model;
+package com.lightbend.java.model;
 
 import java.io.Serializable;
+import com.lightbend.model.Modeldescriptor.ModelDescriptor;
 
 /**
  * Created by boris on 6/28/17.
@@ -9,12 +10,12 @@ public class CurrentModelDescriptor implements Serializable {
 
     private String name;
     private String description;
-    private Modeldescriptor.ModelDescriptor.ModelType modelType;
+    private ModelDescriptor.ModelType modelType;
     private byte[] modelData;
     private String modelDataLocation;
     private String dataType;
 
-    public CurrentModelDescriptor(String name, String description, Modeldescriptor.ModelDescriptor.ModelType modelType,
+    public CurrentModelDescriptor(String name, String description, ModelDescriptor.ModelType modelType,
                                   byte[] dataContent, String modelDataLocation, String dataType){
         this.name = name;
         this.description = description;
@@ -32,7 +33,7 @@ public class CurrentModelDescriptor implements Serializable {
         return description;
     }
 
-    public Modeldescriptor.ModelDescriptor.ModelType getModelType() {
+    public ModelDescriptor.ModelType getModelType() {
         return modelType;
     }
 

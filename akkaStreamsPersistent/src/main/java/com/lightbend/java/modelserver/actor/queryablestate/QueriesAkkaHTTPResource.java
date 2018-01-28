@@ -7,7 +7,7 @@ import akka.http.javadsl.server.Route;
 import akka.util.Timeout;
 import com.lightbend.java.modelserver.actor.actors.GetModels;
 import com.lightbend.java.modelserver.actor.actors.GetState;
-import com.lightbend.model.ModelServingInfo;
+import com.lightbend.java.model.ModelServingInfo;
 
 import java.util.List;
 import java.util.concurrent.CompletionStage;

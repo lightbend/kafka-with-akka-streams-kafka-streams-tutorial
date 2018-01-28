@@ -7,11 +7,11 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters
 import com.lightbend.kafka.scala.streams.StreamsBuilderS
-import com.lightbend.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
-import com.lightbend.standard.modelserver.scala.queriablestate.QueriesResource
-import com.lightbend.standard.modelserver.scala.store.ModelStateSerde
+import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
+import com.lightbend.scala.standard.modelserver.scala.queriablestate.QueriesResource
+import com.lightbend.scala.standard.modelserver.scala.store.ModelStateSerde
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.state.Stores
 import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
@@ -108,7 +108,7 @@ object ModelServerFluent {
     implicit val system = ActorSystem("ModelServing")
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
-    implicit val timeout = Timeout(10 seconds)
+    implicit val timeout = Timeout(10.seconds)
     val host = "127.0.0.1"
     val port = 8888
     val routes: Route = QueriesResource.storeRoutes(streams, port)

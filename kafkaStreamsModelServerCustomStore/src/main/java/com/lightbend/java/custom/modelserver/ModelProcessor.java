@@ -1,9 +1,9 @@
 package com.lightbend.java.custom.modelserver;
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
-import com.lightbend.model.ModelWithDescriptor;
-import com.lightbend.custom.modelserver.store.ModelStateStore;
-import com.lightbend.model.ModelServingInfo;
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
+import com.lightbend.java.model.ModelWithDescriptor;
+import com.lightbend.java.custom.modelserver.store.ModelStateStore;
+import com.lightbend.java.model.ModelServingInfo;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 import org.apache.kafka.streams.processor.ProcessorContext;
 

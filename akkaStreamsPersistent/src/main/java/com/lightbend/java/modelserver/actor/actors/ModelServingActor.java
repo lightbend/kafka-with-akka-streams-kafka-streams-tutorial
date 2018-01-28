@@ -6,9 +6,9 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.lightbend.java.modelserver.actor.presistence.ExecutionState;
 import com.lightbend.java.modelserver.actor.presistence.FilePersistence;
-import com.lightbend.model.Model;
-import com.lightbend.model.ModelServingInfo;
-import com.lightbend.model.ModelWithDescriptor;
+import com.lightbend.java.model.Model;
+import com.lightbend.java.model.ModelServingInfo;
+import com.lightbend.java.model.ModelWithDescriptor;
 import com.lightbend.model.Winerecord;
 
 import java.util.Optional;

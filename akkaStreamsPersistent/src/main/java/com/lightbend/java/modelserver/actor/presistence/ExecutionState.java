@@ -1,7 +1,7 @@
 package com.lightbend.java.modelserver.actor.presistence;
 
-import com.lightbend.model.Model;
-import com.lightbend.model.ModelServingInfo;
+import com.lightbend.java.model.Model;
+import com.lightbend.java.model.ModelServingInfo;
 
 import java.util.Optional;
 

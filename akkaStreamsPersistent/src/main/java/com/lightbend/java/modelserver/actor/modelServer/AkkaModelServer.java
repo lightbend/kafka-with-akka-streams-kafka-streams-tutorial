@@ -16,13 +16,13 @@ import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import akka.stream.javadsl.Sink;
 import akka.util.Timeout;
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
-import com.lightbend.java.modelserver.actor.actors.ModelServingManager;
-import com.lightbend.java.modelserver.actor.queryablestate.QueriesAkkaHTTPResource;
-import com.lightbend.model.DataConverter;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import scala.concurrent.ExecutionContextExecutor;
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
+import com.lightbend.java.modelserver.actor.actors.ModelServingManager;
+import com.lightbend.java.modelserver.actor.queryablestate.QueriesAkkaHTTPResource;
+import com.lightbend.java.model.DataConverter;
 
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;

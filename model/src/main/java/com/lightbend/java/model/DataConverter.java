@@ -1,7 +1,9 @@
-package com.lightbend.model;
+package com.lightbend.java.model;
 
-import com.lightbend.model.PMML.PMMLModelFactory;
-import com.lightbend.model.tensorflow.TensorflowModelFactory;
+import com.lightbend.java.model.PMML.PMMLModelFactory;
+import com.lightbend.java.model.tensorflow.TensorflowModelFactory;
+import com.lightbend.model.Modeldescriptor.ModelDescriptor;
+import com.lightbend.model.Winerecord;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,8 +18,8 @@ public class DataConverter {
 
     private static final Map<Integer, ModelFactory> factories = new HashMap<Integer, ModelFactory>() {
         {
-            put(Modeldescriptor.ModelDescriptor.ModelType.TENSORFLOW.getNumber(), TensorflowModelFactory.getInstance());
-            put(Modeldescriptor.ModelDescriptor.ModelType.PMML.getNumber(), PMMLModelFactory.getInstance());
+            put(ModelDescriptor.ModelType.TENSORFLOW.getNumber(), TensorflowModelFactory.getInstance());
+            put(ModelDescriptor.ModelType.PMML.getNumber(), PMMLModelFactory.getInstance());
         }
     };
 
@@ -38,9 +40,9 @@ public class DataConverter {
     public static Optional<CurrentModelDescriptor> convertModel(byte[] binary){
         try {
             // Unmarshall record
-            Modeldescriptor.ModelDescriptor model = Modeldescriptor.ModelDescriptor.parseFrom(binary);
+            ModelDescriptor model = ModelDescriptor.parseFrom(binary);
             // Return it
-            if(model.getMessageContentCase().equals(Modeldescriptor.ModelDescriptor.MessageContentCase.DATA)){
+            if(model.getMessageContentCase().equals(ModelDescriptor.MessageContentCase.DATA)){
                return Optional.of(new CurrentModelDescriptor(
                         model.getName(), model.getDescription(), model.getModeltype(),
                         model.getData().toByteArray(), null, model.getDataType()));

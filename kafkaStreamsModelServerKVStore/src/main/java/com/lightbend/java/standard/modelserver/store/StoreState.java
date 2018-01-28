@@ -1,7 +1,7 @@
 package com.lightbend.java.standard.modelserver.store;
 
-import com.lightbend.model.Model;
-import com.lightbend.model.ModelServingInfo;
+import com.lightbend.java.model.Model;
+import com.lightbend.java.model.ModelServingInfo;
 
 /**
  * Created by boris on 7/18/17.

@@ -1,9 +1,9 @@
-package com.lightbend.modelServer.model.tensorflow
+package com.lightbend.scala.modelServer.model.tensorflow
 
 import com.lightbend.model.modeldescriptor.ModelDescriptor
 import com.lightbend.model.winerecord.WineRecord
 import org.tensorflow.{Graph, Session, Tensor}
-import com.lightbend.modelServer.model.{Model, ModelFactory, ModelToServe}
+import com.lightbend.scala.modelServer.model.{Model, ModelFactory, ModelToServe}
 
 /**
  * Created by boris on 5/26/17.

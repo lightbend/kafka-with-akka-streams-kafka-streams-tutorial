@@ -13,7 +13,7 @@ import akka.pattern.ask
 
 object QueriesAkkaHttpResource extends JacksonSupport {
 
-  implicit val askTimeout = Timeout(30 seconds)
+  implicit val askTimeout = Timeout(30.seconds)
 
   def storeRoutes(modelserver: ActorRef): Route =
     get {
@@ -25,6 +25,8 @@ object QueriesAkkaHttpResource extends JacksonSupport {
       } ~
       path("models") {
         onSuccess(modelserver ? GetModels()) {
+          // Because of type erasure, the compile will issue a warning that it can't
+          // check that models is of type Seq[String]; it can only confirm Seq[_].
           case models: Seq[String] =>
             complete(models)
         }

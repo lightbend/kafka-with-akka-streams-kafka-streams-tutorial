@@ -1,4 +1,4 @@
-package com.lightbend.modelServer.model.PMML
+package com.lightbend.scala.modelServer.model.PMML
 
 /**
  * Created by boris on 5/9/17.
@@ -14,7 +14,7 @@ import org.dmg.pmml.{FieldName, PMML}
 import org.jpmml.evaluator.visitors._
 import org.jpmml.evaluator.{Computable, FieldValue, ModelEvaluatorFactory, TargetField}
 import org.jpmml.model.PMMLUtil
-import com.lightbend.modelServer.model.{Model, ModelFactory, ModelToServe}
+import com.lightbend.scala.modelServer.model.{Model, ModelFactory, ModelToServe}
 
 import scala.collection.JavaConversions._
 import scala.collection._

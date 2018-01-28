@@ -1,6 +1,6 @@
 package com.lightbend.scala.naive.modelserver
 
-import com.lightbend.modelServer.model.{ModelToServe, ModelToServeStats, ModelWithDescriptor}
+import com.lightbend.scala.modelServer.model.{ModelToServe, ModelToServeStats, ModelWithDescriptor}
 import com.lightbend.scala.naive.modelserver.store.StoreState
 import org.apache.kafka.streams.processor.{AbstractProcessor, ProcessorContext, ProcessorSupplier}
 

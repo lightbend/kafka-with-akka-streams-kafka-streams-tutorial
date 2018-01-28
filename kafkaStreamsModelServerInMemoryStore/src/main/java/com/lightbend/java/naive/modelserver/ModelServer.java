@@ -1,6 +1,6 @@
 package com.lightbend.java.naive.modelserver;
 
-import com.lightbend.configuration.kafka.ApplicationKafkaParameters;
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.java.naive.modelserver.queriablestate.QueriesRestService;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;

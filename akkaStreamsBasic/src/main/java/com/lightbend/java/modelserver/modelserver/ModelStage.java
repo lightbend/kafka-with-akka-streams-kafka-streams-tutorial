@@ -8,10 +8,10 @@ import akka.stream.stage.AbstractGraphStageWithMaterializedValue;
 import akka.stream.stage.AbstractInHandler;
 import akka.stream.stage.AbstractOutHandler;
 import akka.stream.stage.GraphStageLogic;
-import com.lightbend.model.Model;
-import com.lightbend.model.ModelServingInfo;
-import com.lightbend.model.ModelWithDescriptor;
 import com.lightbend.model.Winerecord;
+import com.lightbend.java.model.Model;
+import com.lightbend.java.model.ModelServingInfo;
+import com.lightbend.java.model.ModelWithDescriptor;
 
 import java.util.Optional;
 
