@@ -7,18 +7,18 @@ import java.util.Optional;
 
 public class ExecutionState {
 
-    private Optional<Model> mpdel = Optional.empty();
+    private Optional<Model> model = Optional.empty();
     private Optional<ModelServingInfo> servingInfo = Optional.empty();
 
     public ExecutionState(){}
 
-    public ExecutionState(Optional<Model> mpdel, Optional<ModelServingInfo> servingInfo){
-        this.mpdel = mpdel;
+    public ExecutionState(Optional<Model> model, Optional<ModelServingInfo> servingInfo){
+        this.model = model;
         this.servingInfo = servingInfo;
     }
 
-    public Optional<Model> getMpdel() {
-        return mpdel;
+    public Optional<Model> getModel() {
+        return model;
     }
 
     public Optional<ModelServingInfo> getServingInfo() {

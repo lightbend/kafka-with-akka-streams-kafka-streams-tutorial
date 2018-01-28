@@ -29,7 +29,7 @@ public class ModelServingActor extends AbstractActor {
     @Override
     public void preStart() {
         ExecutionState state = FilePersistence.restoreState(dataType);
-        newModel = state.getMpdel();
+        newModel = state.getModel();
         newServingInfo = state.getServingInfo();
     }
 
