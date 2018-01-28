@@ -1,4 +1,4 @@
-package com.lightbend.scala.custom
+package com.lightbend.scala.custom.modelserver
 
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}

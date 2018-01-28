@@ -1,4 +1,4 @@
-package com.lightbend.scala.custom
+package com.lightbend.scala.custom.modelserver
 
 import java.util.Objects
 
