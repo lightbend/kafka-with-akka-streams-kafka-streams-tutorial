@@ -44,7 +44,7 @@ lazy val kafkaStreamsModelServerCustomStore = (project in file("./kafkaStreamsMo
   .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
   .dependsOn(model, configuration, scalakafkastreamswrapper)
 
-lazy val akkaStreamsBasic = (project in file("./akkaStreamsBasic"))
+lazy val akkaStreamsCustomStage = (project in file("./akkaStreamsCustomStage"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.9.1",
     dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
   )
@@ -52,7 +52,7 @@ lazy val akkaStreamsBasic = (project in file("./akkaStreamsBasic"))
     ++ Dependencies.modelsDependencies)
   .dependsOn(model, configuration)
 
-lazy val akkaStreamsPersistent = (project in file("./akkaStreamsPersistent"))
+lazy val akkaActorsPersistent = (project in file("./akkaActorsPersistent"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.9.1",
     dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
   )
@@ -74,6 +74,6 @@ lazy val akkaKafkaTutorial = (project in file(".")).
     kafkaStreamsModelServerCustomStore,
     kafkaStreamsModelServerInMemoryStore,
     kafkaStreamsModelServerKVStore,
-    akkaStreamsBasic,
-    akkaStreamsPersistent,
+    akkaStreamsCustomStage,
+    akkaActorsPersistent,
     scalakafkastreamswrapper)
