@@ -14,8 +14,8 @@ class ModelServingManager extends Actor {
     context.child(dataType).getOrElse(context.actorOf(ModelServingActor.props(dataType), dataType))
   }
 
-  private def getInstances : Seq[String] =
-    context.children.map(_.path.name).toSeq
+  private def getInstances : GetModelsResult =
+    GetModelsResult(context.children.map(_.path.name).toSeq)
 
   override def receive = {
     case model: ModelWithDescriptor => getModelServer(model.descriptor.dataType) forward model
@@ -35,3 +35,5 @@ object ModelServingManager{
 }
 
 case class GetModels()
+
+case class GetModelsResult(models : Seq[String])
