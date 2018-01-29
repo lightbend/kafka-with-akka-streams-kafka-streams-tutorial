@@ -10,16 +10,11 @@ object Versions {
   val akkaHttpVersion = "10.0.10"
   val akkaHttpJsonVersion = "1.18.1"
 
-  /*
-  val reactiveKafkaVersion = "0.16"
-  val akkaVersion = "2.4.19"
-  val akkaHttpVersion = "10.0.9"
-  val akkaHttpJsonVersion = "1.17.0"
-  */
 
   val Curator        = "4.0.0"
 
   val kafkaVersion = "1.0.0"
+  val KafkaScalaVersion = "0.1.2"
 
   val tensorflowVersion = "1.4.0"
   val PMMLVersion = "1.3.10"
