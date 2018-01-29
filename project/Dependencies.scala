@@ -5,17 +5,17 @@ import sbt._
 import Versions._
 
 object Dependencies {
-  val reactiveKafka = "com.typesafe.akka"               % "akka-stream-kafka_2.11"        % reactiveKafkaVersion
-  
-  val akkaStream    = "com.typesafe.akka"               % "akka-stream_2.11"              % akkaVersion
-//  val akkaTyped     = "com.typesafe.akka"               %% "akka-typed"                   % akkaVersion
-  val akkaHttp      = "com.typesafe.akka"               % "akka-http_2.11"                % akkaHttpVersion
-  val akkaHttpJsonJackson = "de.heikoseeberger"         % "akka-http-jackson_2.11"        % akkaHttpJsonVersion
-  
+  val reactiveKafka  = "com.typesafe.akka"              %% "akka-stream-kafka"        % reactiveKafkaVersion
 
-  val kafka         = "org.apache.kafka"                % "kafka_2.11"                    % kafkaVersion
-  val kafkaclients  = "org.apache.kafka"                % "kafka-clients"                 % kafkaVersion
-  val kafkastreams  = "org.apache.kafka"                % "kafka-streams"                 % kafkaVersion
+  val akkaStream          = "com.typesafe.akka"         %% "akka-stream"              % akkaVersion
+//  val akkaTyped           = "com.typesafe.akka"         %% "akka-typed"                   % akkaVersion
+  val akkaHttp            = "com.typesafe.akka"         %% "akka-http"                % akkaHttpVersion
+  val akkaHttpJsonJackson = "de.heikoseeberger"         %% "akka-http-jackson"        % akkaHttpJsonVersion
+
+
+  val kafka         = "org.apache.kafka"                %% "kafka"                        % kafkaVersion
+  val kafkaclients  = "org.apache.kafka"                %  "kafka-clients"                % kafkaVersion
+  val kafkastreams  = "org.apache.kafka"                %  "kafka-streams"                % kafkaVersion
 
   val curator       = "org.apache.curator"              % "curator-test"                  % Curator                 // ApacheV2
 
