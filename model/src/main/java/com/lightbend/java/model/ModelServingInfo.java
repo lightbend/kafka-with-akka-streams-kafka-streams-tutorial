@@ -12,7 +12,15 @@ public class ModelServingInfo {
     private long min;
     private long max;
 
-    public ModelServingInfo(){}
+    public ModelServingInfo(){
+        this.name = "";
+        this.description = "";
+        this.since = 0;
+        this.invocations = 0;
+        this.duration = 0.;
+        this.min = Long.MAX_VALUE;
+        this.max = Long.MIN_VALUE;
+    }
 
     public ModelServingInfo(final String name, final String description, final long since) {
         this.name = name;

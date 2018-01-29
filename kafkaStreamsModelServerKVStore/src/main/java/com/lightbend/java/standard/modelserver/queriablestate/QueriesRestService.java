@@ -64,7 +64,8 @@ public class QueriesRestService {
         if (store == null) {
             throw new NotFoundException();
         }
-        return store.get(ApplicationKafkaParameters.STORE_ID).getCurrentServingInfo();
+        ModelServingInfo info = store.get(ApplicationKafkaParameters.STORE_ID).getCurrentServingInfo();
+        return info == null ? new ModelServingInfo() : info;
     }
 
     /**

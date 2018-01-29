@@ -261,7 +261,7 @@ The model serving implementation is illustrated here:
 
 ### Kafka Streams Model Server with an In-memory ("Naive") Store
 
-This Kafka Streams implementation of model serving "persists" state in memory, which is "naive". Two Scala and Java implementations are provided for model serving that provide identical functionality.
+This Kafka Streams implementation of model serving "persists" state in memory, which is "naive". Both Scala and Java implementations are provided for model serving that provide identical functionality.
 
 | | |
 | :- | :- |
@@ -277,14 +277,18 @@ sbt:akkaKafkaTutorial> kafkaStreamsModelServerInMemoryStore/compile:runMain com.
 ...
 ```
 
+Alternatively you can run it from within IntelliJ by clicking 
+at `com.lightbend.scala.naive.modelserver.ModelServer` (Scala) 
+or `com.lightbend.java.naive.modelserver.ModelServer` (java)
+and pick `Run ModelServer`
+
 
 Once running, visit http://localhost:8888/state/value for the current state of execution for a given model.
 
-TODO: is this URL correct?
 
 ### Kafka Streams Model Server with a Key-Value Store
 
-The final Kafka Streams example of model serving uses the provided key-value store in Kafka Streams. Two Scala and Java implementations are provided for model serving that provide identical functionality. An additional Scala implementation is provided that uses a "fluent" API.
+The second Kafka Streams example of model serving uses the provided key-value store in Kafka Streams. Two Scala and Java implementations are provided for model serving that provide identical functionality. An additional Scala implementation is provided that uses a "fluent" API.
 
 | | |
 | :- | :- |
@@ -301,17 +305,23 @@ sbt:akkaKafkaTutorial> kafkaStreamsModelServerKVStore/compile:runMain com.lightb
 ...
 ```
 
+Alternatively you can run it from within IntelliJ by clicking 
+at `com.lightbend.scala.standard.modelserver.scala.ModelServer` (Scala, based on Java APIs) 
+or `com.lightbend.scala.standard.modelserver.scala.ModelServerFluent` (Scala, based on Scala APIs) 
+or `com.lightbend.java.standard.modelserver.ModelServer` (java)
+and pick `Run ModelServer` or `Run ModelServerFluent`
+
+
 Once running, visit these links:
 
 * http://localhost:8888/state/instance for the list of currently deployed instances
-* http://localhost:8888/state/instance for the current state of execution for a given model.
+* http://localhost:8888/state/value for the current state of execution for a given model.
 
-TODO: the second URL looks wrong.
 
 ### Kafka Streams Model Server with a Custom Store
 
-The `kafkaStreamsModelServerCustomStore` implementation here has two implementations, one in Java and one in Scala. They provide identical functionality. An additional Scala implementation is provided that uses a "fluent" API.
-
+The final Kafka Streams example of model serving demonstrates implementation of a custom store in Kafka Streams. 
+Two Scala and Java implementations are provided for model serving that provide identical functionality. An additional Scala implementation is provided that uses a "fluent" API.
 | | |
 | :- | :- |
 | SBT Project | `kafkaStreamsModelServerCustomStore` |
@@ -326,13 +336,18 @@ Start one of the applications by running `sbt kafkaStreamsModelServerCustomStore
 sbt:akkaKafkaTutorial> kafkaStreamsModelServerCustomStore/compile:runMain com.lightbend.scala.custom.modelserver.ModelServer
 ...
 ```
+Alternatively you can run it from within IntelliJ by clicking 
+at `com.lightbend.scala.custom.modelserver.ModelServer` (Scala, based on Java APIs) 
+or `com.lightbend.scala.custom.modelserver.ModelServerFluent` (Scala, based on Scala APIs) 
+or `com.lightbend.java.standard.modelserver.ModelServer` (java)
+and pick `Run ModelServer` or `Run ModelServerFluent`
+
 
 Once running, visit these links:
 
 * http://localhost:8888/state/instance for the list of currently deployed instances
-* http://localhost:8888/state/instance for the current state of execution for a given model.
+* http://localhost:8888/state/value for the current state of execution for a given model.
 
-TODO: the second URL looks wrong.
 
 
 ## Production Considerations
