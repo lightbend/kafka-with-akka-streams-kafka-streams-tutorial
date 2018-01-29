@@ -25,8 +25,6 @@ object QueriesAkkaHttpResource extends JacksonSupport {
       } ~
       path("models") {
         onSuccess(modelserver ? GetModels()) {
-          // Because of type erasure, the compile will issue a warning that it can't
-          // check that models is of type Seq[String]; it can only confirm Seq[_].
           case models: GetModelsResult =>
             complete(models)
         }
