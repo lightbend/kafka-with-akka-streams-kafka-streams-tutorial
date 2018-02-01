@@ -10,21 +10,23 @@
 
 This tutorial provides an introduction to streaming data microservices using Kafka with Akka Streams and Kafka Streams. Hence, the tutorial helps you compare and contrast these streaming libraries for your own use.
 
-We will first describe how to build and run the applications. Then we will discuss their designs.
+The core "use case" implemented is a stream processing application that also ingests updated parameters for a machine learning model and then uses the model to score the data. Several implementations of this use case are provided. They not only compare Akka Streams vs. Kafka Streams, but they also show how to support a few other common production requirements, such as managing the in-memory state of the application.
+
+First, we will describe how to build and run the applications. Then we will discuss their designs.
 
 ## Tutorial Setup
 
-TODO
+> **Note:** If you are attending this tutorial at a conference, please follow the setup steps _ahead of time_.
 
 [SBT](https://www.scala-sbt.org/) is used to build the code. We recommend using [IntelliJ IDEA](https://www.jetbrains.com/idea/) for managing and building the code, which can drive SBT. However, this is isn't required; any favorite IDE or editor environment will do.
 
 If you wish to use SBT in a terminal (e.g., in conjunction with a regular text editor), follow the SBT installation instructions [here](https://www.scala-sbt.org/download.html).
 
-If you use IntelliJ IDEA (the Community Edition is sufficient) or another IDE environment, also install available Scala and SBT plugins for these IDEs.
+If you use IntelliJ IDEA (the Community Edition is sufficient) or another IDE environment, also install available Scala and SBT plugins for the IDE.
 
 ## Prerequisites
 
-Implementation rely on Kafka version 1.0 and leverage embedded Kafka servers (see the `client` project). Using embedded Kafka servers, rather than standalone Kafka services, simplifies the setup and execution of the tutorial.
+The examples rely on Kafka version 1.0 and leverage embedded Kafka servers (see the nested `client` project). Using embedded Kafka servers, rather than standalone Kafka services, simplifies the setup and execution of the tutorial, but doesn't materially change how the examples work.
 
 The implementations use two queues:
 
@@ -33,7 +35,7 @@ The implementations use two queues:
 
 The model and data "provider" application we use will create an embedded Kafka server and the required queues, as a result it has to be started before running any of the implementations.
 
-## Project Overviewhttps://github.com/lightbend/fdp-kafka-akka-streams-tutorial.git
+## Project Overview
 
 The project is organized as several subdirectories, some of which are setup as nested SBT projects, while others provide supporting functions, like the `data` directory:
 
