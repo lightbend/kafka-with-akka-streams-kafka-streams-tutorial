@@ -1,4 +1,4 @@
-# Model Serving with Akka Streams and Kafka Streams - A Tutorial
+# Building Kafka-based Microservices with Akka Streams and Kafka Streams - a Tutorial
 
 [![Join the chat at https://gitter.im/kafka-with-akka-streams-kafka-streams-tutorial](https://badges.gitter.im/kafka-with-akka-streams-kafka-streams-tutorial.svg)](https://gitter.im/kafka-with-akka-streams-kafka-streams-tutorial?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
