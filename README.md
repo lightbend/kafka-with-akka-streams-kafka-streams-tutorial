@@ -46,7 +46,6 @@ The project is organized as several subdirectories, some of which are setup as n
 * `kafkaStreamsModelServerInMemoryStore` -  Kafka Streams implementation of model serving using the [Processor Topology](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_processor_topology) APIs and in-memory ("naive") storage
 * `kafkaStreamsModelServerKVStore` -  Kafka Streams implementation of model serving using a key-value store provided by Kafka Streams and the Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl)
 * `kafkaStreamsModelServerCustomStore` -  Kafka Streams implementation of model serving using a custom store and the Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl)
-* `scalakafkastreamingwrapper` -  Scala implementation of Kafka streams DSL. TODO - is this Debasish's new library? If so, can we switch to that?
 
 You can see the list of SBT projects using the `sbt projects` command.  Note that the top level project, in the root directory, is called `akkaKafkaTutorial`.
 
