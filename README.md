@@ -33,7 +33,7 @@ The implementations use two queues:
 
 The model and data "provider" application we use will create an embedded Kafka server and the required queues, as a result it has to be started before running any of the implementations.
 
-## Project Overviewhttps://github.com/lightbend/fdp-kafka-akka-streams-tutorial.git
+## Project Overview
 
 The project is organized as several subdirectories, some of which are setup as nested SBT projects, while others provide supporting functions, like the `data` directory:
 
