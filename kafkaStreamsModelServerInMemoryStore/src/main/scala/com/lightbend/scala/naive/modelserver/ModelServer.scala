@@ -67,8 +67,8 @@ object ModelServer {
     topology.addSource("data", DATA_TOPIC)
     topology.addSource("models", MODELS_TOPIC)
     // Processors
-    topology.addProcessor("data processor", new DataProcessor(), "data")
-    topology.addProcessor("model processor", new ModelProcessor(), "models")
+    topology.addProcessor("data processor", () => new DataProcessor(), "data")
+    topology.addProcessor("model processor", () => new ModelProcessor(), "models")
     // print topology
     println(topology.describe)
     new KafkaStreams(topology, streamsConfiguration)

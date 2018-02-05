@@ -6,7 +6,7 @@ import org.apache.kafka.streams.processor.{AbstractProcessor, ProcessorContext, 
 
 import scala.util.Success
 
-class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]] with ProcessorSupplier[Array[Byte], Array[Byte]]{
+class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
 
   private var modelStore = null.asInstanceOf[StoreState]
 
@@ -47,6 +47,4 @@ class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]] with Pro
   override def init(context: ProcessorContext): Unit = {
     modelStore = StoreState()
   }
-
-  override def get() : DataProcessor = this
 }
