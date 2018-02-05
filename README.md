@@ -1,4 +1,6 @@
-# Model Serving with Akka Streams and Kafka Streams - A Tutorial
+# Building Kafka-based Microservices with Akka Streams and Kafka Streams - a Tutorial
+
+[![Join the chat at https://gitter.im/kafka-with-akka-streams-kafka-streams-tutorial](https://badges.gitter.im/kafka-with-akka-streams-kafka-streams-tutorial.svg)](https://gitter.im/kafka-with-akka-streams-kafka-streams-tutorial?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [Boris Lublinsky](mailto:boris.lublinsky@lightbend.com) and [Dean Wampler](mailto:dean.wampler@lightbend.com), [Lightbend](https://lightbend.com/fast-data-platform)
 
@@ -31,7 +33,7 @@ The implementations use two queues:
 
 The model and data "provider" application we use will create an embedded Kafka server and the required queues, as a result it has to be started before running any of the implementations.
 
-## Project Overviewhttps://github.com/lightbend/fdp-kafka-akka-streams-tutorial.git
+## Project Overview
 
 The project is organized as several subdirectories, some of which are setup as nested SBT projects, while others provide supporting functions, like the `data` directory:
 
@@ -46,7 +48,6 @@ The project is organized as several subdirectories, some of which are setup as n
 * `kafkaStreamsModelServerInMemoryStore` -  Kafka Streams implementation of model serving using the [Processor Topology](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_processor_topology) APIs and in-memory ("naive") storage
 * `kafkaStreamsModelServerKVStore` -  Kafka Streams implementation of model serving using a key-value store provided by Kafka Streams and the Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl)
 * `kafkaStreamsModelServerCustomStore` -  Kafka Streams implementation of model serving using a custom store and the Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl)
-* `scalakafkastreamingwrapper` -  Scala implementation of Kafka streams DSL. TODO - is this Debasish's new library? If so, can we switch to that?
 
 You can see the list of SBT projects using the `sbt projects` command.  Note that the top level project, in the root directory, is called `akkaKafkaTutorial`.
 
@@ -99,7 +100,7 @@ sbt:akkaKafkaTutorial> client/runMain com.lightbend.scala.kafka.client.DataProvi
 
 If you use the `sbt` command in a terminal, you'll need one terminal for each service executed below.
 
-Alternatively you can run execution directly from IntelliJ. 
+Alternatively you can run execution directly from IntelliJ.
 To do this, just click on the file containing the scala/java main and on the pop-up click run (or debug).
 
 ## Project Details
@@ -116,7 +117,7 @@ It is similar to this [dynamically controlled stream](https://data-artisans.com/
 
 This architecture assumes there are two data streams - one containing data that needs to be scored, and one containing the model updates. The streaming engine contains the current model used for the actual scoring in memory. The results of scoring can be either delivered downstream or used by the streaming engine internally as a new stream, i.e., as input for additional calculations.
 
-If there is no model currently defined, the input data is dropped. When the new model is received, it is instantiated in memory. Once instantiation is complete, scoring is switched to the new model. 
+If there is no model currently defined, the input data is dropped. When the new model is received, it is instantiated in memory. Once instantiation is complete, scoring is switched to the new model.
 The model stream can either contain the binary blob of the data itself or the reference to the model data stored externally (pass by reference) in a database or a file system, like HDFS or S3. Only pass by value is implemented in the code.
 
 This approach effectively implements model scoring as a new type of functional transformation, which can be used by any other stream transformations.
@@ -197,11 +198,11 @@ sbt:akkaKafkaTutorial> akkaStreamsCustomStage/runMain com.lightbend.scala.modelS
 
 ...
 ```
-Alternatively you can run it from within IntelliJ by clicking at `com.lightbend.scala.modelServer.modelServer.AkkaModelServer` (Scala) 
+Alternatively you can run it from within IntelliJ by clicking at `com.lightbend.scala.modelServer.modelServer.AkkaModelServer` (Scala)
 or `com.lightbend.java.modelserver.modelserver.AkkaModelServer` (java)
 and pick `Run AkkaModelServer`
 
-Once either server is running, 
+Once either server is running,
 go to http://localhost:5500/state to obtain the current state of execution.
 
 > **Note:** Only run _one_ of the Akka model servers or the Kafka model servers at the same time, since they share the same ports to serve information.
@@ -231,8 +232,8 @@ Start one of the applications by running `sbt akkaActorsPersistent/run` in a ter
 sbt:akkaKafkaTutorial> akkaActorsPersistent/runMain com.lightbend.scala.modelServer.actor.modelServer.AkkaModelServer
 ...
 ```
-Alternatively you can run it from within IntelliJ by clicking 
-at `com.lightbend.scala.modelserver.actor.modelserver.AkkaModelServer` (Scala) 
+Alternatively you can run it from within IntelliJ by clicking
+at `com.lightbend.scala.modelserver.actor.modelserver.AkkaModelServer` (Scala)
 or `com.lightbend.java.modelserver.actor.modelServer.AkkaModelServer` (java)
 and pick `Run AkkaModelServer`
 
@@ -251,9 +252,9 @@ Three versions of model serving are provided using Kafka Streams, with implement
 
 See [this blog post](http://mkuthan.github.io/) for a discussion of the differences between the Kafka Streams Processor Topology and the DSL.
 
-For the Scala implementations based on Kafka Stream DSL, in addition to leveraging Kafka Java APIs we are also showing 
-implementations based on the new [Scala API for Kafka Streams](https://github.com/lightbend/kafka-streams-scala) that Lightbend recently open sourced. 
-(It will be contributed to the Kafka project once the API details have settled.) It provides an idiomatic Scala version of the fluent Java Kafka Streams API. 
+For the Scala implementations based on Kafka Stream DSL, in addition to leveraging Kafka Java APIs we are also showing
+implementations based on the new [Scala API for Kafka Streams](https://github.com/lightbend/kafka-streams-scala) that Lightbend recently open sourced.
+(It will be contributed to the Kafka project once the API details have settled.) It provides an idiomatic Scala version of the fluent Java Kafka Streams API.
 See also the [Kafka Streams Query API](https://github.com/lightbend/kafka-streams-query), which provides a convenient way to query stream state across a cluster. (not used in this tutorial)
 
 The model serving implementation is illustrated here:
@@ -278,8 +279,8 @@ sbt:akkaKafkaTutorial> kafkaStreamsModelServerInMemoryStore/runMain com.lightben
 ...
 ```
 
-Alternatively you can run it from within IntelliJ by clicking 
-at `com.lightbend.scala.naive.modelserver.ModelServer` (Scala) 
+Alternatively you can run it from within IntelliJ by clicking
+at `com.lightbend.scala.naive.modelserver.ModelServer` (Scala)
 or `com.lightbend.java.naive.modelserver.ModelServer` (java)
 and pick `Run ModelServer`
 
@@ -306,9 +307,9 @@ sbt:akkaKafkaTutorial> kafkaStreamsModelServerKVStore/runMain com.lightbend.scal
 ...
 ```
 
-Alternatively you can run it from within IntelliJ by clicking 
-at `com.lightbend.scala.standard.modelserver.scala.ModelServer` (Scala, based on Java APIs) 
-or `com.lightbend.scala.standard.modelserver.scala.ModelServerFluent` (Scala, based on Scala APIs) 
+Alternatively you can run it from within IntelliJ by clicking
+at `com.lightbend.scala.standard.modelserver.scala.ModelServer` (Scala, based on Java APIs)
+or `com.lightbend.scala.standard.modelserver.scala.ModelServerFluent` (Scala, based on Scala APIs)
 or `com.lightbend.java.standard.modelserver.ModelServer` (java)
 and pick `Run ModelServer` or `Run ModelServerFluent`
 
@@ -321,7 +322,7 @@ Once running, visit these links:
 
 ### Kafka Streams Model Server with a Custom Store
 
-The final Kafka Streams example of model serving demonstrates implementation of a custom store in Kafka Streams. 
+The final Kafka Streams example of model serving demonstrates implementation of a custom store in Kafka Streams.
 Two Scala and Java implementations are provided for model serving that provide identical functionality. An additional Scala implementation is provided that uses a "fluent" API.
 | | |
 | :- | :- |
@@ -337,9 +338,9 @@ Start one of the applications by running `sbt kafkaStreamsModelServerCustomStore
 sbt:akkaKafkaTutorial> kafkaStreamsModelServerCustomStore/runMain com.lightbend.scala.custom.modelserver.ModelServer
 ...
 ```
-Alternatively you can run it from within IntelliJ by clicking 
-at `com.lightbend.scala.custom.modelserver.ModelServer` (Scala, based on Java APIs) 
-or `com.lightbend.scala.custom.modelserver.ModelServerFluent` (Scala, based on Scala APIs) 
+Alternatively you can run it from within IntelliJ by clicking
+at `com.lightbend.scala.custom.modelserver.ModelServer` (Scala, based on Java APIs)
+or `com.lightbend.scala.custom.modelserver.ModelServerFluent` (Scala, based on Scala APIs)
 or `com.lightbend.java.standard.modelserver.ModelServer` (java)
 and pick `Run ModelServer` or `Run ModelServerFluent`
 
