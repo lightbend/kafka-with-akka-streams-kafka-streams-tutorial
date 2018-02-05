@@ -48,5 +48,5 @@ class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]] with Pro
     modelStore = StoreState()
   }
 
-  override def get() = new DataProcessor()
+  override def get() : DataProcessor = this
 }

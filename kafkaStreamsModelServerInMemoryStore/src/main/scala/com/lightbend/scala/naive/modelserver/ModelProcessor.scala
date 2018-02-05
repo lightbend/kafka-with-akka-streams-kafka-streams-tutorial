@@ -30,5 +30,5 @@ class ModelProcessor extends AbstractProcessor[Array[Byte], Array[Byte]] with Pr
     modelStore = StoreState()
   }
 
-  override def get() = new ModelProcessor()
+  override def get() : ModelProcessor = this
 }
