@@ -1,14 +1,15 @@
 package com.lightbend.scala.naive.modelserver
 
-import com.lightbend.scala.modelServer.model.DataRecord
+import com.lightbend.scala.modelServer.model.{DataRecord, ServingResult}
 import com.lightbend.scala.naive.modelserver.store.StoreState
-import org.apache.kafka.streams.processor.{AbstractProcessor, ProcessorContext, ProcessorSupplier}
+import org.apache.kafka.streams.processor.{AbstractProcessor, ProcessorContext}
 
 import scala.util.Success
 
 class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
 
   private var modelStore = null.asInstanceOf[StoreState]
+  private var ctx = null.asInstanceOf[ProcessorContext]
 
   override def process(key: Array[Byte], value: Array[Byte]): Unit = {
     DataRecord.fromByteArray(value) match {
@@ -32,13 +33,16 @@ class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
             val start = System.currentTimeMillis()
             val quality = model.score(dataRecord.asInstanceOf[AnyVal]).asInstanceOf[Double]
             val duration = System.currentTimeMillis() - start
-            println(s"Calculated quality - $quality calculated in $duration ms")
+//            println(s"Calculated quality - $quality calculated in $duration ms")
             modelStore.currentState.get.incrementUsage(duration)
+            ctx.forward(key, ServingResult(true, quality, duration))
           }
           case _ => {
-            println("No model available - skipping")
+//            println("No model available - skipping")
+            ctx.forward(key, ServingResult(false))
           }
         }
+        ctx.commit()
       }
       case _ => // ignore
     }
@@ -46,5 +50,6 @@ class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
 
   override def init(context: ProcessorContext): Unit = {
     modelStore = StoreState()
+    ctx = context
   }
 }

@@ -2,7 +2,6 @@ package com.lightbend.scala.modelServer.model
 
 import com.lightbend.model.modeldescriptor.ModelDescriptor
 
-import scala.collection.Map
 import scala.util.Try
 
 /**
@@ -20,3 +19,5 @@ object ModelToServe {
 
 case class ModelToServe(name: String, description: String,
   modelType: ModelDescriptor.ModelType, model: Array[Byte], dataType: String) {}
+
+case class ServingResult(processed : Boolean, result: Double = .0, duration: Long = 0l)

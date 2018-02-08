@@ -73,7 +73,8 @@ public class ModelServer {
         topology.addSource("models", ApplicationKafkaParameters.MODELS_TOPIC);
 
         // Processors
-        topology.addProcessor("data processor", () -> new DataProcessor(), "data");
+        topology.addProcessor("result", () -> new DataProcessor(), "data");
+        topology.addProcessor("printer", () -> new PrintProcessor(), "result");
         topology.addProcessor("model processor", () -> new ModelProcessor(), "models");
 
         // print topology

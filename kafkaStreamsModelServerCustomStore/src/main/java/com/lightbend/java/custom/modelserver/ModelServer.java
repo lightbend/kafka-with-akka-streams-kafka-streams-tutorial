@@ -86,7 +86,12 @@ public class ModelServer {
         data
                 .mapValues(value -> DataConverter.convertData(value))
                 .filter((key, value) -> value.isPresent())
-                .process(DataProcessor::new,ApplicationKafkaParameters.STORE_NAME);
+                .transform(DataProcessor::new,ApplicationKafkaParameters.STORE_NAME)
+                .mapValues(value -> {
+                    if(value.isProcessed()) System.out.println("Calculated quality - " + value.getResult() + " in " + value.getDuration() + "ms");
+                    else System.out.println("No model available - skipping");
+                    return value;
+                });
         // Model Processor
         models
                 .mapValues(value -> DataConverter.convertModel(value))

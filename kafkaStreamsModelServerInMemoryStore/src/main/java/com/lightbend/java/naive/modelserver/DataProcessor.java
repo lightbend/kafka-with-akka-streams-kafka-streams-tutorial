@@ -1,5 +1,6 @@
 package com.lightbend.java.naive.modelserver;
 
+import com.lightbend.java.model.ServingResult;
 import com.lightbend.model.Winerecord;
 import com.lightbend.java.model.ModelServingInfo;
 import com.lightbend.java.model.DataConverter;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class DataProcessor extends AbstractProcessor<byte[], byte[]> {
 
     private StoreState modelStore;
+    private ProcessorContext ctx;
 
     @Override
     public void process(byte[] key, byte[] value) {
@@ -37,7 +39,8 @@ public class DataProcessor extends AbstractProcessor<byte[], byte[]> {
         // Actually score
         if(modelStore.getCurrentModel() == null) {
             // No model currently
-            System.out.println("No model available - skipping");
+//            System.out.println("No model available - skipping");
+            ctx.forward(key, new ServingResult());
         }
         else{
             // Score the model
@@ -45,14 +48,15 @@ public class DataProcessor extends AbstractProcessor<byte[], byte[]> {
             double quality = (double) modelStore.getCurrentModel().score(dataRecord.get());
             long duration = System.currentTimeMillis() - start;
             modelStore.getCurrentServingInfo().update(duration);
-            System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
+//            System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
+            ctx.forward(key, new ServingResult(quality, duration));
          }
-
+         ctx.commit();
     }
 
     @Override
     public void init(ProcessorContext context) {
         modelStore = StoreState.getInstance();
-
+        ctx = context;
     }
 }
