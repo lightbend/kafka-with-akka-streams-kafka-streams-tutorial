@@ -11,7 +11,7 @@ import scala.util.Try
 
 class DataProcessor extends AbstractProcessor[Array[Byte], Try[WineRecord]] with ProcessorSupplier[Array[Byte], Try[WineRecord]]{
 
-  private var modelStore = null.asInstanceOf[ModelStateStore]
+  private var modelStore: ModelStateStore = null
 
   import ApplicationKafkaParameters._
 
