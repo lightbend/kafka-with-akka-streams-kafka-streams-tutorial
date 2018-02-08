@@ -16,70 +16,116 @@ First, we will describe how to build and run the applications. Then we will disc
 
 ## Tutorial Setup
 
-> **Note:** If you are attending this tutorial at a conference, please follow the setup steps _ahead of time_.
+> **Note:** If you are attending this tutorial at a conference, please follow the setup steps _ahead of time_. If you encounter problems, ask for help on the project's [Gitter room](https://gitter.im/kafka-with-akka-streams-kafka-streams-tutorial).
 
-[SBT](https://www.scala-sbt.org/) is used to build the code. We recommend using [IntelliJ IDEA](https://www.jetbrains.com/idea/) for managing and building the code, which can drive SBT. However, this is isn't required; any favorite IDE or editor environment will do.
+### Install the Required Tools
 
-If you wish to use SBT in a terminal (e.g., in conjunction with a regular text editor), follow the SBT installation instructions [here](https://www.scala-sbt.org/download.html).
+[SBT](https://www.scala-sbt.org/), the de facto build tool for Scala is used to build the code, both the Scala and Java implementations. The SBT build files are configured to download all the required dependencies.
 
-If you use IntelliJ IDEA (the Community Edition is sufficient) or another IDE environment, also install available Scala and SBT plugins for the IDE.
+We recommend using [IntelliJ IDEA](https://www.jetbrains.com/idea/) for managing and building the code, which can drive SBT. The free Community Edition is sufficient. However, using IntelliJ isn't required; any favorite IDE or editor environment will do.
 
-## Prerequisites
+If you wish to use SBT in a terminal (e.g., in conjunction with your text editor), follow the SBT installation instructions [here](https://www.scala-sbt.org/download.html).
 
-The examples rely on Kafka version 1.0 and leverage embedded Kafka servers (see the nested `client` project). Using embedded Kafka servers, rather than standalone Kafka services, simplifies the setup and execution of the tutorial, but doesn't materially change how the examples work.
+If you use IntelliJ IDEA or another IDE environment, also install available Scala and SBT plugins for the IDE.
 
-The implementations use two queues:
+### Build the Code
 
-* `models_data` - queue used for sending data
-* `models_models` - queue used for sending machine learning model updates, used for scoring the data
+Building the code before the tutorial session will ensure that everything works.
 
-The model and data "provider" application we use will create an embedded Kafka server and the required queues, as a result it has to be started before running any of the implementations.
-
-## Project Overview
-
-The project is organized as several subdirectories, some of which are setup as nested SBT projects, while others provide supporting functions, like the `data` directory:
-
-* `data` - some data files for running the applications
-* `images` - diagrams used for this document
-* `akkaStreamsCustomStage` - (project) Akka Streams implementation of model serving using a custom stage
-* `akkaActorsPersistent` - (project) Akka Actors and Akka Streams implementation of model serving that also provides state persistence to disk
-* `client` - (project) Data and model loader used to run either the Akka Streams or Kafka Streams application. This process has to be started first to ensure that the Kafka embedded server is running
-* `configuration` - Shared configurations
-* `model` - Implementation of internal, Tensorflow and PMML models
-* `protobufs` - Protobuf representation of both models aand data
-* `kafkaStreamsModelServerInMemoryStore` -  Kafka Streams implementation of model serving using the [Processor Topology](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_processor_topology) APIs and in-memory ("naive") storage
-* `kafkaStreamsModelServerKVStore` -  Kafka Streams implementation of model serving using a key-value store provided by Kafka Streams and the Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl)
-* `kafkaStreamsModelServerCustomStore` -  Kafka Streams implementation of model serving using a custom store and the Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl)
-
-You can see the list of SBT projects using the `sbt projects` command.  Note that the top level project, in the root directory, is called `akkaKafkaTutorial`.
-
-We'll explore these in more detail after discussing how to build the code.
-
-## Building the Code
-
-Because many of these subdirectories contain both Scala and Java implementations, but often use the same class names, we use the package naming convention `com.lightbend.scala` for (almost) all Scala code and `com.lightbend.java` for (almost) all Java code. An exception is the code generated in the `protobufs` directory; no `scala` or `java` names are used. If you're new to Scala, this naming scheme is our convention; it's not commonly used in projects.
-
-The build is done via SBT, using the `sbt` shell command. To build in a terminal outside your IDE/Editor environment, use this command:
+To compile the code with SBT in a terminal outside your IDE/Editor environment, use this command:
 
     sbt compile
 
-You can also use IntelliJ to manage the project and run the SBT build:
+It's convenient to use SBT's interactive mode if you intend to run more than one command. Type `sbt` and you'll see a prompt `sbt:akkaKafkaTutorial>` (`akkaKafkaTutorial` is the name of the top-level SBT project). Now you can run tasks like `tasks` (list the most common tasks - add the `-V` flag to see all of them), `clean`, `compile`, `help`, etc.
 
-1. Use the Import Project feature to import the top-level directory of this repo as a project.
+The interactive mode is also convenient if you want to work in one of the nested projects, rather than the top-level project. At the SBT prompt, enter `projects` to list the projects (which we'll discuss below), then use `project <name>` to switch to that subproject. Now use commands like `clean`, `compile`, etc.
+
+If you want to use IntelliJ to manage the project and run the SBT build:
+
+1. Use the Import Project feature to import the top-level directory of this repo as a project
 2. Select SBT as the project type
-3. In the settings dialog, check _Use sbt shell for build and import_.
-4. After the project loads, open the SBT console, and click the green arrow to start SBT
+3. In the settings dialog, check _Use sbt shell for build and import_
+4. After the project loads, open the SBT console, and click the green arrow to start the SBT interactive mode
 5. After it presents the prompt `sbt:akkaKafkaTutorial>`, type `compile`.
 
-> **TIP:** You can also build subprojects one at a time. Use `sbt projects` to list the projects, then `project <name>` to switch to that subproject. Now use commands like `clean`, `compile`, etc.
+To use the SBT build with other IDEs and editors, consult their documentation on using SBT and Scala. If your editor doesn't offer Scala and SBT support, just load the project as a Java project and use the editor to browse and edit the files. Use a terminal window to run SBT.
 
-For other IDEs and editors, consult their documentation on using SBT and Scala. If your editor doesn't offer Scala and SBT support, just load the project as a Java project and use the editor to browse and edit the files. Use a terminal to run SBT.
+If you successfully built the code, you should be ready for the tutorial. We discuss running the services below.
 
-## Running the Executables
+## About the Project
 
-Most of the SBT projects listed above have service executables. The top level project in the root directory is called `akkaKafkaTutorial`.
+Let's explore the tutorial code in more detail.
 
-Because nested SBT projects are used, you can't just type `run <main_class>` (e.g., `com.lightbend.scala.kafka.client.DataProvider`). Instead, use the following convention that specifies the SBT project, the `client` in this example, then select the executable to run from the list presented:
+### Kafka
+
+The examples rely on Kafka version 1.0 and leverage embedded Kafka servers. Using embedded Kafka servers, rather than standalone Kafka services, simplifies the setup and execution of the tutorial, but doesn't materially change how the examples work.
+
+The implementations use two Kafka topics:
+
+* `models_data` - for sending data to the applications
+* `models_models` - for sending machine learning model updates, used for scoring the data
+
+The model and data "provider" application, the `client` nested SBT project, will create an embedded Kafka server and the required topics. As a result, it has to be started before running any of the other services.
+
+### Project Overview
+
+The tutorial is organized as several SBT nested projects in subdirectories. Other subdirectories provide supporting functions, like the `data` directory:
+
+Each of the following directories is used to create a service executable. Each is also is defined as a nested SBT project:
+
+* `client` - Data and model loader used to run either the Akka Streams or Kafka Streams applications. This process has to be started first to ensure that the Kafka embedded server is running and the topics are created.
+* `akkaStreamsCustomStage` - Akka Streams implementation of model serving using a custom stage.
+* `akkaActorsPersistent` - Akka Actors and Akka Streams implementation of model serving that also provides state persistence to disk. This supports a production requirement to allow a failed service to be restarted from where it left off.
+* `kafkaStreamsModelServerInMemoryStore` - Kafka Streams implementation of model serving using the [Processor Topology](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_processor_topology) API and in-memory storage. You'll see the package name "naive", because there is no durability if the state is stored only in memory.
+* `kafkaStreamsModelServerKVStore` - Kafka Streams implementation of model serving using a key-value store provided by Kafka Streams and the Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl).
+* `kafkaStreamsModelServerCustomStore` - Kafka Streams implementation of model serving using a custom store and the Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl).
+
+The following directories provide shared code. They are also nested SBT projects:
+
+* `configuration` - Shared configuration settings.
+* `model` - Implementation of [TensorFlow](https://www.tensorflow.org/) and [PMML](https://en.wikipedia.org/wiki/Predictive_Model_Markup_Language) models.
+* `protobufs` - [Google Protocol Buffers](https://github.com/google/protobuf) representation of both models and data.
+
+You can see the list of SBT projects using the `sbt projects` command.  Note that the top level project, in the root directory, is called `akkaKafkaTutorial` and the SBT prompt is defined to be `sbt:akkaKafkaTutorial> `.
+
+Finally, these directories provide other resources:
+
+* `data` - Some data files for running the applications.
+* `images` - Diagrams used for this document.
+
+We provide Java and Scala implementations for most of the code, although we prefer [Scala](http://www.scala-lang.org/) for its expressiveness and concision. Because the same names are often used in both the Scala and Java implementations, we use the package naming convention `com.lightbend.scala` for (almost) all Scala code and `com.lightbend.java` for (almost) all Java code. An exception is the code generated in the `protobufs` directory, where no `scala` or `java` package names are used. If you're new to Scala, this naming scheme is our convention; it's not commonly used in projects.
+
+### Application Architecture
+
+A high level view of the overall model serving architecture is as follows:
+
+![Overall architecture of model serving](images/OverallModelServing.png)
+
+It is similar to this [dynamically controlled stream](https://data-artisans.com/blog/bettercloud-dynamic-alerting-apache-flink), as described for [Apache Flink](https://flink.apache.org).
+
+This architecture assumes there are two data streams - one containing data that needs to be scored, and one containing the model updates. The streaming engine contains the current model used for the actual scoring in memory. The results of scoring can be either delivered downstream or used by the streaming engine internally as a new stream, i.e., as input for additional calculations.
+
+If there is no model currently defined, the input data is dropped. When the new model is received, it is instantiated in memory. Once instantiation is complete, scoring is switched to the new model.
+
+The model stream can either contain the binary blob of the data itself ("pass by value") or the reference to the model data stored externally ("pass by reference") in a database or a file system, like HDFS or S3. Only pass by value is implemented in the code.
+
+This approach effectively implements model scoring as a new type of functional transformation, which can be used by any other stream transformations.
+
+Although the overall architecture shown above is represented as a single model, a single streaming engine could score with multiple models simultaneously. This enhancement is left as an exercise for the student ;)
+
+### Queryable State
+
+Kafka Streams recently introduced [queryable state](https://docs.confluent.io/current/streams/developer-guide.html#id8), which is a nice approach for execution monitoring and extracting the state of a stream. This feature allows you to treat the stream processing layer as a lightweight embedded database and, more concretely, to directly query the latest state of your stream processing application, without needing to materialize that state to external databases or external storage first.
+
+![Queriable state](images/QueryableState.png)
+
+Both the Akka Streams and Kafka Streams implementations support queryable state. Here, we use [Akka HTTP](https://doc.akka.io/docs/akka-http/current/scala/http/) for Web based access to both the Akka Streams and Kafka Streams queryable APIs.
+
+## Running the Application
+
+We listed the SBT projects that have service executables above. Now let's explore these executables and how to run them.
+
+First, if you using SBT from a terminal, to run a particular executable, use the following convention that specifies the SBT project, the `client` in this example, then select the executable to run from the list presented:
 
 ```
 sbt:akkaKafkaTutorial> client/run
@@ -93,53 +139,22 @@ Enter number: 1
 ...
 ```
 
-To run a specific executable, for example `DataProvider`, use `runMain`:
+If you know the fully qualified name of a specific executable, for example the `DataProvider` just shown, you can run it using `runMain`:
 
 ```
 sbt:akkaKafkaTutorial> client/runMain com.lightbend.scala.kafka.client.DataProvider
 ...
 ```
 
-If you use the `sbt` command in a terminal, you'll need one terminal for each service executed below.
+> **Note:** You will need one terminal for _each_ service executed concurrently.
 
-Alternatively you can run execution directly from IntelliJ.
-To do this, just click on the file containing the scala/java main and on the pop-up click run (or debug).
+Alternatively you can run an executable directly from IntelliJ and other IDEs. Just right click on the source file containing the Scala or Java `main`, then in the pop-up menu, click _run_ (or _debug_).
 
-## Project Details
-
-Let's first discuss the overall architecture and then discuss the various examples in more depth, including what executables to run and when.
-
-### Overall Architecture
-
-A high level view of the overall model serving architecture is as follows:
-
-![Overall architecture of model serving](images/OverallModelServing.png)
-
-It is similar to this [dynamically controlled stream](https://data-artisans.com/blog/bettercloud-dynamic-alerting-apache-flink), as described for [Apache Flink](https://flink.apache.org).
-
-This architecture assumes there are two data streams - one containing data that needs to be scored, and one containing the model updates. The streaming engine contains the current model used for the actual scoring in memory. The results of scoring can be either delivered downstream or used by the streaming engine internally as a new stream, i.e., as input for additional calculations.
-
-If there is no model currently defined, the input data is dropped. When the new model is received, it is instantiated in memory. Once instantiation is complete, scoring is switched to the new model.
-The model stream can either contain the binary blob of the data itself or the reference to the model data stored externally (pass by reference) in a database or a file system, like HDFS or S3. Only pass by value is implemented in the code.
-
-This approach effectively implements model scoring as a new type of functional transformation, which can be used by any other stream transformations.
-
-Although the overall architecture shown above is represented as a single model, a single streaming engine could score with multiple models simultaneously.
-
-### Queryable State
-
-Kafka Streams recently introduced [queryable state](https://docs.confluent.io/current/streams/developer-guide.html#id8), which is a nice approach for execution monitoring and extracting the state of a stream. This feature allows you to treat the stream processing layer as a lightweight embedded database and, more concretely, to directly query the latest state of your stream processing application, without needing to materialize that state to external databases or external storage first.
-
-![Queriable state](images/QueryableState.png)
-
-Both the Akka Streams and Kafka Streams implementations support queryable state. Here, we use [Akka HTTP](https://doc.akka.io/docs/akka-http/current/scala/http/) for Web based access to both the Akka Streams and Kafka Streams queryable APIs.
-
+Now let's look at the specific executables, starting with the `client`, since it has to be executed first to set up the embedded Kafka instance. Then we'll list the rest of the projects alphabetically. We'll focus on the classes (Scala and Java types) that provide the executable `main` routines. We won't discuss the other classes here. We'll discuss them verbally during the tutorial session.
 
 ### Client
 
-Now we'll discuss the example implementations, starting with the `client`, since it has to be executed first (to set up Kafka). Then we'll list the rest of the projects alphabetically. We'll focus on the classes (Scala and Java types) that provide executables, but not the other classes in these projects. We'll discuss those verbally during the tutorial.
-
-The service that starts the embedded Kafka server, creates the topics, and publishes data to them.
+The client service that starts the embedded Kafka server, creates the topics, and publishes data to them. Hence, the client corresponds to the _Data Source_ and _Model Source_ in the first architecture diagram above.
 
 | | | |
 | :- | :- | :- |
@@ -148,9 +163,11 @@ The service that starts the embedded Kafka server, creates the topics, and publi
 | Data Provider | [com.lightbend.scala.kafka.client.DataProvider](client/src/main/scala/com/lightbend/scala/kafka/client/DataProvider.scala) | (Scala only) Provider service |
 | Data Reader | [com.lightbend.scala.kafka.client.DataReader](client/src/main/scala/com/lightbend/scala/kafka/client/DataReader.scala) | Verifies that messages are published correctly |
 
+In this case, we only provide Scala implementations, as this service isn't the focus of this tutorial.
+
 The `DataProvider` is a data and model publisher. This executable contains an embedded Kafka server and has to be started first to ensure that the embedded Kafka server is running and the necessary topics are created.
 
-Start the `DataProvider` as using SBT as shown above:
+Start the `DataProvider` using SBT as shown above:
 
 ```
 sbt:akkaKafkaTutorial> client/run
@@ -171,9 +188,38 @@ sbt:akkaKafkaTutorial> client/runMain com.lightbend.scala.kafka.client.DataProvi
 ...
 ```
 
-Alternatively you can run it from within IntelliJ by clicking at `com.lightbend.scala.kafka.client.DataProvider` and pick `Run DataProvider`
+Alternatively you can run it from within IntelliJ by clicking the `com.lightbend.scala.kafka.client.DataProvider` source and invoking from the pop-up menu, `Run DataProvider`.
 
-You can run the `DataReader` when desired the same way.
+While `DataProvider` runs, you'll see output to the terminal like this:
+
+```
+...
+printed 280 records
+printed 290 records
+Published Model generated from SparkML
+printed 300 records
+printed 310 records
+printed 320 records
+printed 330 records
+...
+```
+
+Note the occasional messages about updates from SparkML!
+
+You can run the `DataReader`, if desired, the same way. It reads the Kafka topics to which `DataProvider` is writing, to verify that data is being successfully written to the topics.
+
+The `DataReader` outputs messages like the following:
+
+```
+...
+Retrieved message #12, key = null, value = [B@53c536c6
+Retrieved message #13, key = null, value = [B@71862844
+Retrieved message #14, key = null, value = [B@4cfa1bf6
+Retrieved message #15, key = null, value = [B@6fca5ad6
+Retrieved message #16, key = null, value = [B@154322ef
+Retrieved message #17, key = null, value = [B@55c7fc0b
+...
+```
 
 ### Akka Streams Custom Stage Model Server
 
@@ -193,19 +239,45 @@ The custom stage implementation uses the stream processor functionality from the
 | Scala Version | [com.lightbend.scala.modelServer.modelServer.AkkaModelServer](akkaStreamsCustomStage/src/main/scala/com/lightbend/scala/modelServer/modelServer/AkkaModelServer.scala) |
 | Java Version  | [com.lightbend.java.modelserver.modelserver.AkkaModelServer](akkaStreamsCustomStage/src/main/java/com/lightbend/java/modelserver/modelserver/AkkaModelServer.java) |
 
+(Note that `modelserver` is used for the Java version and `modelServer` for the Scala version...)
+
 Start one of the applications by running `sbt akkaStreamsCustomStage/run` in a terminal window, then select the executable to run. Or use `runMain`, e.g., for the Scala version:
 
 ```
 sbt:akkaKafkaTutorial> akkaStreamsCustomStage/runMain com.lightbend.scala.modelServer.modelServer.AkkaModelServer
-
-...
 ```
+
+For the Java version:
+
+```
+sbt:akkaKafkaTutorial> akkaStreamsCustomStage/runMain com.lightbend.java.modelserver.modelserver.AkkaModelServer
+```
+
 Alternatively you can run it from within IntelliJ by clicking at `com.lightbend.scala.modelServer.modelServer.AkkaModelServer` (Scala)
 or `com.lightbend.java.modelserver.modelserver.AkkaModelServer` (java)
 and pick `Run AkkaModelServer`
 
-Once either server is running,
-go to http://localhost:5500/state to obtain the current state of execution.
+You'll see output like the following, where at first it skips processing, because it hasn't received a model yet, and then it receives a "model to serve":
+
+```
+...
+No model available - skipping
+New model - ModelToServe(winequalityDesisionTreeRegression,generated from SparkML,PMML,[B@471244ec,wine)
+Calculated quality - 5.67910447761194 calculated in 76 ms
+New model - ModelToServe(winequalityMultilayerPerceptron,generated from SparkML,PMML,[B@72ea5ccb,wine)
+Calculated quality - 6.0 calculated in 48 ms
+New model - ModelToServe(winequalityGeneralizedLinearRegressionGamma,generated from SparkML,PMML,[B@48d97260,wine)
+Calculated quality - 6.1631297415506 calculated in 16 ms
+New model - ModelToServe(winequalityRandonForrestClassification,generated from SparkML,PMML,[B@51ddd2e1,wine)
+Calculated quality - 6.0 calculated in 34 ms
+Calculated quality - 6.0 calculated in 1 ms
+Calculated quality - 6.0 calculated in 1 ms
+Calculated quality - 5.0 calculated in 1 ms
+Calculated quality - 6.0 calculated in 2 ms
+...
+```
+
+Once either server is running, go to http://localhost:5500/state to obtain the current state of execution, which in this case is the current model used for scoring.
 
 > **Note:** Only run _one_ of the Akka model servers or the Kafka model servers at the same time, since they share the same ports to serve information.
 
