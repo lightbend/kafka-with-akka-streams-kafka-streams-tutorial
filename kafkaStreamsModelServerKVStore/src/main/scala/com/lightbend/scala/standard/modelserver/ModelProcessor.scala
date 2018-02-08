@@ -10,7 +10,7 @@ import org.apache.kafka.streams.state.KeyValueStore
 
 import scala.util.Try
 
-class ModelProcessor extends AbstractProcessor[Array[Byte], Try[ModelWithDescriptor]] with ProcessorSupplier[Array[Byte], Try[ModelWithDescriptor]]{
+class ModelProcessor extends AbstractProcessor[Array[Byte], Try[ModelWithDescriptor]] {
 
   private var modelStore = null.asInstanceOf[KeyValueStore[Integer, StoreState]]
 
@@ -29,6 +29,4 @@ class ModelProcessor extends AbstractProcessor[Array[Byte], Try[ModelWithDescrip
     modelStore = context.getStateStore(STORE_NAME).asInstanceOf[KeyValueStore[Integer, StoreState]]
     Objects.requireNonNull(modelStore, "State store can't be null")
   }
-
-  override def get() = new ModelProcessor()
 }

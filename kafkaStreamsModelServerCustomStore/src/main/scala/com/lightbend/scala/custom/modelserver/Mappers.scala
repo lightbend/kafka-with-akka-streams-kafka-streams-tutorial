@@ -1,7 +1,7 @@
 package com.lightbend.scala.custom.modelserver
 
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
+import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor, ServingResult}
 import org.apache.kafka.streams.kstream.{Predicate, ValueMapper}
 
 import scala.util.Try
@@ -24,6 +24,14 @@ class ModelValueFilter extends Predicate[Array[Byte], Try[ModelToServe]]{
 
 class ModelDescriptorMapper extends ValueMapper[Try[ModelToServe],  Try[ModelWithDescriptor]] {
   override def apply(value: Try[ModelToServe]):  Try[ModelWithDescriptor] = ModelWithDescriptor.fromModelToServe(value.get)
+}
+
+class ResultPrinter extends ValueMapper[ServingResult,  ServingResult] {
+  override def apply(value: ServingResult):  ServingResult = {
+    if(value.processed) println(s"Calculated quality - ${value.result} calculated in ${value.duration} ms")
+    else println("No model available - skipping")
+    value
+  }
 }
 
 class ModelDescriptorFilter extends Predicate[Array[Byte], Try[ModelWithDescriptor]]{

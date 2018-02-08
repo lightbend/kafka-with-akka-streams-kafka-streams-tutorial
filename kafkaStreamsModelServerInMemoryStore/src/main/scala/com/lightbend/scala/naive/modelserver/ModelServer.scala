@@ -41,6 +41,7 @@ object ModelServer {
     // Create topology
     val streams = createStreams(streamsConfiguration)
     // Set Stream exception handler
+
     streams.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       override def uncaughtException(t: Thread, e: Throwable): Unit = {
         System.out.println("Uncaught exception on thread " + t + " " + e.toString)
@@ -67,8 +68,9 @@ object ModelServer {
     topology.addSource("data", DATA_TOPIC)
     topology.addSource("models", MODELS_TOPIC)
     // Processors
-    topology.addProcessor("data processor", new DataProcessor(), "data")
-    topology.addProcessor("model processor", new ModelProcessor(), "models")
+    topology.addProcessor("result", () => new DataProcessor(), "data")
+    topology.addProcessor("printer", () => new PrintProcessor(), "result")
+    topology.addProcessor("model processor", () => new ModelProcessor(), "models")
     // print topology
     println(topology.describe)
     new KafkaStreams(topology, streamsConfiguration)

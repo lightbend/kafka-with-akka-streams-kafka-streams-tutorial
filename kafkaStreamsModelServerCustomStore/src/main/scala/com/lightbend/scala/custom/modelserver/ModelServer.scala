@@ -11,8 +11,7 @@ import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters
 import com.lightbend.scala.custom.queriablestate.QueriesResource
 import com.lightbend.scala.custom.store.ModelStateStoreBuilder
-import com.lightbend.scala.modelServer.model.{ModelToServe, ModelWithDescriptor}
-import org.apache.kafka.clients.consumer.ConsumerConfig
+import com.lightbend.scala.modelServer.model.{ModelToServe, ModelWithDescriptor, ServingResult}
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.kstream.{KStream, Predicate, ValueMapper}
 import org.apache.kafka.streams.{KafkaStreams, StreamsBuilder, StreamsConfig}
@@ -86,7 +85,8 @@ object ModelServer {
     data
       .mapValues[Try[WineRecord]](new DataValueMapper().asInstanceOf[ValueMapper[Array[Byte], Try[WineRecord]]])
       .filter(new DataValueFilter().asInstanceOf[Predicate[Array[Byte], Try[WineRecord]]])
-      .process(new DataProcessor, STORE_NAME)
+      .transform(() => new DataProcessorKV, STORE_NAME)
+      .mapValues[ServingResult](new ResultPrinter())
     // Value Processor
     models
       .mapValues[Try[ModelToServe]](new ModelValueMapper().asInstanceOf[ValueMapper[Array[Byte],Try[ModelToServe]]])

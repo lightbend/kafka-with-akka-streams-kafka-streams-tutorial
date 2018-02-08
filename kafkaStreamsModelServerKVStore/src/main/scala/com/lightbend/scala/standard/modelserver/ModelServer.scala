@@ -7,7 +7,6 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
-import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.streams.{KafkaStreams, StreamsBuilder, StreamsConfig}
 import org.apache.kafka.streams.kstream.{KStream, Predicate, ValueMapper}
@@ -20,7 +19,7 @@ import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters
 import com.lightbend.scala.standard.modelserver.scala.queriablestate.QueriesResource
 import com.lightbend.scala.standard.modelserver.scala.store.ModelStateSerde
-import com.lightbend.scala.modelServer.model.{ModelToServe, ModelWithDescriptor}
+import com.lightbend.scala.modelServer.model.{ModelToServe, ModelWithDescriptor, ServingResult}
 
 import scala.util.Try
 
@@ -91,14 +90,15 @@ object ModelServer {
     data
       .mapValues[Try[WineRecord]](new DataValueMapper().asInstanceOf[ValueMapper[Array[Byte], Try[WineRecord]]])
       .filter(new DataValueFilter().asInstanceOf[Predicate[Array[Byte], Try[WineRecord]]])
-      .process(new DataProcessor, STORE_NAME)
+      .transform(() => new DataProcessorKV, STORE_NAME)
+      .mapValues[ServingResult](new ResultPrinter())
     // Models Processor
     models
       .mapValues[Try[ModelToServe]](new ModelValueMapper().asInstanceOf[ValueMapper[Array[Byte],Try[ModelToServe]]])
       .filter(new ModelValueFilter().asInstanceOf[Predicate[Array[Byte], Try[ModelToServe]]])
       .mapValues[Try[ModelWithDescriptor]](new ModelDescriptorMapper().asInstanceOf[ValueMapper[Try[ModelToServe],Try[ModelWithDescriptor]]])
       .filter((new ModelDescriptorFilter().asInstanceOf[Predicate[Array[Byte], Try[ModelWithDescriptor]]]))
-      .process(new ModelProcessor, STORE_NAME)
+      .process(() => new ModelProcessor, STORE_NAME)
 
     // Create and build topology
     val topology = builder.build

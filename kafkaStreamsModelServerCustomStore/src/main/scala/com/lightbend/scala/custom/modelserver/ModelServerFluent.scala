@@ -84,7 +84,12 @@ object ModelServerFluent {
     data
       .mapValues(value => DataRecord.fromByteArray(value))
       .filter((key, value) => (value.isSuccess))
-      .process(() => new DataProcessor, STORE_NAME)
+      .transform(() => new DataProcessor, STORE_NAME)
+      .mapValues(value => {
+        if(value.processed) println(s"Calculated quality - ${value.result} calculated in ${value.duration} ms")
+        else println("No model available - skipping")
+        value
+      })
     //Models Processor
     models
       .mapValues(value => ModelToServe.fromByteArray(value))

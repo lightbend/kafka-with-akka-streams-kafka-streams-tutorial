@@ -1,10 +1,12 @@
 package com.lightbend.java.custom.modelserver;
 
+import com.lightbend.java.model.ServingResult;
 import com.lightbend.model.Winerecord;
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.java.custom.modelserver.store.ModelStateStore;
 import com.lightbend.java.model.ModelServingInfo;
-import org.apache.kafka.streams.processor.AbstractProcessor;
+import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.kstream.Transformer;
 import org.apache.kafka.streams.processor.ProcessorContext;
 
 import java.util.Objects;
@@ -15,12 +17,12 @@ import java.util.Optional;
  * used
  * https://github.com/bbejeck/kafka-streams/blob/master/src/main/java/bbejeck/processor/stocks/StockSummaryProcessor.java
  */
-public class DataProcessor extends AbstractProcessor<byte[], Optional<Winerecord.WineRecord>> {
+public class DataProcessor implements Transformer<byte[], Optional<Winerecord.WineRecord>, KeyValue<byte[], ServingResult>> {
 
     private ModelStateStore modelStore;
 
     @Override
-    public void process(byte[] key, Optional<Winerecord.WineRecord> dataRecord) {
+    public KeyValue<byte[], ServingResult> transform(byte[] key, Optional<Winerecord.WineRecord> dataRecord) {
         if(modelStore.getNewModel() != null){
             // update the model
             if(modelStore.getCurrentModel() != null)
@@ -32,9 +34,11 @@ public class DataProcessor extends AbstractProcessor<byte[], Optional<Winerecord
             modelStore.setNewModel(null);
         }
         // Actually score
+        ServingResult result;
         if(modelStore.getCurrentModel() == null) {
             // No model currently
-            System.out.println("No model available - skipping");
+//            System.out.println("No model available - skipping");
+            result = new ServingResult();
         }
         else{
             // Score the model
@@ -42,9 +46,10 @@ public class DataProcessor extends AbstractProcessor<byte[], Optional<Winerecord
             double quality = (double) modelStore.getCurrentModel().score(dataRecord.get());
             long duration = System.currentTimeMillis() - start;
             modelStore.getCurrentServingInfo().update(duration);
-            System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
+//            System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
+            result = new ServingResult(quality, duration);
          }
-
+        return KeyValue.pair(key,result);
     }
 
     @Override
@@ -53,4 +58,10 @@ public class DataProcessor extends AbstractProcessor<byte[], Optional<Winerecord
         Objects.requireNonNull(modelStore, "State store can't be null");
 
     }
+
+    @Override
+    public KeyValue<byte[], ServingResult> punctuate(long timestamp) { return null; }
+
+    @Override
+    public void close() {}
 }
