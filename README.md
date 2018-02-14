@@ -14,13 +14,15 @@ This tutorial provides an introduction to streaming data microservices using Kaf
 
 The core "use case" implemented is a stream processing application that also ingests updated parameters for a machine learning model and then uses the model to score the data. Several implementations of this use case are provided. They not only compare Akka Streams vs. Kafka Streams, but they also show how to support a few other common production requirements, such as managing the in-memory state of the application.
 
-First, we will describe how to build and run the applications. Then we will discuss their designs.
+First, we will describe how to build and run the applications. Then we will discuss their designs. For reference materials and more information, see the end of this README.
 
 ## Tutorial Setup
 
 > **Note:** If you are attending this tutorial at a conference, please follow the setup steps _ahead of time_. If you encounter problems, ask for help on the project's [Gitter room](https://gitter.im/kafka-with-akka-streams-kafka-streams-tutorial).
 
 ### Install the Required Tools
+
+The Java JDK v8 is required. If not already installed, see the instructions [here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
 
 [SBT](https://www.scala-sbt.org/), the de facto build tool for Scala is used to build the code, both the Scala and Java implementations. The SBT build files are configured to download all the required dependencies.
 
@@ -427,7 +429,6 @@ Once running, visit these links:
 * http://localhost:8888/state/value for the current state of execution for a given model.
 
 
-
 ## Production Considerations
 
 The examples illustrate how to implement a model-serving microservice using Akka Streams and Kafka Streams in various ways. A few illustrate other production considerations, such as persisting state so that restarts can pick up where processing left off.
@@ -444,4 +445,39 @@ The following diagram shows a Kafka Streams cluster with several server instance
 
 TODO - Expand
 
+
+## References
+
+### Kafka
+
+* [Kafka](https://kafka.apache.org/)
+* [Kafka Documentation](https://kafka.apache.org/documentation/)
+
+### Akka and Akka Streams
+
+* [Akka](https://akka.io)
+* [Akka Documentation](https://akka.io/docs)
+* Akka Streams (Scala):
+    * [Reference](https://doc.akka.io/docs/akka/current/stream/index.html?language=scala)
+    * [Scaladocs](https://doc.akka.io/api/akka/current/akka/stream/index.html)
+* Akka Streams (Java):
+    * [Reference](https://doc.akka.io/docs/akka/current/stream/index.html?language=java)
+    * [Javadocs](https://doc.akka.io/japi/akka/current/index.html?akka/stream/package-summary.html)
+* Miscellaneous:
+    * Integrating Akka Streams and Akka Actors: [Part I](http://blog.colinbreck.com/integrating-akka-streams-and-akka-actors-part-i/), [Part II](http://blog.colinbreck.com/integrating-akka-streams-and-akka-actors-part-ii/)
+    * [Akka Team Blog](https://akka.io/blog/)
+
+### Kafka Streams
+
+* [Kafka Streams](https://kafka.apache.org/10/documentation/streams/)
+* Kafka Streams API:
+    * [Javadocs](https://kafka.apache.org/10/javadoc/index.html?org/apache/kafka/streams/KafkaStreams.html)
+    * [Scaladocs (2.12)](https://developer.lightbend.com/docs/api/kafka-streams-scala/0.1.2/com/lightbend/kafka/scala/streams/) - for the new Lightbend Scala API
+    * [Scaladocs (2.11)](https://developer.lightbend.com/docs/api/kafka-streams-scala_2.11/0.1.2/#package)
+* Miscellaneous:
+    * [Enabling Exactly-Once in Kafka Streams](https://www.confluent.io/blog/enabling-exactly-kafka-streams/)
+
+### For More Information
+
+Interested in an integrated and commercially supported distribution of Akka Streams, Kafka Streams, and Kafka, plus other tools like Spark and HDFS? See the https://www.lightbend.com/products/fast-data-platform for more information about the Lightbend Fast Data Platform.
 
