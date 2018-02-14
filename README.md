@@ -52,6 +52,12 @@ If you want to use IntelliJ to manage the project and run the SBT build:
 4. After the project loads, open the SBT console, and click the green arrow to start the SBT interactive mode
 5. After it presents the prompt `sbt:akkaKafkaTutorial>`, type `compile`.
 
+Alternatively instead of steps 4 and 5 you can use IntelliJ native compile and build capabilities.
+
+***Note*** If you use IntelliJ native compile and build capabilities, keep in mind that the project includes
+`ScalaPB` plugin, which is not always invoked by IntelliJ build. We recommend to do at least initial build
+using SBT to avoid erroneous compilation errors 
+
 To use the SBT build with other IDEs and editors, consult their documentation on using SBT and Scala. If your editor doesn't offer Scala and SBT support, just load the project as a Java project and use the editor to browse and edit the files. Use a terminal window to run SBT.
 
 If you successfully built the code, you should be ready for the tutorial. We discuss running the services below.
