@@ -79,7 +79,7 @@ Each of the following directories is used to create a service executable. Each i
 
 * `client` - Data and model loader used to run either the Akka Streams or Kafka Streams applications. This process has to be started first to ensure that the Kafka embedded server is running and the topics are created.
 * `akkaStreamsCustomStage` - Akka Streams implementation of model serving using a custom stage.
-* `akkaActorsPersistent` - Akka Actors and Akka Streams implementation of model serving that also provides state persistence to disk. This supports a production requirement to allow a failed service to be restarted from where it left off.
+* `akkaActorsPersistent` - Akka Actors and Akka Streams implementation of model serving that also provides state persistence to disk. This supports a production requirement to allow a failed service to be restarted from where it left off and it supports distributed scalability when using Akka cluster.
 * `kafkaStreamsModelServerInMemoryStore` - Kafka Streams implementation of model serving using the [Processor Topology](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_processor_topology) API and in-memory storage. You'll see the package name "naive", because there is no durability if the state is stored only in memory.
 * `kafkaStreamsModelServerKVStore` - Kafka Streams implementation of model serving using a key-value store provided by Kafka Streams and the Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl).
 * `kafkaStreamsModelServerCustomStore` - Kafka Streams implementation of model serving using a custom store and the Kafka Streams [DSL](https://kafka.apache.org/10/documentation/streams/developer-guide#streams_dsl).
