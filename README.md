@@ -97,7 +97,7 @@ Finally, these directories provide other resources:
 * `data` - Some data files for running the applications.
 * `images` - Diagrams used for this document.
 
-We provide Java and Scala implementations for most of the code, although we prefer [Scala](http://www.scala-lang.org/) for its expressiveness and concision. Because the same names are often used in both the Scala and Java implementations, we use the package naming convention `com.lightbend.scala` for (almost) all Scala code and `com.lightbend.java` for (almost) all Java code. An exception is the code generated in the `protobufs` directory, where no `scala` or `java` package names are used. If you're new to Scala, this naming scheme is our convention; it's not commonly used in projects.
+We provide Java and Scala implementations for all the examples, although we prefer [Scala](http://www.scala-lang.org/) for its expressiveness and concision. Because the same names are often used in both the Scala and Java implementations, we use the package naming convention `com.lightbend.scala` for (almost) all Scala code and `com.lightbend.java` for (almost) all Java code. An exception is the code generated in the `protobufs` directory, where no `scala` or `java` package names are used. If you're new to Scala, this naming scheme is our convention; it's not commonly used in projects.
 
 ### Application Architecture
 
