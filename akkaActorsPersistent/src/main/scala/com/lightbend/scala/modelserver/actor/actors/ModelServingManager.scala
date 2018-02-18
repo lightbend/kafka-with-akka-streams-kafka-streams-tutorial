@@ -23,7 +23,7 @@ class ModelServingManager extends Actor {
     case getState: GetState => {
       context.child(getState.dataType) match {
         case Some(actorRef) => actorRef forward getState
-        case _ => sender() ! ModelToServeStats()
+        case _ => sender() ! ModelToServeStats.empty
       }
     }
     case getModels : GetModels => sender() ! getInstances

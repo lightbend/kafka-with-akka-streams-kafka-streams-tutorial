@@ -1,5 +1,7 @@
 package com.lightbend.scala.modelserver.actor.actors
 
+import java.util.concurrent.TimeUnit
+
 import akka.actor.{Actor, Props}
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
@@ -22,48 +24,42 @@ class ModelServingActor(dataType : String) extends Actor {
   }
 
   override def receive = {
-    case model : ModelWithDescriptor => {
+    case model : ModelWithDescriptor =>
       // Update model
-      newState = Some(new ModelToServeStats(model.descriptor))
+      newState = Some(ModelToServeStats(model.descriptor))
       newModel = Some(model.model)
       FilePersistence.saveState(dataType, newModel.get, newState.get)
       sender() ! "Done"
-    }
-    case record : WineRecord => {
+
+    case record : WineRecord =>
       // Process data
-      newModel match {
+      newModel.foreach { model =>
         // Update model
-        case Some(model) => {
-          // close current model first
-          currentModel match {
-            case Some(m) => m.cleanup()
-            case _ =>
-          }
-          // Update model
-          currentModel = newModel
-          currentState = newState
-          newModel = None
-        }
-        case _ =>
+        // close current model first
+        currentModel.foreach(_.cleanup())
+        // Update model
+        currentModel = newModel
+        currentState = newState
+        newModel = None
       }
+
       currentModel match {
-        case Some(model) => {
-          val start = System.currentTimeMillis()
-          val quality = model.score(record.asInstanceOf[AnyVal]).asInstanceOf[Double]
-          val duration = System.currentTimeMillis() - start
+        case Some(model) =>
+          val start = System.nanoTime()
+          val quality = model.score(record).asInstanceOf[Double]
+          val duration = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start)
           println(s"Calculated quality - $quality calculated in $duration ms")
-          currentState.get.incrementUsage(duration)
+          currentState = currentState.map(_.incrementUsage(duration))
           sender() ! Some(quality)
-        }
-        case _ => {
+
+        case None =>
           println("No model available - skipping")
           sender() ! None
-        }
       }
-    }
+
     case request : GetState => {
       // State query
-      sender() ! currentState.getOrElse(ModelToServeStats())
+      sender() ! currentState.getOrElse(ModelToServeStats.empty)
     }
   }
 }

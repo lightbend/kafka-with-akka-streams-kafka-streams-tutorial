@@ -31,10 +31,10 @@ class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
         modelStore.currentModel match {
           case Some(model) => {
             val start = System.currentTimeMillis()
-            val quality = model.score(dataRecord.asInstanceOf[AnyVal]).asInstanceOf[Double]
+            val quality = model.score(dataRecord).asInstanceOf[Double]
             val duration = System.currentTimeMillis() - start
 //            println(s"Calculated quality - $quality calculated in $duration ms")
-            modelStore.currentState.get.incrementUsage(duration)
+            modelStore.currentState = modelStore.currentState.map(_.incrementUsage(duration))
             ctx.forward(key, ServingResult(true, quality, duration))
           }
           case _ => {

@@ -38,7 +38,7 @@ class PMMLModel(inputStream: Array[Byte]) extends Model {
   val target: TargetField = evaluator.getTargetFields.get(0)
   val tname = target.getName
 
-  override def score(input: AnyVal): AnyVal = {
+  override def score(input: Any): Any = {
     val inputs = input.asInstanceOf[WineRecord]
     arguments.clear()
     inputFields.foreach(field => {
@@ -51,7 +51,7 @@ class PMMLModel(inputStream: Array[Byte]) extends Model {
     // Prepare output
     result.get(tname) match {
       case c: Computable => c.getResult.toString.toDouble
-      case v: Any => v.asInstanceOf[Double]
+      case v => v
     }
   }
 

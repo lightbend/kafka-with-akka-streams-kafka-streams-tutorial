@@ -12,7 +12,7 @@ object QueriesResource extends JacksonSupport {
     get {
       pathPrefix("state") {
         path("value") {
-          val info: ModelToServeStats = StoreState().currentState.getOrElse(ModelToServeStats())
+          val info: ModelToServeStats = StoreState().currentState.getOrElse(ModelToServeStats.empty)
           complete(info)
         }
       }

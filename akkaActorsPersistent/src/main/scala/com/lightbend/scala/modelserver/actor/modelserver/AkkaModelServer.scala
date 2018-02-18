@@ -15,8 +15,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import akka.pattern.ask
 import akka.stream.scaladsl.Sink
-
 import scala.concurrent.duration._
+import scala.util.Success
 
 /**
  * Created by boris on 7/21/17.
@@ -46,20 +46,17 @@ object AkkaModelServer {
 
     // Model stream processing
     Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))
-      .map(record => ModelToServe.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
-      .map(record => ModelWithDescriptor.fromModelToServe(record)).filter(_.isSuccess).map(_.get)
-      .mapAsync(1)(elem => (modelserver ? elem))
-      .to(Sink.ignore) // we do not read the results directly
-      .run() // we run the stream
+      .map(record => ModelToServe.fromByteArray(record.value)).collect { case Success(a) => a }
+      .map(record => ModelWithDescriptor.fromModelToServe(record)).collect { case Success(a) => a }
+      .mapAsync(1)(elem => modelserver ? elem)
+      .runWith(Sink.ignore) // run the stream, we do not read the results directly
 
     // Data stream processing
     Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(DATA_TOPIC))
-      .map(record => DataRecord.fromByteArray(record.value())).filter(_.isSuccess).map(_.get)
+      .map(record => DataRecord.fromByteArray(record.value)).collect { case Success(a) => a }
       .mapAsync(1)(elem => (modelserver ? elem).mapTo[Option[Double]])
-      .filter(_.isDefined).map(_.get)
-      .map(println(_))
-      .to(Sink.ignore) // we do not read the results directly
-      .run() // we run the stream
+      .collect { case Some(a) => a }
+      .runForeach(println) // run the stream, we do not read the results directly
 
     // Rest Server
     startRest(modelserver)

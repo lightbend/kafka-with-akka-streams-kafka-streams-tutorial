@@ -5,7 +5,7 @@ package com.lightbend.scala.modelServer.model
  * Basic trait for model
  */
 trait Model {
-  def score(input: AnyVal): AnyVal
+  def score(input: Any): Any
   def cleanup(): Unit
   def toBytes(): Array[Byte]
   def getType: Long
