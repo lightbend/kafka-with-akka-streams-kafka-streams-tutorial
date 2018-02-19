@@ -46,7 +46,7 @@ public class ModelServingManager extends AbstractActor {
                 .match(GetState.class, dataType -> {
                     Option<ActorRef> mayBeRef = getContext().child(dataType.getDataType());
                     if(mayBeRef.isEmpty())
-                        getSender().tell(new ModelServingInfo(), getSelf());
+                        getSender().tell(ModelServingInfo.empty, getSelf());
                     else
                        mayBeRef.get().forward(dataType, getContext());
                 })

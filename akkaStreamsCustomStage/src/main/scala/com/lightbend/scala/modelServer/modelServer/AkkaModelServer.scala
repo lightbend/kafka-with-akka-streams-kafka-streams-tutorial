@@ -10,9 +10,7 @@ import akka.kafka.ConsumerSettings
 import akka.kafka.Subscriptions
 import akka.kafka.scaladsl.Consumer
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.Keep
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
+import akka.stream.scaladsl.{Keep, Sink, Source}
 import akka.util.Timeout
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters._
 import com.lightbend.model.winerecord.WineRecord
@@ -53,12 +51,17 @@ object AkkaModelServer {
         .collect { case Success(a) => a }
 
     val modelPredictions: Source[Option[Double], ModelStateStore] =
-      dataStream.viaMat(new ModelStage)(Keep.right)
+      dataStream.viaMat(new ModelStage)(Keep.right).map(result => {
+        result.processed match {
+          case true => println(s"Calculated quality - ${result.result} calculated in ${result.duration} ms"); Some(result.result)
+          case _ => println ("No model available - skipping"); None
+        }
+      })
 
     val modelStateStore: ModelStateStore =
       modelPredictions
-        .to(Sink.ignore) // we do not read the results directly
-        .run() // we run the stream, materializing the stage's StateStore
+        .to(Sink.ignore)  // we do not read the results directly
+        .run()            // we run the stream, materializing the stage's StateStore
 
     // model stream
     Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))

@@ -59,7 +59,7 @@ public class DataProcessor implements Transformer<byte[], Optional<Winerecord.Wi
 
     }
 
-    @Override
+    @Deprecated
     public KeyValue<byte[], ServingResult> punctuate(long timestamp) { return null; }
 
     @Override

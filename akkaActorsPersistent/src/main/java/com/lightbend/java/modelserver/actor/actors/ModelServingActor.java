@@ -4,6 +4,7 @@ import akka.actor.AbstractActor;
 import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import com.lightbend.java.model.ServingResult;
 import com.lightbend.java.modelserver.actor.presistence.ExecutionState;
 import com.lightbend.java.modelserver.actor.presistence.FilePersistence;
 import com.lightbend.java.model.Model;
@@ -35,6 +36,7 @@ public class ModelServingActor extends AbstractActor {
 
     private void processModel(ModelWithDescriptor modelWithDescriptor) {
 
+        System.out.println("Processing new model " + modelWithDescriptor);
         newModel = Optional.of(modelWithDescriptor.getModel());
         newServingInfo = Optional.of(new ModelServingInfo(modelWithDescriptor.getDescriptor().getName(),
                 modelWithDescriptor.getDescriptor().getDescription(), System.currentTimeMillis()));
@@ -42,7 +44,7 @@ public class ModelServingActor extends AbstractActor {
         return;
     }
 
-    public Optional<Double> processData(Winerecord.WineRecord dataRecord) {
+    public ServingResult processData(Winerecord.WineRecord dataRecord) {
         if(newModel.isPresent()){
             // update the model
             if(currentModel.isPresent())
@@ -59,19 +61,19 @@ public class ModelServingActor extends AbstractActor {
             double quality = (double) currentModel.get().score(dataRecord);
             long duration = System.currentTimeMillis() - start;
             currentServingInfo.get().update(duration);
-            System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
-            return Optional.of(quality);
+//            System.out.println("Calculated quality - " + quality + " in " + duration + "ms");
+            return new ServingResult(quality, duration);
         }
         else{
             // No model currently
-            System.out.println("No model available - skipping");
-            return Optional.empty();
+//            System.out.println("No model available - skipping");
+            return new ServingResult();
         }
     }
 
     public ModelServingInfo getServingInfo() {
         System.out.println("Using model server " + dataType);
-        return currentServingInfo.orElse(new ModelServingInfo());
+        return currentServingInfo.orElse(ModelServingInfo.empty);
     }
 
     @Override

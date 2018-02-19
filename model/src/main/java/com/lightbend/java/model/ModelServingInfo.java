@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class ModelServingInfo {
 
+    public static ModelServingInfo empty = new ModelServingInfo();
+
     private String name;
     private String description;
     private long since;

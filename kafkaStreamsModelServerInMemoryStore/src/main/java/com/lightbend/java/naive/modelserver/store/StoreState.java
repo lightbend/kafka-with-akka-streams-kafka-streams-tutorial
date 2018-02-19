@@ -44,7 +44,7 @@ public class StoreState {
     }
 
     public ModelServingInfo getCurrentServingInfo() {
-        return currentServingInfo == null ? new ModelServingInfo() : currentServingInfo;
+        return currentServingInfo == null ? ModelServingInfo.empty : currentServingInfo;
     }
 
     public void setCurrentServingInfo(ModelServingInfo currentServingInfo) {

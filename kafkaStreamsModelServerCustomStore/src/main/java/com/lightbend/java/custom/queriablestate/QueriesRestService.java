@@ -60,7 +60,7 @@ public class QueriesRestService {
             throw new NotFoundException();
         }
         ModelServingInfo info = store.getCurrentServingInfo();
-        return info == null ? new ModelServingInfo() : info;
+        return info == null ? ModelServingInfo.empty : info;
     }
 
     /**

@@ -16,15 +16,15 @@ import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import akka.stream.javadsl.Sink;
 import akka.util.Timeout;
+import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
+import com.lightbend.java.model.DataConverter;
+import com.lightbend.java.model.ServingResult;
+import com.lightbend.java.modelserver.actor.actors.ModelServingManager;
+import com.lightbend.java.modelserver.actor.queryablestate.QueriesAkkaHTTPResource;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import scala.concurrent.ExecutionContextExecutor;
-import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
-import com.lightbend.java.modelserver.actor.actors.ModelServingManager;
-import com.lightbend.java.modelserver.actor.queryablestate.QueriesAkkaHTTPResource;
-import com.lightbend.java.model.DataConverter;
 
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
@@ -73,9 +73,11 @@ public class AkkaModelServer {
                 .map(record -> DataConverter.convertData(record.value()))
                 .filter(record -> record.isPresent()).map(record ->record.get())
                 .mapAsync(1, record -> ask(router, record, askTimeout))
-                .map(record -> (Optional<Double>)record)
-                .filter(record -> record.isPresent()).map(record ->record.get())
-                .runWith(Sink.foreach(record -> System.out.println(record)), materializer);
+                .map(record -> (ServingResult)record)
+                .runWith(Sink.foreach(record -> {
+                    if(record.isProcessed()) System.out.println("Calculated quality - " + record.getResult() + " in " + record.getDuration() + "ms");
+                    else System.out.println("No model available - skipping");
+                }), materializer);
         startRest(system,materializer,router);
     }
 

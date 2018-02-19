@@ -17,4 +17,12 @@ public class ModelWithDescriptor {
     public CurrentModelDescriptor getDescriptor() {
         return descriptor;
     }
+
+    @Override
+    public String toString() {
+        return "ModelWithDescriptor{" +
+                "model=" + model +
+                ", descriptor=" + descriptor +
+                '}';
+    }
 }

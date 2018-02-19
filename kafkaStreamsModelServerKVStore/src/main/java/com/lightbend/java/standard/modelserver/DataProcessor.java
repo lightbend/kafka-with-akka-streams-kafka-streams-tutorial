@@ -64,7 +64,7 @@ public class DataProcessor implements Transformer<byte[], Optional<Winerecord.Wi
         Objects.requireNonNull(modelStore, "State store can't be null");
     }
 
-    @Override
+    @Deprecated
     public KeyValue<byte[], ServingResult> punctuate(long timestamp) { return null; }
 
     @Override

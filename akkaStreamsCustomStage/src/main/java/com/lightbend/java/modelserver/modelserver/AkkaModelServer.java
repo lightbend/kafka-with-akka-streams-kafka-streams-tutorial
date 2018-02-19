@@ -11,23 +11,20 @@ import akka.kafka.ConsumerSettings;
 import akka.kafka.Subscriptions;
 import akka.kafka.javadsl.Consumer;
 import akka.stream.ActorMaterializer;
-import akka.stream.SourceShape;
 import akka.stream.javadsl.Flow;
-import akka.stream.javadsl.GraphDSL;
+import akka.stream.javadsl.Keep;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
-import com.lightbend.model.Winerecord;
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
-import com.lightbend.java.modelserver.queryablestate.QueriesAkkaHTTPResource;
 import com.lightbend.java.model.DataConverter;
-import com.lightbend.java.model.ModelWithDescriptor;
+import com.lightbend.java.modelserver.queryablestate.QueriesAkkaHTTPResource;
+import com.lightbend.model.Winerecord;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import scala.concurrent.ExecutionContextExecutor;
 
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
-
 
 public class AkkaModelServer {
 
@@ -53,45 +50,39 @@ public class AkkaModelServer {
                         .withGroupId(ApplicationKafkaParameters.MODELS_GROUP)
                         .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        // Model Source
-        Source<ModelWithDescriptor, Consumer.Control> modelStream =
-            Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(ApplicationKafkaParameters.MODELS_TOPIC))
-                .map(record -> DataConverter.convertModel(record.value()))
-                .filter(record -> record.isPresent()).map(record -> record.get())
-                .map(record -> DataConverter.convertModel(record))
-                .filter(record -> record.isPresent()).map(record -> record.get());
-
         // Data Source
         Source<Winerecord.WineRecord, Consumer.Control> dataStream =
             Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(ApplicationKafkaParameters.DATA_TOPIC))
                 .map(record -> DataConverter.convertData(record.value()))
                 .filter(record -> record.isPresent()).map(record ->record.get());
 
-        ModelStage modelProcessor = new ModelStage();
+        // Model Predictions
+        Source<Optional<Double>,ReadableModelStore> modelPredictions =
+        dataStream.viaMat(new ModelStage(), Keep.right()).map(result -> {
+            if(result.isProcessed()) {
+                System.out.println("Calculated quality - " + result.getResult() + " in " + result.getDuration() + "ms");
+                return Optional.of(result.getResult());
+            }
+            else {
+                System.out.println("No model available - skipping");
+                return Optional.empty();
+            }
+        });
 
-        Source<Optional<Double>, ReadableModelStore> modelPredictions = Source.fromGraph(
-                GraphDSL.create3(dataStream, modelStream, modelProcessor, (m1, m2, m3) -> m3,
-                    (builder, shape1, shape2, shape3) -> {
-                            // wire together the input streams with the model stage (2 in, 1 out)
-        /*
-                            dataStream --> |       |
-                                           | model | -> predictions
-                            modelStream -> |       |
-        */
-
-                            builder.from(shape1).toInlet(shape3.getDataRecordIn());
-                            builder.from(shape2).toInlet(shape3.getModelRecordIn());
-                            return SourceShape.of(shape3.getScoringResultOut());
-                        }
-                )
-        );
-
-        ReadableModelStore materializedReadableModelStateStore =
+        ReadableModelStore modelStateStore =
                 modelPredictions
-                    .to(Sink.ignore())
-                    .run(materializer);
+                        .to(Sink.ignore())      // we do not read the results directly
+                        .run(materializer);     // we run the stream, materializing the stage's StateStore
 
-        startRest(system,materializer,materializedReadableModelStateStore);
+        // model stream
+        Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(ApplicationKafkaParameters.MODELS_TOPIC))
+                .map(record -> DataConverter.convertModel(record.value()))
+                .filter(record -> record.isPresent()).map(record -> record.get())
+                .map(record -> DataConverter.convertModel(record))
+                .filter(record -> record.isPresent()).map(record -> record.get())
+                .runForeach(model -> modelStateStore.setModel(model), materializer);
+
+        startRest(system,materializer,modelStateStore);
     }
 
     private static void startRest(ActorSystem system, ActorMaterializer materializer, ReadableModelStore reader) {

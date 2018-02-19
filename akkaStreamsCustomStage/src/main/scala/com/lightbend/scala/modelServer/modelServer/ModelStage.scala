@@ -5,15 +5,15 @@ import java.util.concurrent.TimeUnit
 import akka.stream._
 import akka.stream.stage._
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
+import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor, ServingResult}
 
 
-class ModelStage extends GraphStageWithMaterializedValue[FlowShape[WineRecord, Option[Double]], ModelStateStore] {
+class ModelStage extends GraphStageWithMaterializedValue[FlowShape[WineRecord, ServingResult], ModelStateStore] {
 
   val dataRecordIn = Inlet[WineRecord]("dataRecordIn")
-  val scoringResultOut = Outlet[Option[Double]]("scoringOut")
+  val scoringResultOut = Outlet[ServingResult]("scoringOut")
 
-  override val shape: FlowShape[WineRecord, Option[Double]] = FlowShape(dataRecordIn, scoringResultOut)
+  override val shape: FlowShape[WineRecord, ServingResult] = FlowShape(dataRecordIn, scoringResultOut)
 
   class ModelLogic extends GraphStageLogicWithLogging(shape) {
     // state must be kept in the Logic instance, since it is created per stream materialization
@@ -44,13 +44,13 @@ class ModelStage extends GraphStageWithMaterializedValue[FlowShape[WineRecord, O
             val start = System.nanoTime()
             val quality = model.score(record).asInstanceOf[Double]
             val duration = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start)
-            println(s"Calculated quality - $quality calculated in $duration ms")
+//            println(s"Calculated quality - $quality calculated in $duration ms")
             currentState = currentState.map(_.incrementUsage(duration))
-            push(scoringResultOut, Some(quality))
+            push(scoringResultOut, ServingResult(true, quality, duration))
 
           case None =>
             println("No model available - skipping")
-            push(scoringResultOut, None)
+            push(scoringResultOut, ServingResult(false))
         }
       }
     })

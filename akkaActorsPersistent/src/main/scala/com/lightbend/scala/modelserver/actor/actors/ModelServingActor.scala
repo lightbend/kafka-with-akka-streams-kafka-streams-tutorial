@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor.{Actor, Props}
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
+import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor, ServingResult}
 import com.lightbend.scala.modelserver.actor.persistence.FilePersistence
 
 // Workhorse - doing model serving for a given data type
@@ -26,6 +26,7 @@ class ModelServingActor(dataType : String) extends Actor {
   override def receive = {
     case model : ModelWithDescriptor =>
       // Update model
+      println(s"Updated model: $model")
       newState = Some(ModelToServeStats(model.descriptor))
       newModel = Some(model.model)
       FilePersistence.saveState(dataType, newModel.get, newState.get)
@@ -48,13 +49,13 @@ class ModelServingActor(dataType : String) extends Actor {
           val start = System.nanoTime()
           val quality = model.score(record).asInstanceOf[Double]
           val duration = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start)
-          println(s"Calculated quality - $quality calculated in $duration ms")
+//          println(s"Calculated quality - $quality calculated in $duration ms")
           currentState = currentState.map(_.incrementUsage(duration))
-          sender() ! Some(quality)
+          sender() ! ServingResult(true, quality, duration)
 
         case None =>
-          println("No model available - skipping")
-          sender() ! None
+//          println("No model available - skipping")
+          sender() ! ServingResult(false)
       }
 
     case request : GetState => {
