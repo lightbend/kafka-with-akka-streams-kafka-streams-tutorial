@@ -17,7 +17,7 @@ class ModelProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
         ModelWithDescriptor.fromModelToServe(descriptor) match {
           case Success(modelWithDescriptor) => {
             modelStore.newModel = Some(modelWithDescriptor.model)
-            modelStore.newState = Some(new ModelToServeStats(descriptor))
+            modelStore.newState = Some(ModelToServeStats(descriptor))
           }
           case _ => // ignore
         }

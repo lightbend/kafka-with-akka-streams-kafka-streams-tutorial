@@ -1,37 +1,36 @@
 package com.lightbend.scala.modelServer.model
 
-import java.io.{DataInputStream, DataOutputStream}
+import java.io.DataInputStream
+import java.io.DataOutputStream
 
-import com.lightbend.model.modeldescriptor.ModelDescriptor
-
-import scala.collection.Map
-import scala.util.Try
+import scala.util.control.NonFatal
 
 /**
  * Created by boris on 5/8/17.
  */
-case class ModelToServeStats(
-  name: String = "",
-  description: String = "",
-  since: Long = 0,
-  var usage: Long = 0,
-  var duration: Double = .0,
-  var min: Long = Long.MaxValue,
-  var max: Long = Long.MinValue) {
-
-  def this(m: ModelToServe) = this(m.name, m.description, System.currentTimeMillis())
+final case class ModelToServeStats(
+  name: String,
+  description: String,
+  since: Long,
+  usage: Long = 0,
+  duration: Double = 0.0,
+  min: Long = 0,
+  max: Long = 0) {
 
   def incrementUsage(execution: Long): ModelToServeStats = {
-    usage = usage + 1
-    duration = duration + execution
-    if (execution < min) min = execution
-    if (execution > max) max = execution
-    this
+    copy(
+      usage = usage + 1,
+      duration = duration + execution,
+      min = if (execution < min) execution else min,
+      max = if (execution > max) execution else max)
   }
 }
 
 object ModelToServeStats {
-  val empty = ModelToServeStats("None", "None", 0, 0, .0, 0, 0)
+  val empty = ModelToServeStats("None", "None", 0)
+
+  def apply(m: ModelToServe): ModelToServeStats =
+    ModelToServeStats(m.name, m.description, System.currentTimeMillis())
 
   def readServingInfo(input: DataInputStream) : Option[ModelToServeStats] = {
     input.readLong match {
@@ -39,9 +38,9 @@ object ModelToServeStats {
         try {
           Some(ModelToServeStats(input.readUTF, input.readUTF, input.readLong, input.readLong, input.readDouble, input.readLong, input.readLong))
         } catch {
-          case t: Throwable =>
+          case NonFatal(e) =>
             System.out.println("Error Deserializing serving info")
-            t.printStackTrace()
+            e.printStackTrace()
             None
         }
       }
@@ -63,9 +62,9 @@ object ModelToServeStats {
         output.writeLong(servingInfo.min)
         output.writeLong(servingInfo.max)
       } catch {
-        case t: Throwable =>
+        case NonFatal(e) =>
           System.out.println("Error Serializing servingInfo")
-          t.printStackTrace()
+          e.printStackTrace()
       }
     }
   }

@@ -17,7 +17,7 @@ class ModelProcessor extends AbstractProcessor[Array[Byte], Try[ModelWithDescrip
   override def process (key: Array[Byte], modelWithDescriptor: Try[ModelWithDescriptor]): Unit = {
 
     modelStore.state.newModel = Some(modelWithDescriptor.get.model)
-    modelStore.state.newState = Some(new ModelToServeStats(modelWithDescriptor.get.descriptor))
+    modelStore.state.newState = Some(ModelToServeStats(modelWithDescriptor.get.descriptor))
   }
 
   override def init(context: ProcessorContext): Unit = {

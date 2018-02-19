@@ -37,10 +37,10 @@ class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byt
     val result = modelStore.state.currentModel match {
       case Some(model) => {
         val start = System.currentTimeMillis()
-        val quality = model.score(dataRecord.get.asInstanceOf[AnyVal]).asInstanceOf[Double]
+        val quality = model.score(dataRecord.get).asInstanceOf[Double]
         val duration = System.currentTimeMillis() - start
 //        println(s"Calculated quality - $quality calculated in $duration ms")
-        modelStore.state.currentState.get.incrementUsage(duration)
+        modelStore.state.currentState = modelStore.state.currentState.map(_.incrementUsage(duration))
         ServingResult(true, quality, duration)
       }
       case _ => {
@@ -86,10 +86,10 @@ class DataProcessorKV extends Transformer[Array[Byte], Try[WineRecord], KeyValue
     val result = modelStore.state.currentModel match {
       case Some(model) => {
         val start = System.currentTimeMillis()
-        val quality = model.score(dataRecord.get.asInstanceOf[AnyVal]).asInstanceOf[Double]
+        val quality = model.score(dataRecord.get).asInstanceOf[Double]
         val duration = System.currentTimeMillis() - start
         //        println(s"Calculated quality - $quality calculated in $duration ms")
-        modelStore.state.currentState.get.incrementUsage(duration)
+        modelStore.state.currentState = modelStore.state.currentState.map(_.incrementUsage(duration))
         ServingResult(true, quality, duration)
       }
       case _ => {

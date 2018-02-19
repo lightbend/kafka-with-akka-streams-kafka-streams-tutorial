@@ -56,13 +56,13 @@ class ModelStateStore(name: String, loggingEnabled: Boolean) extends StateStore 
     state.newModel = Some(newModel)
   }
 
-  override def getCurrentServingInfo: ModelToServeStats = state.currentState.getOrElse(ModelToServeStats())
+  override def getCurrentServingInfo: ModelToServeStats = state.currentState.getOrElse(ModelToServeStats.empty)
 
   def setCurrentServingInfo(currentServingInfo: ModelToServeStats): Unit = {
     state.currentState = Some(currentServingInfo)
   }
 
-  def getNewServingInfo: ModelToServeStats = state.newState.getOrElse(ModelToServeStats())
+  def getNewServingInfo: ModelToServeStats = state.newState.getOrElse(ModelToServeStats.empty)
 
   def setNewServingInfo(newServingInfo: ModelToServeStats) : Unit = {
     state.newState = Some(newServingInfo)

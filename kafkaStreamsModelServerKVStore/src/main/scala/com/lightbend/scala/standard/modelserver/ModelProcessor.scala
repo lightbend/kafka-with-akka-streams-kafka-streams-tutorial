@@ -21,7 +21,7 @@ class ModelProcessor extends AbstractProcessor[Array[Byte], Try[ModelWithDescrip
     if (state == null) state = new StoreState
 
     state.newModel = Some(modelWithDescriptor.get.model)
-    state.newState = Some(new ModelToServeStats(modelWithDescriptor.get.descriptor))
+    state.newState = Some(ModelToServeStats(modelWithDescriptor.get.descriptor))
     modelStore.put(ApplicationKafkaParameters.STORE_ID, state)
   }
 

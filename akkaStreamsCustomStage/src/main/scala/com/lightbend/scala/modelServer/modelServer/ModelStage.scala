@@ -1,97 +1,78 @@
 package com.lightbend.scala.modelServer.modelServer
 
+import java.util.concurrent.TimeUnit
+
 import akka.stream._
-import akka.stream.stage.{GraphStageLogicWithLogging, _}
+import akka.stream.stage._
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
 
 
-class ModelStage extends GraphStageWithMaterializedValue[ModelStageShape, ReadableModelStateStore] {
+class ModelStage extends GraphStageWithMaterializedValue[FlowShape[WineRecord, Option[Double]], ModelStateStore] {
 
   val dataRecordIn = Inlet[WineRecord]("dataRecordIn")
-  val modelRecordIn = Inlet[ModelWithDescriptor]("modelRecordIn")
   val scoringResultOut = Outlet[Option[Double]]("scoringOut")
 
-  override val shape: ModelStageShape = new ModelStageShape(dataRecordIn, modelRecordIn, scoringResultOut)
+  override val shape: FlowShape[WineRecord, Option[Double]] = FlowShape(dataRecordIn, scoringResultOut)
 
-  class ModelLogic(shape: ModelStageShape) extends GraphStageLogicWithLogging(shape) {
+  class ModelLogic extends GraphStageLogicWithLogging(shape) {
     // state must be kept in the Logic instance, since it is created per stream materialization
     private var currentModel: Option[Model] = None
     private var newModel: Option[Model] = None
     var currentState: Option[ModelToServeStats] = None // exposed in materialized value
     private var newState: Option[ModelToServeStats] = None
 
-    override def preStart(): Unit = {
-      tryPull(modelRecordIn)
-      tryPull(dataRecordIn)
+    val setModelCB = getAsyncCallback[ModelWithDescriptor] { model =>
+      println(s"Updated model: $model")
+      newState = Some(ModelToServeStats(model.descriptor))
+      newModel = Some(model.model)
     }
-
-    setHandler(modelRecordIn, new InHandler {
-      override def onPush(): Unit = {
-        val model = grab(modelRecordIn)
-        newState = Some(new ModelToServeStats(model.descriptor))
-        newModel = Some(model.model)
-        pull(modelRecordIn)
-      }
-    })
 
     setHandler(dataRecordIn, new InHandler {
       override def onPush(): Unit = {
         val record = grab(dataRecordIn)
-        newModel match {
-          case Some(model) => {
-            // close current model first
-            currentModel match {
-              case Some(m) => m.cleanup()
-              case _ =>
-            }
-            // Update model
-            currentModel = Some(model)
-            currentState = newState
-            newModel = None
-          }
-          case _ =>
+        newModel.foreach { model =>
+          // close current model first
+          currentModel.foreach(_.cleanup())
+          // Update model
+          currentModel = Some(model)
+          currentState = newState
+          newModel = None
         }
         currentModel match {
-          case Some(model) => {
-            val start = System.currentTimeMillis()
-            val quality = model.score(record.asInstanceOf[AnyVal]).asInstanceOf[Double]
-            val duration = System.currentTimeMillis() - start
+          case Some(model) =>
+            val start = System.nanoTime()
+            val quality = model.score(record).asInstanceOf[Double]
+            val duration = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start)
             println(s"Calculated quality - $quality calculated in $duration ms")
-            currentState.get.incrementUsage(duration)
+            currentState = currentState.map(_.incrementUsage(duration))
             push(scoringResultOut, Some(quality))
-          }
-          case _ => {
+
+          case None =>
             println("No model available - skipping")
             push(scoringResultOut, None)
-          }
         }
-        pull(dataRecordIn)
       }
     })
 
     setHandler(scoringResultOut, new OutHandler {
       override def onPull(): Unit = {
+        pull(dataRecordIn)
       }
     })
   }
 
-  override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, ReadableModelStateStore) = {
-    val logic = new ModelLogic(shape)
+  override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, ModelStateStore) = {
+    val logic = new ModelLogic
 
     // we materialize this value so whoever runs the stream can get the current serving info
-    val readableModelStateStore = new ReadableModelStateStore() {
-      override def getCurrentServingInfo: ModelToServeStats = logic.currentState.getOrElse(ModelToServeStats.empty)
+    val modelStateStore = new ModelStateStore {
+      override def getCurrentServingInfo: ModelToServeStats =
+        logic.currentState.getOrElse(ModelToServeStats.empty)
+
+      override def setModel(model: ModelWithDescriptor): Unit =
+        logic.setModelCB.invoke(model)
     }
-    new Tuple2[GraphStageLogic, ReadableModelStateStore](logic, readableModelStateStore)
+    (logic, modelStateStore)
   }
-}
-
-class ModelStageShape(val dataRecordIn: Inlet[WineRecord], val modelRecordIn: Inlet[ModelWithDescriptor], val scoringResultOut: Outlet[Option[Double]]) extends Shape {
-
-  override def deepCopy(): Shape = new ModelStageShape(dataRecordIn.carbonCopy(), modelRecordIn.carbonCopy(), scoringResultOut)
-
-  override val inlets = List(dataRecordIn, modelRecordIn)
-  override val outlets = List(scoringResultOut)
-
 }

@@ -16,7 +16,7 @@ class TensorFlowModel(inputStream: Array[Byte]) extends Model {
   graph.importGraphDef(inputStream)
   val session = new Session(graph)
 
-  override def score(input: AnyVal): AnyVal = {
+  override def score(input: Any): Any = {
 
     val record = input.asInstanceOf[WineRecord]
     val data = Array(
