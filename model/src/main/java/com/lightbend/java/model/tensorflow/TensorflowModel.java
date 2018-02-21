@@ -21,8 +21,7 @@ public class TensorflowModel implements Model {
     }
 
     @Override
-    public Object score(Object input) {
-        Winerecord.WineRecord record = (Winerecord.WineRecord) input;
+    public Object score(Winerecord.WineRecord record) {
         float[][] data = {{
                 (float)record.getFixedAcidity(),
                 (float)record.getVolatileAcidity(),

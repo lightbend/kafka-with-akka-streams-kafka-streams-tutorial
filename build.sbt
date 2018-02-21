@@ -5,7 +5,8 @@ scalaVersion in ThisBuild := "2.11.8"
 // scalaVersion in ThisBuild := "2.12.4"
 
 scalacOptions in ThisBuild := Seq("-Xexperimental", "-unchecked", "-deprecation", "-feature")
-javaOptions in ThisBuild := Seq("Xlint:unchecked")
+javaOptions in ThisBuild := Seq("-Xlint:unchecked")
+compileOrder := CompileOrder.JavaThenScala
 
 lazy val protobufs = (project in file("./protobufs"))
     .settings(

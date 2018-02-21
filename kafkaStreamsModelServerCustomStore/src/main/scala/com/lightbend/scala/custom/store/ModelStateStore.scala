@@ -14,7 +14,7 @@ class ModelStateStore(name: String, loggingEnabled: Boolean) extends StateStore 
 
   var state = new StoreState
   val changelogKey = STORE_ID
-  var changeLogger = null.asInstanceOf[ModelStateStoreChangeLogger[Integer,StoreState]]
+  var changeLogger: ModelStateStoreChangeLogger[Integer,StoreState] = null
   var open = false
 
   override def name: String = name

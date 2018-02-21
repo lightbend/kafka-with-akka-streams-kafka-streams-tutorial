@@ -45,14 +45,16 @@ class MessageSender(val brokers: String) {
     producer.flush()
   }
 
+  /** Write a value with no key. */
   def writeValue(topic: String, value: Array[Byte]): Unit = {
-    val result = producer.send(new ProducerRecord[Array[Byte], Array[Byte]](topic, null.asInstanceOf[Array[Byte]], value)).get
+    val result = producer.send(new ProducerRecord[Array[Byte], Array[Byte]](topic, value)).get
     producer.flush()
   }
 
+  /** Write a value with no key. */
   def batchWriteValue(topic: String, batch: Seq[Array[Byte]]): Seq[RecordMetadata] = {
     val result = batch.map(value =>
-      producer.send(new ProducerRecord[Array[Byte], Array[Byte]](topic, null.asInstanceOf[Array[Byte]], value)).get)
+      producer.send(new ProducerRecord[Array[Byte], Array[Byte]](topic, value)).get)
     producer.flush()
     result
   }

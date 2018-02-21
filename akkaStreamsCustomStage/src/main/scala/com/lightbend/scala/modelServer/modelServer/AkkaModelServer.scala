@@ -26,9 +26,9 @@ import org.apache.kafka.common.serialization.ByteArrayDeserializer
   */
 object AkkaModelServer {
 
-  implicit val system = ActorSystem("ModelServing")
-  implicit val materializer = ActorMaterializer()
-  implicit val executionContext = system.dispatcher
+  implicit val system = ActorSystem("ModelServing")   // Initialize Akka
+  implicit val materializer = ActorMaterializer()     // "Materialize" our streams using Akka Actors
+  implicit val executionContext = system.dispatcher   // This handles thread pools, etc.
 
   println(s"Using kafka brokers at ${KAFKA_BROKER} ")
 

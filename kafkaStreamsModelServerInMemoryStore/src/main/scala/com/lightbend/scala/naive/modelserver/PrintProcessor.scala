@@ -8,7 +8,7 @@ import scala.util.Success
 
 class PrintProcessor extends AbstractProcessor[Array[Byte], ServingResult]{
 
-  private var modelStore = null.asInstanceOf[StoreState]
+  private var modelStore: StoreState = null
 
   override def process (key: Array[Byte], value: ServingResult ): Unit = {
 

@@ -12,7 +12,7 @@ import scala.util.Try
 
 class ModelProcessor extends AbstractProcessor[Array[Byte], Try[ModelWithDescriptor]] {
 
-  private var modelStore = null.asInstanceOf[KeyValueStore[Integer, StoreState]]
+  private var modelStore: KeyValueStore[Integer, StoreState] = null
 
   import ApplicationKafkaParameters._
   override def process (key: Array[Byte], modelWithDescriptor: Try[ModelWithDescriptor]): Unit = {

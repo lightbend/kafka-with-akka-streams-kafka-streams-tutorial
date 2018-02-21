@@ -7,18 +7,16 @@ import com.lightbend.scala.modelServer.model.{Model, ModelFactory, ModelToServe}
 
 /**
  * Created by boris on 5/26/17.
- * Implementation of tensorflow model
+ * Implementation of a model using TensorFlow for "Records".
  */
-
 class TensorFlowModel(inputStream: Array[Byte]) extends Model {
 
   val graph = new Graph
   graph.importGraphDef(inputStream)
   val session = new Session(graph)
 
-  override def score(input: Any): Any = {
+  override def score(record: WineRecord): Any = {
 
-    val record = input.asInstanceOf[WineRecord]
     val data = Array(
       record.fixedAcidity.toFloat,
       record.volatileAcidity.toFloat,

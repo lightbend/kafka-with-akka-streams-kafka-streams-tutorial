@@ -22,7 +22,7 @@ class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: Zo
 
   import KafkaLocalServer._
 
-  private var broker = null.asInstanceOf[KafkaServerStartable]
+  private var broker: KafkaServerStartable = null
   private var zkUtils : ZkUtils =
     ZkUtils.apply(s"localhost:${zooKeeperServer.getPort()}", DEFAULT_ZK_SESSION_TIMEOUT_MS, DEFAULT_ZK_CONNECTION_TIMEOUT_MS, false)
 
@@ -36,7 +36,7 @@ class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: Zo
     if (broker != null) {
       broker.shutdown()
       zooKeeperServer.stop()
-      broker = null.asInstanceOf[KafkaServerStartable]
+      broker = null
     }
   }
 
@@ -80,13 +80,13 @@ object KafkaLocalServer {
   private val DEFAULT_ZK_SESSION_TIMEOUT_MS = 10 * 1000
   private val DEFAULT_ZK_CONNECTION_TIMEOUT_MS = 8 * 1000
 
-  private final val basDir = "tmp/"
+  private final val baseDir = "tmp/"
 
   private final val KafkaDataFolderName = "kafka_data"
 
   val Log = LoggerFactory.getLogger(classOf[KafkaLocalServer])
 
-  def apply(cleanOnStart: Boolean): KafkaLocalServer = this(DefaultPort, ZooKeeperLocalServer.DefaultPort, cleanOnStart)
+  def apply(cleanOnStart: Boolean): KafkaLocalServer = apply(DefaultPort, ZooKeeperLocalServer.DefaultPort, cleanOnStart)
 
   def apply(kafkaPort: Int, zookeeperServerPort: Int, cleanOnStart: Boolean): KafkaLocalServer = {
     val kafkaDataDir = dataDirectory(KafkaDataFolderName)
@@ -142,7 +142,7 @@ object KafkaLocalServer {
 
   def dataDirectory(directoryName: String): File = {
 
-    val dataDirectory = new File(basDir + directoryName)
+    val dataDirectory = new File(baseDir + directoryName)
     if (dataDirectory.exists() && !dataDirectory.isDirectory())
       throw new IllegalArgumentException(s"Cannot use $directoryName as a directory name because a file with that name already exists in $dataDirectory.")
 
@@ -155,7 +155,7 @@ private class ZooKeeperLocalServer(port: Int, cleanOnStart: Boolean) {
   import KafkaLocalServer._
   import ZooKeeperLocalServer._
 
-  private var zooKeeper = null.asInstanceOf[TestingServer]
+  private var zooKeeper: TestingServer = null
 
   def start(): Unit = {
     val zookeeperDataDir = dataDirectory(ZookeeperDataFolderName)
@@ -171,7 +171,7 @@ private class ZooKeeperLocalServer(port: Int, cleanOnStart: Boolean) {
     if (zooKeeper != null)
       try {
         zooKeeper.stop()
-        zooKeeper = null.asInstanceOf[TestingServer]
+        zooKeeper = null
       }
       catch {
         case _: IOException => () // nothing to do if an exception is thrown while shutting down

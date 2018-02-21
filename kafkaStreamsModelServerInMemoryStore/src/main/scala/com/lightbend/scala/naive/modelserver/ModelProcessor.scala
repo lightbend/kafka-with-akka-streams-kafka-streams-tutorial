@@ -8,7 +8,7 @@ import scala.util.Success
 
 class ModelProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
 
-  private var modelStore = null.asInstanceOf[StoreState]
+  private var modelStore: StoreState = null
 
   override def process (key: Array[Byte], value: Array[Byte] ): Unit = {
 

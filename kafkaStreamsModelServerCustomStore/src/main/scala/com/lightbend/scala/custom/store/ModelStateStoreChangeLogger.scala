@@ -8,7 +8,10 @@ class ModelStateStoreChangeLogger[K, V]
     (storeName: String, context: ProcessorContext, partition: Int, serialization: StateSerdes[K, V]){
 
   val topic = ProcessorStateManager.storeChangelogTopic(context.applicationId, storeName)
-  val collector = context.asInstanceOf[RecordCollector.Supplier].recordCollector
+  val collector = context match {
+    case rc: RecordCollector.Supplier => rc.recordCollector
+    case _ => throw new RuntimeException(s"Expected a context that is a RecordCollector.Supplier, but got this: $context")
+  }
 
   def this(storeName: String, context: ProcessorContext, serialization: StateSerdes[K, V]) {
     this(storeName, context, context.taskId.partition, serialization)

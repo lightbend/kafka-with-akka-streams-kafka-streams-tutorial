@@ -67,11 +67,10 @@ public class PMMLModel implements Model {
     }
 
     @Override
-    public Object score(Object input) {
-        Winerecord.WineRecord inputs = (Winerecord.WineRecord) input;
+    public Object score(Winerecord.WineRecord record) {
         arguments.clear();
         for(InputField field : inputFields){
-           arguments.put(field.getName(), field.prepare(getValueByName(inputs,field.getName().getValue())));
+           arguments.put(field.getName(), field.prepare(getValueByName(record, field.getName().getValue())));
         }
 
         // Calculate Output// Calculate Output

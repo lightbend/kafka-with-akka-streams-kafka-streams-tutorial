@@ -489,6 +489,11 @@ TODO - Expand
 
 ## References
 
+### Scala
+
+* [Scala web site](https://www.scala-lang.org/)
+* [Scaladocs](https://www.scala-lang.org/api/current/index.html) (This is for 2.12.4; we're using 2.11.11, but close enough...)
+
 ### Kafka
 
 * [Kafka](https://kafka.apache.org/)
