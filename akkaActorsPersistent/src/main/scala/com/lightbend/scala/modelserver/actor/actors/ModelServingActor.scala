@@ -51,11 +51,11 @@ class ModelServingActor(dataType : String) extends Actor {
           val duration = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start)
 //          println(s"Calculated quality - $quality calculated in $duration ms")
           currentState = currentState.map(_.incrementUsage(duration))
-          sender() ! ServingResult(true, quality, duration)
+          sender() ! ServingResult(quality, duration)
 
         case None =>
 //          println("No model available - skipping")
-          sender() ! ServingResult(false)
+          sender() ! ServingResult.noModel
       }
 
     case request : GetState => {

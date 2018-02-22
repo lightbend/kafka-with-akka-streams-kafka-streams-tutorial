@@ -38,7 +38,7 @@ public class DataProcessor implements Transformer<byte[], Optional<Winerecord.Wi
         if(modelStore.getCurrentModel() == null) {
             // No model currently
 //            System.out.println("No model available - skipping");
-            result = new ServingResult();
+            result = ServingResult.noModel;
         }
         else{
             // Score the model

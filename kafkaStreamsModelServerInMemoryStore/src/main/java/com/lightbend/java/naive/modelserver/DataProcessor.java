@@ -40,7 +40,7 @@ public class DataProcessor extends AbstractProcessor<byte[], byte[]> {
         if(modelStore.getCurrentModel() == null) {
             // No model currently
 //            System.out.println("No model available - skipping");
-            ctx.forward(key, new ServingResult());
+            ctx.forward(key, ServingResult.noModel);
         }
         else{
             // Score the model

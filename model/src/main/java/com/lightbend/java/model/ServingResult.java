@@ -2,6 +2,8 @@ package com.lightbend.java.model;
 
 public class ServingResult {
 
+    public static ServingResult noModel = new ServingResult();
+
     private boolean processed;
     private double result;
     private long duration;
