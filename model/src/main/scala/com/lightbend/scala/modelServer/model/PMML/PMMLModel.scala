@@ -19,6 +19,9 @@ import com.lightbend.scala.modelServer.model.{Model, ModelFactory, ModelToServe}
 import scala.collection.JavaConversions._
 import scala.collection._
 
+/**
+ * Handle models provided using PMML, to score "Records".
+ */
 class PMMLModel(inputStream: Array[Byte]) extends Model {
 
   var arguments = mutable.Map[FieldName, FieldValue]()
@@ -38,11 +41,10 @@ class PMMLModel(inputStream: Array[Byte]) extends Model {
   val target: TargetField = evaluator.getTargetFields.get(0)
   val tname = target.getName
 
-  override def score(input: Any): Any = {
-    val inputs = input.asInstanceOf[WineRecord]
+  override def score(record: WineRecord): Any = {
     arguments.clear()
     inputFields.foreach(field => {
-      arguments.put(field.getName, field.prepare(getValueByName(inputs, field.getName.getValue)))
+      arguments.put(field.getName, field.prepare(getValueByName(record, field.getName.getValue)))
     })
 
     // Calculate Output// Calculate Output
@@ -57,10 +59,10 @@ class PMMLModel(inputStream: Array[Byte]) extends Model {
 
   override def cleanup(): Unit = {}
 
-  private def getValueByName(inputs: WineRecord, name: String): Double =
+  private def getValueByName(input: WineRecord, name: String): Double =
     PMMLModel.names.get(name) match {
       case Some(index) => {
-        val v = inputs.getFieldByNumber(index + 1)
+        val v = input.getFieldByNumber(index + 1)
         v.asInstanceOf[Double]
       }
       case _ => .0

@@ -16,7 +16,7 @@ import scala.util.Try
 
 class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byte], ServingResult)]{
 
-  private var modelStore = null.asInstanceOf[KeyValueStore[Integer, StoreState]]
+  private var modelStore: KeyValueStore[Integer, StoreState] = null
 
   import ApplicationKafkaParameters._
 
@@ -69,7 +69,7 @@ class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byt
 
 class DataProcessorKV extends Transformer[Array[Byte], Try[WineRecord], KeyValue[Array[Byte], ServingResult]]{
 
-  private var modelStore = null.asInstanceOf[KeyValueStore[Integer, StoreState]]
+  private var modelStore: KeyValueStore[Integer, StoreState] = null
 
   import ApplicationKafkaParameters._
 

@@ -119,7 +119,7 @@ object ModelServerFluent {
     Http().bindAndHandle(routes, host, port) map
       { binding => println(s"Starting models observer on port ${binding.localAddress}") } recover {
       case ex =>
-        println(s"Models observer could not bind to $host:$port", ex.getMessage)
+        println(s"Models observer could not bind to $host:$port - ${ex.getMessage}")
     }
   }
 }

@@ -64,7 +64,7 @@ class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byt
 
 class DataProcessorKV extends Transformer[Array[Byte], Try[WineRecord], KeyValue[Array[Byte], ServingResult]]{
 
-  private var modelStore = null.asInstanceOf[ModelStateStore]
+  private var modelStore: ModelStateStore = null
 
   import ApplicationKafkaParameters._
 

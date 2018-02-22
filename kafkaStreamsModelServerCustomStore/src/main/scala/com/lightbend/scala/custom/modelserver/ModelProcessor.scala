@@ -11,7 +11,7 @@ import scala.util.Try
 
 class ModelProcessor extends AbstractProcessor[Array[Byte], Try[ModelWithDescriptor]] with ProcessorSupplier[Array[Byte], Try[ModelWithDescriptor]]{
 
-  private var modelStore = null.asInstanceOf[ModelStateStore]
+  private var modelStore: ModelStateStore = null
 
   import ApplicationKafkaParameters._
   override def process (key: Array[Byte], modelWithDescriptor: Try[ModelWithDescriptor]): Unit = {

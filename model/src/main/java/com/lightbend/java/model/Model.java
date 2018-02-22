@@ -1,5 +1,6 @@
 package com.lightbend.java.model;
 
+import com.lightbend.model.Winerecord;
 import java.io.Serializable;
 
 /**
@@ -7,7 +8,7 @@ import java.io.Serializable;
  * Basic trait for model
  */
 public interface Model extends Serializable {
-    Object score(Object input);
+    public Object score(Winerecord.WineRecord record);
     void cleanup();
     byte[] getBytes();
     long getType();
