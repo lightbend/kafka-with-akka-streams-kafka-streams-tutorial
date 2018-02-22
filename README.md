@@ -40,9 +40,13 @@ To compile the code with SBT in a terminal outside your IDE/Editor environment, 
 
     sbt compile
 
-It's convenient to use SBT's interactive mode if you intend to run more than one command. Type `sbt` and you'll see a prompt `sbt:akkaKafkaTutorial>` (`akkaKafkaTutorial` is the name of the top-level SBT project). Now you can run tasks like `tasks` (list the most common tasks - add the `-V` flag to see all of them), `clean`, `compile`, `help`, etc.
+It's convenient to use SBT's interactive mode if you intend to run more than one "task". Type `sbt` and you'll see a prompt `sbt:akkaKafkaTutorial>` (`akkaKafkaTutorial` is the name of the top-level SBT project). Now you can run tasks like `tasks` like `clean`, `compile`, `package`, `help`, etc.
+
+To list the most common tasks, run `tasks`. To see more complete lists, add the `-v` flag, or use `-V` to see all of them.
 
 The interactive mode is also convenient if you want to work in one of the nested projects, rather than the top-level project. At the SBT prompt, enter `projects` to list the projects (which we'll discuss below), then use `project <name>` to switch to that subproject. Now use commands like `clean`, `compile`, etc.
+
+> **Note:** If you get compilation errors when you run `sbt compile`, try starting `sbt`, then run `clean`, then `compile`. If it still fails, try running the tasks `project model` (switch to the model project), then `clean` and `compile`, then switch back to the top-level project `project akkaKafkaTutorial` and run `compile`.
 
 If you want to use IntelliJ to manage the project and run the SBT build:
 
@@ -158,7 +162,7 @@ sbt:akkaKafkaTutorial> client/runMain com.lightbend.scala.kafka.client.DataProvi
 
 > **Note:** You will need one terminal for _each_ service executed concurrently.
 
-Alternatively you can run an executable directly from IntelliJ and other IDEs. Just right click on the source file containing the Scala or Java `main`, then in the pop-up menu, click _run_ (or _debug_).
+If you are using IntelliJ or another IDE, just right click on the `client` project `com.lightbend.scala.kafka.client.DataProvider` file and select _Run_ (or _Debug_). If the file is open in the editor, just right click there to run it. There is also a _Run_ menu for the IDE.
 
 Now let's look at the specific executables, starting with the `client`, since it has to be executed first to set up the embedded Kafka instance. Then we'll list the rest of the projects alphabetically. We'll focus on the classes (Scala and Java types) that provide the executable `main` routines. We won't discuss the other classes here. We'll discuss them verbally during the tutorial session.
 
@@ -205,7 +209,7 @@ sbt "client/runMain com.lightbend.scala.kafka.client.DataProvider"
 
 The quotes are required!
 
-Alternatively you can run it from within IntelliJ by clicking the `com.lightbend.scala.kafka.client.DataProvider` source and invoking from the pop-up menu, `Run DataProvider`.
+_Or_ use one of the _Run_ or _Debug_ menu items in your IDE for the `client` project, `com.lightbend.scala.kafka.client.DataProvider`.
 
 While `DataProvider` runs, you'll see output to the terminal like this:
 
@@ -270,15 +274,14 @@ For the Java version:
 sbt:akkaKafkaTutorial> akkaStreamsCustomStage/runMain com.lightbend.java.modelserver.modelserver.AkkaModelServer
 ```
 
-Directly from the terminal prompt (prompt not show):
+Directly from the terminal prompt (prompt not show), Scala and Java versions:
 
 ```bash
+sbt "akkaStreamsCustomStage/runMain com.lightbend.scala.modelServer.modelServer.AkkaModelServer"
 sbt "akkaStreamsCustomStage/runMain com.lightbend.java.modelserver.modelserver.AkkaModelServer"
 ```
 
-Alternatively you can run it from within IntelliJ by clicking at `com.lightbend.scala.modelServer.modelServer.AkkaModelServer` (Scala)
-or `com.lightbend.java.modelserver.modelserver.AkkaModelServer` (java)
-and pick `Run AkkaModelServer`
+_Or_ use one of the _Run_ or _Debug_ menu items in your IDE for the `akkaStreamsCustomStage` project, `com.lightbend.scala.modelServer.modelServer.AkkaModelServer` (Scala) or `com.lightbend.java.modelserver.modelserver.AkkaModelServer` (Java).
 
 You'll see output like the following, where at first it skips processing, because it hasn't received a model yet, and then it receives a "model to serve":
 
@@ -321,24 +324,23 @@ The overall implementation looks as follows:
 | SBT Project | `akkaActorsPersistent` |
 | Directory   | `akkaActorsPersistent` |
 | Scala Version | [com.lightbend.scala.modelserver.actor.modelserver.AkkaModelServer](akkaActorsPersistent/src/main/scala/com/lightbend/scala/modelserver/actor/modelserver/AkkaModelServer.scala) |
-| Java Version  | [com.lightbend.java.modelserver.actor.modelserver.AkkaModelServer](akkaActorsPersistent/src/main/java/com/lightbend/java/modelserver/actor/modelserver/AkkaModelServer.java) |
+| Java Version  | [com.lightbend.java.modelserver.actor.modelServer.AkkaModelServer](akkaActorsPersistent/src/main/java/com/lightbend/java/modelserver/actor/modelserver/AkkaModelServer.java) |
 
-Start one of the applications by running `sbt akkaActorsPersistent/run` in a terminal window, then select the executable to run. Or use `runMain`, e.g., for the Scala version:
+Start one of the applications by running `sbt akkaActorsPersistent/run` in a terminal window, then select the executable to run. Or use `runMain`, e.g., for the Scala and Java versions:
 
 ```
-sbt:akkaKafkaTutorial> akkaActorsPersistent/runMain com.lightbend.scala.modelServer.actor.modelServer.AkkaModelServer
+sbt:akkaKafkaTutorial> akkaActorsPersistent/runMain com.lightbend.scala.modelserver.actor.modelserver.AkkaModelServer
+sbt:akkaKafkaTutorial> akkaActorsPersistent/runMain com.lightbend.java.modelserver.actor.modelServer.AkkaModelServer
 ```
 
-Directly from the terminal prompt (prompt not show):
+Directly from the terminal prompt (prompt not show), Scala and Java versions:
 
 ```bash
-sbt "akkaActorsPersistent/runMain com.lightbend.scala.modelServer.actor.modelServer.AkkaModelServer"
+sbt "akkaActorsPersistent/runMain com.lightbend.scala.modelserver.actor.modelserver.AkkaModelServer"
+sbt "akkaActorsPersistent/runMain com.lightbend.java.modelserver.actor.modelServer.AkkaModelServer"
 ```
 
-Alternatively you can run it from within IntelliJ by clicking
-at `com.lightbend.scala.modelserver.actor.modelserver.AkkaModelServer` (Scala)
-or `com.lightbend.java.modelserver.actor.modelServer.AkkaModelServer` (java)
-and pick `Run AkkaModelServer`
+_Or_ use one of the _Run_ or _Debug_ menu items in your IDE for the `akkaActorsPersistent` project, `com.lightbend.scala.modelserver.actor.modelserver.AkkaModelServer` (Scala) or `com.lightbend.java.modelserver.actor.modelServer.AkkaModelServer` (Java).
 
 Once running, visit these links:
 
@@ -375,23 +377,23 @@ This Kafka Streams implementation of model serving "persists" state in memory, w
 | Scala Version | [com.lightbend.scala.naive.modelserver.ModelServer](kafkaStreamsModelServerInMemoryStore/src/main/scala/com/lightbend/scala/naive/modelserver/ModelServer.scala) |
 | Java Version | [com.lightbend.java.naive.modelserver.ModelServer](kafkaStreamsModelServerInMemoryStore/src/main/java/com/lightbend/java/naive/modelserver/ModelServer.java) |
 
-Start one of the applications by running `sbt kafkaStreamsModelServerInMemoryStore/run` in a terminal window, then select the executable to run. Or use `runMain`, e.g., for the Scala version:
+Start one of the applications by running `sbt kafkaStreamsModelServerInMemoryStore/run` in a terminal window, then select the executable to run. Or use `runMain`, e.g., for the Scala and Java versions:
 
 ```
 sbt:akkaKafkaTutorial> kafkaStreamsModelServerInMemoryStore/runMain com.lightbend.scala.naive.modelserver.ModelServer
+sbt:akkaKafkaTutorial> kafkaStreamsModelServerInMemoryStore/runMain com.lightbend.java.naive.modelserver.ModelServer
 ```
 
-Or, directly from the terminal prompt (not shown), where the quotes are required:
+Directly from the terminal prompt (prompt not show), Scala and Java versions:
 
 ```bash
 sbt "kafkaStreamsModelServerInMemoryStore/runMain com.lightbend.scala.naive.modelserver.ModelServer"
+sbt "kafkaStreamsModelServerInMemoryStore/runMain com.lightbend.java.naive.modelserver.ModelServer"
 ```
 
-Alternatively you can run it from within IntelliJ by clicking
-at `com.lightbend.scala.naive.modelserver.ModelServer` (Scala)
-or `com.lightbend.java.naive.modelserver.ModelServer` (java)
-and pick `Run ModelServer`
-
+_Or_ use one of the _Run_ or _Debug_ menu items in your IDE for the `kafkaStreamsModelServerInMemoryStore` project,
+`com.lightbend.scala.naive.modelserver.ModelServer` (Scala)
+or `com.lightbend.java.naive.modelserver.ModelServer` (java).
 
 Once running, visit http://localhost:8888/state/value for the current state of execution for a given model.
 
@@ -408,24 +410,26 @@ The second Kafka Streams example of model serving uses the provided key-value st
 | Java Version | [com.lightbend.java.standard.modelserver.ModelServer](kafkaStreamsModelServerKVStore/src/main/java/com/lightbend/java/standard/modelserver/ModelServer.java) |
 | Scala "Fluent" Version | [com.lightbend.scala.standard.modelserver.ModelServerFluent](kafkaStreamsModelServerKVStore/src/main/scala/com/lightbend/scala/standard/modelserver/ModelServerFluent.scala) |
 
-Start one of the applications by running `sbt kafkaStreamsModelServerKVStore/run` in a terminal window, then select the executable to run. Or use `runMain`, e.g., for the Scala version:
+Start one of the applications by running `sbt kafkaStreamsModelServerKVStore/run` in a terminal window, then select the executable to run. Or use `runMain`, e.g., for the Scala and Java versions:
 
 ```
 sbt:akkaKafkaTutorial> kafkaStreamsModelServerKVStore/runMain com.lightbend.scala.standard.modelserver.ModelServer
+sbt:akkaKafkaTutorial> kafkaStreamsModelServerKVStore/runMain com.lightbend.scala.standard.modelserver.ModelServerFluent
+sbt:akkaKafkaTutorial> kafkaStreamsModelServerKVStore/runMain com.lightbend.java.standard.modelserver.ModelServer
 ```
 
-Or, directly from the terminal prompt (not shown), where the quotes are required:
+Directly from the terminal prompt (prompt not show), Scala and Java versions:
 
 ```bash
 sbt "kafkaStreamsModelServerKVStore/runMain com.lightbend.scala.standard.modelserver.ModelServer"
-...
+sbt "kafkaStreamsModelServerKVStore/runMain com.lightbend.scala.standard.modelserver.ModelServerFluent"
+sbt "kafkaStreamsModelServerKVStore/runMain com.lightbend.java.standard.modelserver.ModelServer"
 ```
 
-Alternatively you can run it from within IntelliJ by clicking
-at `com.lightbend.scala.standard.modelserver.scala.ModelServer` (Scala, based on Java APIs)
-or `com.lightbend.scala.standard.modelserver.scala.ModelServerFluent` (Scala, based on Scala APIs)
-or `com.lightbend.java.standard.modelserver.ModelServer` (java)
-and pick `Run ModelServer` or `Run ModelServerFluent`
+_Or_ use one of the _Run_ or _Debug_ menu items in your IDE for the `kafkaStreamsModelServerKVStore` project,
+`com.lightbend.scala.standard.modelserver.scala.ModelServer`,
+`com.lightbend.scala.standard.modelserver.scala.ModelServerFluent`,
+or `com.lightbend.java.standard.modelserver.ModelServer`.
 
 Once running, visit these links:
 
@@ -445,24 +449,26 @@ Two Scala and Java implementations are provided for model serving that provide i
 | Java Version | [com.lightbend.java.custom.modelserver.ModelServer](kafkaStreamsModelServerCustomStore/src/main/java/com/lightbend/java/custom/modelserver/ModelServer.java) |
 | Scala "Fluent" Version | [com.lightbend.scala.custom.modelserver.ModelServerFluent](kafkaStreamsModelServerCustomStore/src/main/scala/com/lightbend/scala/custom/modelserver/ModelServerFluent.scala) |
 
-Start one of the applications by running `sbt kafkaStreamsModelServerCustomStore/run` in a terminal window, then select the executable to run. Or use `runMain`, e.g., for the Scala version:
+Start one of the applications by running `sbt kafkaStreamsModelServerCustomStore/run` in a terminal window, then select the executable to run. Or use `runMain`, e.g., for the Scala and Java versions:
 
 ```
 sbt:akkaKafkaTutorial> kafkaStreamsModelServerCustomStore/runMain com.lightbend.scala.custom.modelserver.ModelServer
+sbt:akkaKafkaTutorial> kafkaStreamsModelServerCustomStore/runMain com.lightbend.scala.custom.modelserver.ModelServerFluent
+sbt:akkaKafkaTutorial> kafkaStreamsModelServerCustomStore/runMain com.lightbend.java.custom.modelserver.ModelServer
 ```
 
-Or, directly from the terminal prompt (not shown), where the quotes are required:
+Directly from the terminal prompt (prompt not show), Scala and Java versions:
 
 ```bash
 sbt "kafkaStreamsModelServerCustomStore/runMain com.lightbend.scala.custom.modelserver.ModelServer"
+sbt "kafkaStreamsModelServerCustomStore/runMain com.lightbend.scala.custom.modelserver.ModelServerFluent"
+sbt "kafkaStreamsModelServerCustomStore/runMain com.lightbend.java.custom.modelserver.ModelServer"
 ```
 
-Alternatively you can run it from within IntelliJ by clicking
-at `com.lightbend.scala.custom.modelserver.ModelServer` (Scala, based on Java APIs)
-or `com.lightbend.scala.custom.modelserver.ModelServerFluent` (Scala, based on Scala APIs)
-or `com.lightbend.java.standard.modelserver.ModelServer` (java)
-and pick `Run ModelServer` or `Run ModelServerFluent`
-
+_Or_ use one of the _Run_ or _Debug_ menu items in your IDE for the `kafkaStreamsModelServerCustomStore` project,
+`com.lightbend.scala.custom.modelserver.ModelServer`,
+`com.lightbend.scala.custom.modelserver.ModelServerFluent`,
+or `com.lightbend.java.custom.modelserver.ModelServer`.
 
 Once running, visit these links:
 
