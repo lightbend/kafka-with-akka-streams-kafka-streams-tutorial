@@ -24,13 +24,39 @@ First, we will describe how to build and run the applications. Then we will disc
 
 The Java JDK v8 is required. If not already installed, see the instructions [here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
 
-[SBT](https://www.scala-sbt.org/), the de facto build tool for Scala is used to build the code, both the Scala and Java implementations. The SBT build files are configured to download all the required dependencies.
+[SBT](https://www.scala-sbt.org/), the _de facto_ build tool for Scala is used to build the code, both the Scala and Java implementations. The SBT build files are configured to download all the required dependencies.
 
 We recommend using [IntelliJ IDEA](https://www.jetbrains.com/idea/) for managing and building the code, which can drive SBT. The free Community Edition is sufficient. However, using IntelliJ isn't required; any favorite IDE or editor environment will do.
 
-If you wish to use SBT in a terminal (e.g., in conjunction with your text editor), follow the SBT installation instructions [here](https://www.scala-sbt.org/download.html).
+If you use IntelliJ IDEA or another IDE environment, also install the Scala plugin for the IDE. IntelliJ's Scala plugin includes support for SBT (ignore the SBT plugins that are available). Other IDEs might require a separate SBT plugin. Note that the tutorial uses the last release of Scala 2.11, 2.11.12 (the overall latest release of Scala is 2.12.4).
 
-If you use IntelliJ IDEA or another IDE environment, also install available Scala and SBT plugins for the IDE.
+> **Note:** If you encounter class file or byte code errors when attempting to run SBT below, try removing any versions of Scala that are on your `PATH`. You can also try downloading the correct version of Scala ([tgz](https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz) or [zip](https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.zip)) and use it as your Scala SDK for the project or the IDE globally.
+
+If you use IntelliJ, the quickest way to start is to create a new project from the GitHub repository:
+
+1. File > New > Project from Version Control > GitHub
+2. Log into your GitHub account
+3. Specify the URL https://github.com/lightbend/kafka-with-akka-streams-kafka-streams-tutorial
+4. When the window opens, you'll see a pop-up with a link asking to load the SBT project; do that
+5. Accept the defaults for SBT. Use JDK 1.8 if it's not shown as the default.
+6. Do one build using the SBT command line...
+
+Unfortunately, the IntelliJ build doesn't properly build the `protobuf` project (TBD), so do a one-time command-line build:
+
+1. Open the terminal tab in IntelliJ
+2. Type "sbt compile"
+3. It should end with `[success] Total time: 30 s, completed Feb ...` after ~30 seconds
+4. Now just use IntelliJ's _Build_ command as needed or automatically
+
+If you don't have a GitHub account, just download the latest [release](https://github.com/lightbend/kafka-with-akka-streams-kafka-streams-tutorial/releases) and import the code as an SBT project into your IDE. In IntelliJ, use these steps:
+
+* _Import Project_
+* Select the project root directory (i.e., the same as for this README)
+* Select `sbt` as the project type
+* Use the default settings for `sbt`. Use JDK 1.8 if it's not shown as the default.
+* Profit!!
+
+If you wish to use SBT in a terminal (e.g., in conjunction with your text editor), follow the SBT installation instructions [here](https://www.scala-sbt.org/download.html).
 
 ### Build the Code
 
