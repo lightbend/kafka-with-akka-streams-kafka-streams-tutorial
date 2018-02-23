@@ -41,11 +41,11 @@ class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byt
         val duration = System.currentTimeMillis() - start
 //        println(s"Calculated quality - $quality calculated in $duration ms")
         modelStore.state.currentState = modelStore.state.currentState.map(_.incrementUsage(duration))
-        ServingResult(true, quality, duration)
+        ServingResult(quality, duration)
       }
       case _ => {
 //        println("No model available - skipping")
-        ServingResult(false)
+        ServingResult.noModel
       }
     }
     (key, result)
@@ -90,11 +90,11 @@ class DataProcessorKV extends Transformer[Array[Byte], Try[WineRecord], KeyValue
         val duration = System.currentTimeMillis() - start
         //        println(s"Calculated quality - $quality calculated in $duration ms")
         modelStore.state.currentState = modelStore.state.currentState.map(_.incrementUsage(duration))
-        ServingResult(true, quality, duration)
+        ServingResult(quality, duration)
       }
       case _ => {
         //        println("No model available - skipping")
-        ServingResult(false)
+        ServingResult.noModel
       }
     }
     KeyValue.pair(key,result)

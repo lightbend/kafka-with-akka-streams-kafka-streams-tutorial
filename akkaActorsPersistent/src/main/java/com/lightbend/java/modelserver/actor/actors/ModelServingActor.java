@@ -67,7 +67,7 @@ public class ModelServingActor extends AbstractActor {
         else{
             // No model currently
 //            System.out.println("No model available - skipping");
-            return new ServingResult();
+            return ServingResult.noModel;
         }
     }
 

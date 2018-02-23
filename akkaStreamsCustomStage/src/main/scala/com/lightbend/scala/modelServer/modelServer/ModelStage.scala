@@ -46,11 +46,11 @@ class ModelStage extends GraphStageWithMaterializedValue[FlowShape[WineRecord, S
             val duration = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start)
 //          println(s"Calculated quality - $quality calculated in $duration ms")
             currentState = currentState.map(_.incrementUsage(duration))
-            push(scoringResultOut, ServingResult(true, quality, duration))
+            push(scoringResultOut, ServingResult(quality, duration))
 
           case None =>
 //          println("No model available - skipping")
-            push(scoringResultOut, ServingResult(false))
+            push(scoringResultOut, ServingResult.noModel)
         }
       }
     })

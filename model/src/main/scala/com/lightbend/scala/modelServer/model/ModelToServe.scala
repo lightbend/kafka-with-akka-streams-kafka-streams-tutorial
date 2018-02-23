@@ -21,3 +21,8 @@ case class ModelToServe(name: String, description: String,
   modelType: ModelDescriptor.ModelType, model: Array[Byte], dataType: String) {}
 
 case class ServingResult(processed : Boolean, result: Double = .0, duration: Long = 0l)
+
+object ServingResult{
+  val noModel = ServingResult(false)
+  def apply(result: Double, duration: Long): ServingResult = ServingResult(true, result, duration)
+}

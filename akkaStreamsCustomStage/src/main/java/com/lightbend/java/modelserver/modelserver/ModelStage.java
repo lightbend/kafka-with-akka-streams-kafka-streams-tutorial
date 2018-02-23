@@ -58,7 +58,7 @@ public class ModelStage extends AbstractGraphStageWithMaterializedValue<FlowShap
                     } else {
                         // No model currently
 //                        System.out.println("No model available - skipping");
-                        push(scoringResultOut, new ServingResult());
+                        push(scoringResultOut, ServingResult.noModel);
                     }
                 }
             });
