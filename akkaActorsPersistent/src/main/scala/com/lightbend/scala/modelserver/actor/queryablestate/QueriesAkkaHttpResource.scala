@@ -2,12 +2,12 @@ package com.lightbend.scala.modelserver.actor.queryablestate
 
 import akka.actor.ActorRef
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.{Route, RouteResult}
 import akka.util.Timeout
 
 import scala.concurrent.duration._
 import com.lightbend.scala.modelServer.model.ModelToServeStats
-import com.lightbend.scala.modelserver.actor.actors.{GetModels, GetState, GetModelsResult}
+import com.lightbend.scala.modelserver.actor.actors.{GetModels, GetModelsResult, GetState}
 import de.heikoseeberger.akkahttpjackson.JacksonSupport
 import akka.pattern.ask
 
@@ -18,16 +18,16 @@ object QueriesAkkaHttpResource extends JacksonSupport {
   def storeRoutes(modelserver: ActorRef): Route =
     get {
       path("state"/Segment) { datatype =>
-         onSuccess(modelserver ? GetState(datatype)) {
+        onSuccess(modelserver ? GetState(datatype)) {
           case info: ModelToServeStats =>
             complete(info)
         }
       } ~
-      path("models") {
-        onSuccess(modelserver ? GetModels()) {
-          case models: GetModelsResult =>
-            complete(models)
+        path("models") {
+          onSuccess(modelserver ? GetModels()) {
+            case models: GetModelsResult =>
+              complete(models)
+          }
         }
-      }
     }
 }

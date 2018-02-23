@@ -10,11 +10,8 @@ class PrintProcessor extends AbstractProcessor[Array[Byte], ServingResult]{
 
   private var modelStore: StoreState = null
 
-  override def process (key: Array[Byte], value: ServingResult ): Unit = {
+  override def process (key: Array[Byte], value: ServingResult ): Unit = ???
 
-    value.processed match {
-      case true => println(s"Calculated quality - ${value.result} calculated in ${value.duration} ms")
-      case _ => println("No model available - skipping")
-    }
-  }
+  /* Provide an implementation here
+   */
 }

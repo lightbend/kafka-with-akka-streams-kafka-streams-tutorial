@@ -83,15 +83,13 @@ object ModelServerFluent {
 
 
     // Data Processor
-    data
-      .mapValues(value => DataRecord.fromByteArray(value))
-      .filter((key, value) => (value.isSuccess))
-      .transform(() => new DataProcessor, STORE_NAME)
-      .mapValues(value => {
-        if(value.processed) println(s"Calculated quality - ${value.result} calculated in ${value.duration} ms")
-        else println("No model available - skipping")
-        value
-      })
+
+    /* Implement Data processor
+       1. Map values from byte array to winerecord (DataRecord.fromByteArray)
+       2. Skip the ones that failed during marshalling
+       3. Serve records using DataProcessor
+       4 Print serving results
+     */
 
     //Models Processor
     models

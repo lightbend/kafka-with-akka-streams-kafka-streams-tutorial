@@ -2,12 +2,10 @@ package com.lightbend.scala.modelServer.modelServer
 
 import scala.concurrent.duration._
 import scala.util.Success
-
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
-import akka.kafka.ConsumerSettings
-import akka.kafka.Subscriptions
+import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.kafka.scaladsl.Consumer
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Keep, Sink, Source}
@@ -15,11 +13,7 @@ import akka.util.Timeout
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters._
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.modelServer.model.DataRecord
-import com.lightbend.scala.modelServer.model.ModelToServe
-import com.lightbend.scala.modelServer.model.ModelWithDescriptor
 import com.lightbend.scala.modelServer.queriablestate.QueriesAkkaHttpResource
-import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.common.serialization.ByteArrayDeserializer
 
 /**
   * Created by boris on 7/21/17.
@@ -32,15 +26,21 @@ object AkkaModelServer {
 
   println(s"Using kafka brokers at ${KAFKA_BROKER} ")
 
-  val dataConsumerSettings = ConsumerSettings(system, new ByteArrayDeserializer, new ByteArrayDeserializer)
-    .withBootstrapServers(KAFKA_BROKER)
-    .withGroupId(DATA_GROUP)
-    .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+  val dataConsumerSettings : ConsumerSettings[Array[Byte], Array[Byte]] = ???
 
-  val modelConsumerSettings = ConsumerSettings(system, new ByteArrayDeserializer, new ByteArrayDeserializer)
-    .withBootstrapServers(KAFKA_BROKER)
-    .withGroupId(MODELS_GROUP)
-    .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+  /*
+     Define consumer setting with ByteArrayDeserializer and ByteArrayDeserializer
+     With broker Kafka KAFKA_BROKER and kafka group DATA_GROUP
+     set AUTO_OFFSET_RESET_CONFIG, "earliest"
+    */
+
+  val modelConsumerSettings : ConsumerSettings[Array[Byte], Array[Byte]] = ???
+
+  /*
+    Define consumer setting with ByteArrayDeserializer and ByteArrayDeserializer
+    With broker Kafka KAFKA_BROKER and kafka group MODELS_GROUP
+    set AUTO_OFFSET_RESET_CONFIG, "earliest"
+   */
 
 
   def main(args: Array[String]): Unit = {
@@ -50,13 +50,10 @@ object AkkaModelServer {
         .map(record => DataRecord.fromByteArray(record.value))
         .collect { case Success(a) => a }
 
-    val modelPredictions: Source[Option[Double], ModelStateStore] =
-      dataStream.viaMat(new ModelStage)(Keep.right).map(result => {
-        result.processed match {
-          case true => println(s"Calculated quality - ${result.result} calculated in ${result.duration} ms"); Some(result.result)
-          case _ => println ("No model available - skipping"); None
-        }
-      })
+    val modelPredictions  = dataStream.viaMat(new ModelStage)(Keep.right)
+
+        /* Add printing of the execution results. Ensure that you distinguish "No model" case
+         */
 
     val modelStateStore: ModelStateStore =
       modelPredictions
@@ -64,12 +61,15 @@ object AkkaModelServer {
         .run()            // we run the stream, materializing the stage's StateStore
 
     // model stream
-    Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))
-      .map(record => ModelToServe.fromByteArray(record.value())).collect { case Success(a) => a }
-      .map(record => ModelWithDescriptor.fromModelToServe(record)).collect { case Success(a) => a }
-      .runForeach(modelStateStore.setModel)
 
-    startRest(modelStateStore)
+    /* Implement model processing. The steps here should be:
+        1. Convert incoming byte array message to ModelToServe (ModelToServe.fromByteArray)
+        2. Make sure you ignore records failed to marshall
+        3. Convert ModelToserve to computable model (ModelWithDescriptor.fromModelToServe)
+        4. Make sure you ignore models failed to convert
+        5. Update the stage with a new model (modelStateStore.setModel)
+
+     */
   }
 
   def startRest(service: ModelStateStore): Unit = {

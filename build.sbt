@@ -26,21 +26,21 @@ lazy val model = (project in file("./model"))
 
 lazy val kafkaStreamsModelServerInMemoryStore = (project in file("./kafkaStreamsModelServerInMemoryStore"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.9.1",
-            dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
+    dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
   )
   .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
   .dependsOn(model, configuration)
 
 lazy val kafkaStreamsModelServerKVStore = (project in file("./kafkaStreamsModelServerKVStore"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.9.1",
-            dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
+    dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
   )
   .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams, Dependencies.kafkastreamsScala) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
   .dependsOn(model, configuration)
 
 lazy val kafkaStreamsModelServerCustomStore = (project in file("./kafkaStreamsModelServerCustomStore"))
   .settings(dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.9.1",
-            dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
+    dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.1"
   )
   .settings(libraryDependencies ++= Seq(Dependencies.kafkastreams, Dependencies.kafkastreamsScala) ++ Dependencies.webDependencies ++ Dependencies.akkHTTPPSupport)
   .dependsOn(model, configuration)
@@ -60,6 +60,7 @@ lazy val akkaActorsPersistent = (project in file("./akkaActorsPersistent"))
   .settings(libraryDependencies ++= Dependencies.kafkabaseDependencies ++ Dependencies.akkaServerDependencies
     ++ Dependencies.modelsDependencies)
   .dependsOn(model, configuration)
+
 
 lazy val configuration = (project in file("./configuration"))
 

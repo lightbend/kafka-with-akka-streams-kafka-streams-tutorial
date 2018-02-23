@@ -49,7 +49,9 @@ object AkkaModelServer {
     Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))
       .map(record => ModelToServe.fromByteArray(record.value)).collect { case Success(a) => a }
       .map(record => ModelWithDescriptor.fromModelToServe(record)).collect { case Success(a) => a }
-      .mapAsync(1)(elem => modelserver ? elem)
+      /*
+        Invoke model serving actor here
+       */
       .runWith(Sink.ignore) // run the stream, we do not read the results directly
 
     // Data stream processing

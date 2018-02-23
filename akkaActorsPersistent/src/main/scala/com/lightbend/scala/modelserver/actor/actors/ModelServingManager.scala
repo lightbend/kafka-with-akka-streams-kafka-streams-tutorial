@@ -18,14 +18,18 @@ class ModelServingManager extends Actor {
     GetModelsResult(context.children.map(_.path.name).toSeq)
 
   override def receive = {
-    case model: ModelWithDescriptor => getModelServer(model.descriptor.dataType) forward model
+    case model: ModelWithDescriptor =>
+    /* Provide implementation here.
+       Forward request to the appropriate instance (record.dataType) of the model server
+     */
+
     case record: WineRecord => getModelServer(record.dataType) forward record
-    case getState: GetState => {
-      context.child(getState.dataType) match {
-        case Some(actorRef) => actorRef forward getState
-        case _ => sender() ! ModelToServeStats.empty
-      }
-    }
+    case getState: GetState =>
+      /* Provide an implementation here
+         If the actor getState.dataType exists -> forward a request to it
+         otherwize return an empty ModelToServeStats
+       */
+
     case getModels : GetModels => sender() ! getInstances
   }
 }
