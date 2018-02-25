@@ -10,7 +10,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 class RecordProcessor extends RecordProcessorTrait[Array[Byte], Array[Byte]] {
   override def processRecord(record: ConsumerRecord[Array[Byte], Array[Byte]]): Unit = {
     RecordProcessor.count += 1
-    println(s"Retrieved message #${RecordProcessor.count}, key = ${record.key}, value = ${record.value}")
+    println(s"Retrieved message #${RecordProcessor.count}, key = ${record.key}, " +
+      s"value = ${record.value}, size = ${record.value.size}, first 5 elements = ${record.value.take(5).mkString("[", ",", "]")}")
   }
 }
 
