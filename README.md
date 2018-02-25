@@ -358,7 +358,7 @@ _Or_ use one of the _Run_ or _Debug_ menu items in your IDE for the `akkaActorsP
 Once running, visit these links:
 
 * http://localhost:5500/models for information about the currently-used models
-* http://localhost:5500/state/"a_model" for the current state of execution for `a_model`, as listed in the previous link.
+* http://localhost:5500/state/"a_model" for the current state of execution for `a_model`, as listed in the previous link. For example, use `wine` for the model.
 
 ## Kafka Streams Model Server
 

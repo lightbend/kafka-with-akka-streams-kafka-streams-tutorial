@@ -81,6 +81,8 @@ public class AkkaModelServer {
         startRest(system,materializer,router);
     }
 
+    // See http://localhost:5500/models
+    // Then select a model shown and try http://localhost:5500/state/<model>, e.g., http://localhost:5500/state/wine
     private static void startRest(ActorSystem system, ActorMaterializer materializer, ActorRef router) {
         QueriesAkkaHTTPResource resource = new QueriesAkkaHTTPResource(router);
         Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = resource.createRoute().flow(system, materializer);

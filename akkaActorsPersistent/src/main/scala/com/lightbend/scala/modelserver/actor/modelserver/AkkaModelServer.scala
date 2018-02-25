@@ -67,6 +67,8 @@ object AkkaModelServer {
     startRest(modelserver)
   }
 
+  // See http://localhost:5500/models
+  // Then select a model shown and try http://localhost:5500/state/<model>, e.g., http://localhost:5500/state/wine
   def startRest(modelserver: ActorRef): Unit = {
 
     implicit val timeout = Timeout(10.seconds)
