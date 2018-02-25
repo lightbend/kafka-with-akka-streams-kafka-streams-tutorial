@@ -73,6 +73,7 @@ object AkkaModelServer {
     startRest(modelStateStore)
   }
 
+  // Serve model status: http://localhost:5500/state
   def startRest(service: ModelStateStore): Unit = {
 
     implicit val timeout = Timeout(10.seconds)

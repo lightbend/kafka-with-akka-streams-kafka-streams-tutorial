@@ -86,6 +86,7 @@ public class AkkaModelServer {
         startRest(system,materializer,modelStateStore);
     }
 
+    // Serve model status: http://localhost:5500/state
     private static void startRest(ActorSystem system, ActorMaterializer materializer, ReadableModelStore reader) {
         QueriesAkkaHTTPResource resource = new QueriesAkkaHTTPResource(reader);
         Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = resource.createRoute().flow(system, materializer);
