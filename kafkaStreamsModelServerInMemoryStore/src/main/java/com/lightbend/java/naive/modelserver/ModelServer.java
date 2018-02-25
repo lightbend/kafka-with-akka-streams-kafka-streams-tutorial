@@ -83,6 +83,7 @@ public class ModelServer {
         return new KafkaStreams(topology, streamsConfiguration);
     }
 
+    // surf to http://localhost:8888/state/value
     static QueriesRestService startRestProxy(final KafkaStreams streams, final int port) throws Exception {
         final QueriesRestService restService = new QueriesRestService(streams);
         restService.start(port);

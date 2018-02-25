@@ -76,6 +76,7 @@ object ModelServer {
     new KafkaStreams(topology, streamsConfiguration)
   }
 
+  // Surf to http://localhost:8888/state/value
   private def startRestProxy(streams: KafkaStreams, port: Int) = {
 
     implicit val system = ActorSystem("ModelServing")
