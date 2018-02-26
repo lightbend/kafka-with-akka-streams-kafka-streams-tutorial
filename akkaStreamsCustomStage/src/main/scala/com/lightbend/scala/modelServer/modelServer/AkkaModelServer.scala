@@ -58,6 +58,7 @@ object AkkaModelServer {
     val modelStateStore: ModelStateStore =
       modelPredictions
         .to(Sink.ignore)  // we do not read the results directly
+        // Try changing Sink.ignore to Sink.foreach(println). What gets printed. Do you understand the output?
         .run()            // we run the stream, materializing the stage's StateStore
 
     // model stream
@@ -72,10 +73,11 @@ object AkkaModelServer {
      */
   }
 
+  // Serve model status: http://localhost:5500/state
   def startRest(service: ModelStateStore): Unit = {
 
     implicit val timeout = Timeout(10.seconds)
-    val host = "localhost"//InetAddress.getLocalHost.getHostAddress
+    val host = "localhost"  // or could use InetAddress.getLocalHost.getHostAddress
     val port = 5500
     val routes: Route = QueriesAkkaHttpResource.storeRoutes(service)
 

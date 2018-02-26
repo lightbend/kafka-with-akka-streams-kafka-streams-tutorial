@@ -107,6 +107,8 @@ public class ModelServer {
         return new KafkaStreams(topology, streamsConfiguration);
     }
 
+    // Surf to http://localhost:8888/state/instances for the list of currently deployed instances.
+    // Then surf to http://localhost:8888/state/value for the current state of execution for a given model.
     static QueriesRestService startRestProxy(final KafkaStreams streams, final int port) throws Exception {
         final QueriesRestService restService = new QueriesRestService(streams);
         restService.start(port);

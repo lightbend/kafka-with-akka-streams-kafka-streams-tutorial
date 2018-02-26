@@ -43,7 +43,7 @@ If you use IntelliJ, the quickest way to start is to create a new project from t
 
 Unfortunately, the IntelliJ build doesn't properly build the `protobuf` project (TBD), so do a one-time command-line build:
 
-1. Open the terminal tab in IntelliJ
+1. Open the terminal tool window in IntelliJ (e.g., _View > Tool Windows > Terminal_)
 2. Type "sbt compile"
 3. It should end with `[success] Total time: 30 s, completed Feb ...` after ~30 seconds
 4. Now just use IntelliJ's _Build_ command as needed or automatically
@@ -58,13 +58,13 @@ If you don't have a GitHub account, just download the latest [release](https://g
 
 If you wish to use SBT in a terminal (e.g., in conjunction with your text editor), follow the SBT installation instructions [here](https://www.scala-sbt.org/download.html).
 
-### Build the Code
-
-Building the code before the tutorial session will ensure that everything works.
-
 To compile the code with SBT in a terminal outside your IDE/Editor environment, use this command:
 
     sbt compile
+
+Building the code before the tutorial session will ensure that everything works.
+
+### More about Using SBT
 
 It's convenient to use SBT's interactive mode if you intend to run more than one "task". Type `sbt` and you'll see a prompt `sbt:akkaKafkaTutorial>` (`akkaKafkaTutorial` is the name of the top-level SBT project). Now you can run tasks like `tasks` like `clean`, `compile`, `package`, `help`, etc.
 
@@ -74,19 +74,7 @@ The interactive mode is also convenient if you want to work in one of the nested
 
 > **Note:** If you get compilation errors when you run `sbt compile`, try starting `sbt`, then run `clean`, then `compile`. If it still fails, try running the tasks `project model` (switch to the model project), then `clean` and `compile`, then switch back to the top-level project `project akkaKafkaTutorial` and run `compile`.
 
-If you want to use IntelliJ to manage the project and run the SBT build:
-
-1. Use the Import Project feature to import the top-level directory of this repo as a project
-2. Select SBT as the project type
-3. In the settings dialog, check _Use sbt shell for build and import_
-4. After the project loads, open the SBT console, and click the green arrow to start the SBT interactive mode
-5. After it presents the prompt `sbt:akkaKafkaTutorial>`, type `compile`.
-
-Alternatively instead of steps 4 and 5 you can use IntelliJ native compile and build capabilities.
-
-***Note*** If you use IntelliJ native compile and build capabilities, keep in mind that the project includes
-`ScalaPB` plugin, which is not always invoked by IntelliJ build. We recommend to do at least initial build
-using SBT to avoid erroneous compilation errors
+You can use SBT inside IntelliJ, open the Terminal Tool Window and run SBT commands. There is also an SBT Tool Window that's useful for browsing the projects, the available tasks, etc.
 
 To use the SBT build with other IDEs and editors, consult their documentation on using SBT and Scala. If your editor doesn't offer Scala and SBT support, just load the project as a Java project and use the editor to browse and edit the files. Use a terminal window to run SBT.
 
@@ -163,7 +151,7 @@ Both the Akka Streams and Kafka Streams implementations support queryable state.
 
 ## Running the Application
 
-We listed the SBT projects that have service executables above. Now let's explore these executables and how to run them.
+We listed the SBT projects that have service executables above. Now let's explore these executables and how to run them using SBT and IDEs.
 
 First, if you using SBT from a terminal, to run a particular executable, use the following convention that specifies the SBT project, the `client` in this example, then select the executable to run from the list presented:
 
@@ -259,12 +247,11 @@ The `DataReader` outputs messages like the following:
 
 ```
 ...
-Retrieved message #12, key = null, value = [B@53c536c6
-Retrieved message #13, key = null, value = [B@71862844
-Retrieved message #14, key = null, value = [B@4cfa1bf6
-Retrieved message #15, key = null, value = [B@6fca5ad6
-Retrieved message #16, key = null, value = [B@154322ef
-Retrieved message #17, key = null, value = [B@55c7fc0b
+Retrieved message #1: key = null, value = [B@2723c85, size = 105, first 5 elements = [9,102,102,102,102]
+Retrieved message #2: key = null, value = [B@13046ba0, size = 105, first 5 elements = [9,102,102,102,102]
+Retrieved message #3: key = null, value = [B@7a588539, size = 105, first 5 elements = [9,102,102,102,102]
+Retrieved message #4: key = null, value = [B@7e496408, size = 105, first 5 elements = [9,-102,-103,-103,-103]
+Retrieved message #5: key = null, value = [B@6d4cf950, size = 105, first 5 elements = [9,-102,-103,-103,-103]
 ...
 ```
 
@@ -371,7 +358,7 @@ _Or_ use one of the _Run_ or _Debug_ menu items in your IDE for the `akkaActorsP
 Once running, visit these links:
 
 * http://localhost:5500/models for information about the currently-used models
-* http://localhost:5500/state/"a_model" for the current state of execution for `a_model`, as listed in the previous link.
+* http://localhost:5500/state/"a_model" for the current state of execution for `a_model`, as listed in the previous link. For example, use `wine` for the model.
 
 ## Kafka Streams Model Server
 
@@ -516,8 +503,7 @@ The following diagram shows a Kafka Streams cluster with several server instance
 
 ![scaling](images/KafkaStreamsClusters.png)
 
-TODO - Expand
-
+The tutorial presentation will discuss other considerations when scaling these microservices.
 
 ## References
 
@@ -557,5 +543,5 @@ TODO - Expand
 
 ### For More Information
 
-Interested in an integrated and commercially supported distribution of Akka Streams, Kafka Streams, and Kafka, plus other tools like Spark and HDFS? See the https://www.lightbend.com/products/fast-data-platform for more information about the Lightbend Fast Data Platform.
+Interested in an integrated and commercially supported distribution of Akka Streams, Kafka Streams, and Kafka, plus other tools like Spark, Flink, and HDFS? See the https://www.lightbend.com/products/fast-data-platform for more information about the Lightbend Fast Data Platform.
 
