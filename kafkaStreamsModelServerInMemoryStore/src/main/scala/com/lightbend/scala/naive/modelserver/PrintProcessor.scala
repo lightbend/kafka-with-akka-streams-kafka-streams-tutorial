@@ -10,8 +10,10 @@ class PrintProcessor extends AbstractProcessor[Array[Byte], ServingResult]{
 
   private var modelStore: StoreState = null
 
-  override def process (key: Array[Byte], value: ServingResult ): Unit = ???
-
-  /* Provide an implementation here
-   */
+  override def process (key: Array[Byte], value: ServingResult ): Unit = {
+    // Exercise: Provide implementation here.
+    // 1. Match on `value.processed`, which returns a Boolean
+    // 2. If true, print fields in the value object
+    // 1. If false, print that no model is available, so skipping...
+  }
 }

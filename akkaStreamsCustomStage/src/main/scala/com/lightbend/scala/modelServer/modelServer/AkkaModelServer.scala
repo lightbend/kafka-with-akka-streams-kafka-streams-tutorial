@@ -26,22 +26,17 @@ object AkkaModelServer {
 
   println(s"Using kafka brokers at ${KAFKA_BROKER} ")
 
-  val dataConsumerSettings : ConsumerSettings[Array[Byte], Array[Byte]] = ???
+  val dataConsumerSettings : ConsumerSettings[Array[Byte], Array[Byte]] =
+    ConsumerSettings(system, new ByteArrayDeserializer, new ByteArrayDeserializer)
+     .withBootstrapServers(KAFKA_BROKER)
+     .withGroupId(DATA_GROUP)
+     .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
-  /*
-     Define consumer setting with ByteArrayDeserializer and ByteArrayDeserializer
-     With broker Kafka KAFKA_BROKER and kafka group DATA_GROUP
-     set AUTO_OFFSET_RESET_CONFIG, "earliest"
-    */
-
-  val modelConsumerSettings : ConsumerSettings[Array[Byte], Array[Byte]] = ???
-
-  /*
-    Define consumer setting with ByteArrayDeserializer and ByteArrayDeserializer
-    With broker Kafka KAFKA_BROKER and kafka group MODELS_GROUP
-    set AUTO_OFFSET_RESET_CONFIG, "earliest"
-   */
-
+  val modelConsumerSettings : ConsumerSettings[Array[Byte], Array[Byte]] = ???  // ??? convenient "no-op"; throws an Exception.
+    // Exercise: Provide implementation here.
+    // Define consumer setting with ByteArrayDeserializer and ByteArrayDeserializer
+    // With broker Kafka KAFKA_BROKER and kafka group MODELS_GROUP
+    // set AUTO_OFFSET_RESET_CONFIG, "earliest"
 
   def main(args: Array[String]): Unit = {
 
@@ -50,10 +45,14 @@ object AkkaModelServer {
         .map(record => DataRecord.fromByteArray(record.value))
         .collect { case Success(a) => a }
 
-    val modelPredictions  = dataStream.viaMat(new ModelStage)(Keep.right)
-
-        /* Add printing of the execution results. Ensure that you distinguish "No model" case
-         */
+    val modelPredictions: Source[Option[Double], ModelStateStore] =
+      dataStream.viaMat(new ModelStage)(Keep.right).map { result =>
+        // Exercise: Provide implementation here.
+        // Add printing of the execution results. Ensure that you distinguish the "no model" case
+        // 1. Match on the `result.processed` (a Boolean).
+        // 2. If true, print fields in the `result` object and return the `result.result` in a `Some`.
+        // 3. If false, print that no model is available and return `None`.
+      }
 
     val modelStateStore: ModelStateStore =
       modelPredictions
@@ -62,15 +61,13 @@ object AkkaModelServer {
         .run()            // we run the stream, materializing the stage's StateStore
 
     // model stream
-
-    /* Implement model processing. The steps here should be:
-        1. Convert incoming byte array message to ModelToServe (ModelToServe.fromByteArray)
-        2. Make sure you ignore records failed to marshall
-        3. Convert ModelToserve to computable model (ModelWithDescriptor.fromModelToServe)
-        4. Make sure you ignore models failed to convert
-        5. Update the stage with a new model (modelStateStore.setModel)
-
-     */
+    // Exercise: Provide implementation here.
+    // Implement model processing (as was done in previous examples). The steps here should be:
+    // 1. Convert incoming byte array message to ModelToServe (ModelToServe.fromByteArray)
+    // 2. Make sure you ignore records that failed to marshal
+    // 3. Convert ModelToserve to a computable model (ModelWithDescriptor.fromModelToServe)
+    // 4. Make sure you ignore models that failed to convert
+    // 5. Update the stage with a new model (modelStateStore.setModel)
   }
 
   // Serve model status: http://localhost:5500/state
