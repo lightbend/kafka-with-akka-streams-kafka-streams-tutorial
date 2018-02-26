@@ -108,6 +108,8 @@ object ModelServer {
 
   }
 
+  // Surf to http://localhost:8888/state/instances for the list of currently deployed instances.
+  // Then surf to http://localhost:8888/state/value for the current state of execution for a given model.
   private def startRestProxy(streams: KafkaStreams, port: Int) = {
 
     implicit val system = ActorSystem("ModelServing")

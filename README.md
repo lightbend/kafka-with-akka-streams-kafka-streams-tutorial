@@ -247,12 +247,11 @@ The `DataReader` outputs messages like the following:
 
 ```
 ...
-Retrieved message #12, key = null, value = [B@53c536c6
-Retrieved message #13, key = null, value = [B@71862844
-Retrieved message #14, key = null, value = [B@4cfa1bf6
-Retrieved message #15, key = null, value = [B@6fca5ad6
-Retrieved message #16, key = null, value = [B@154322ef
-Retrieved message #17, key = null, value = [B@55c7fc0b
+Retrieved message #1: key = null, value = [B@2723c85, size = 105, first 5 elements = [9,102,102,102,102]
+Retrieved message #2: key = null, value = [B@13046ba0, size = 105, first 5 elements = [9,102,102,102,102]
+Retrieved message #3: key = null, value = [B@7a588539, size = 105, first 5 elements = [9,102,102,102,102]
+Retrieved message #4: key = null, value = [B@7e496408, size = 105, first 5 elements = [9,-102,-103,-103,-103]
+Retrieved message #5: key = null, value = [B@6d4cf950, size = 105, first 5 elements = [9,-102,-103,-103,-103]
 ...
 ```
 
@@ -359,7 +358,7 @@ _Or_ use one of the _Run_ or _Debug_ menu items in your IDE for the `akkaActorsP
 Once running, visit these links:
 
 * http://localhost:5500/models for information about the currently-used models
-* http://localhost:5500/state/"a_model" for the current state of execution for `a_model`, as listed in the previous link.
+* http://localhost:5500/state/"a_model" for the current state of execution for `a_model`, as listed in the previous link. For example, use `wine` for the model.
 
 ## Kafka Streams Model Server
 
