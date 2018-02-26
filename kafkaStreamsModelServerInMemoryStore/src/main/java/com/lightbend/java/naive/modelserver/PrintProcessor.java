@@ -14,10 +14,9 @@ public class PrintProcessor extends AbstractProcessor<byte[], ServingResult> {
 
     @Override
     public void process(byte[] key, ServingResult value) {
-
-        if(value.isProcessed())
-            System.out.println("Calculated quality - " + value.getResult() + " in " + value.getDuration() + "ms");
-        else
-            System.out.println("No model available - skipping");
+        // Exercise: Provide implementation here.
+        // 1. Match on `value.processed`, which returns a Boolean
+        // 2. If true, print fields in the value object
+        // 1. If false, print that no model is available, so skipping...
     }
 }

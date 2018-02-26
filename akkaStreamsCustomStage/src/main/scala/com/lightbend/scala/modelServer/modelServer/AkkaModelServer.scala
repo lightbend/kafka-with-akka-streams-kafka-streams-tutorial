@@ -14,6 +14,8 @@ import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters._
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.modelServer.model.DataRecord
 import com.lightbend.scala.modelServer.queriablestate.QueriesAkkaHttpResource
+import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.common.serialization.ByteArrayDeserializer
 
 /**
   * Created by boris on 7/21/17.
@@ -45,14 +47,14 @@ object AkkaModelServer {
         .map(record => DataRecord.fromByteArray(record.value))
         .collect { case Success(a) => a }
 
-    val modelPredictions: Source[Option[Double], ModelStateStore] =
-      dataStream.viaMat(new ModelStage)(Keep.right).map { result =>
+    val modelPredictions: Source[Option[Double], ModelStateStore] = ??? // Remove this
+        // dataStream.viaMat(new ModelStage)(Keep.right).map { result =>   Uncomment this one
         // Exercise: Provide implementation here.
         // Add printing of the execution results. Ensure that you distinguish the "no model" case
         // 1. Match on the `result.processed` (a Boolean).
         // 2. If true, print fields in the `result` object and return the `result.result` in a `Some`.
         // 3. If false, print that no model is available and return `None`.
-      }
+        // } Uncomment this one
 
     val modelStateStore: ModelStateStore =
       modelPredictions

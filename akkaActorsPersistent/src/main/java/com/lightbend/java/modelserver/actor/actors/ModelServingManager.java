@@ -6,8 +6,6 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.google.common.collect.Lists;
 import com.lightbend.model.Winerecord;
-import com.lightbend.java.model.ModelServingInfo;
-import com.lightbend.java.model.ModelWithDescriptor;
 import scala.Option;
 
 import java.util.LinkedList;
@@ -35,22 +33,24 @@ public class ModelServingManager extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(ModelWithDescriptor.class, modelWithDescriptor -> {
-                    ActorRef destination = getModelServer(modelWithDescriptor.getDescriptor().getDataType());
-                    destination.forward(modelWithDescriptor, getContext());
-                })
+                // Exercise: Provide implementation here.
+                // Forward request ModelWithDescriptor to the appropriate instance (record.dataType) of the model server
+                // 1. Get the model server, by passing the `model.descriptor.dataType`.
+                // 2. It's an actor, so `forward` the model to it
+                // NOTE: You may need to add imports to complete these exercises.
                 .match(Winerecord.WineRecord.class, dataRecord -> {
                     ActorRef destination = getModelServer(dataRecord.getDataType());
                     destination.forward(dataRecord, getContext());
                 })
-                .match(GetState.class, dataType -> {
-                    Option<ActorRef> mayBeRef = getContext().child(dataType.getDataType());
-                    if(mayBeRef.isEmpty())
-                        getSender().tell(ModelServingInfo.empty, getSelf());
-                    else
-                       mayBeRef.get().forward(dataType, getContext());
-                })
-                .match(GetModels.class, models -> {
+                // Exercise: Provide implementation here.
+                // For the message GetState
+                // If the actor getState.dataType exists -> forward a request to it.
+                // Otherwise return an empty ModelToServeStats:
+                // 1. Use the actor context to get the child for the state (`getState.dataType`)
+                // 2. Match on the returned value, which will be an Option[ActorRef].
+                // 3. If a Some(ref), forward the state to the ref
+                // 4. Otherwise, send the empty `ModelToServeStats` as a message to the `sender`.
+                 .match(GetModels.class, models -> {
                     getSender().tell(getInstances(), getSelf());
                 })
                 .build();

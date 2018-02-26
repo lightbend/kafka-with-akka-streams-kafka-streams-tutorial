@@ -92,15 +92,15 @@ public class ModelServer {
         // DataStore
         builder.addStateStore(storeBuilder);
         // Data Processor
-        data
-                .mapValues(value -> DataConverter.convertData(value))
-                .filter((key, value) -> value.isPresent())
-                .transform(DataProcessor::new,ApplicationKafkaParameters.STORE_NAME)
-                .mapValues(value -> {
-                    if(value.isProcessed()) System.out.println("Calculated quality - " + value.getResult() + " in " + value.getDuration() + "ms");
-                    else System.out.println("No model available - skipping");
-                    return value;
-                });
+
+        // Exercise: Provide implementation here.
+        // Implement the Data processor sequence of steps on the `data` object:
+        // 1. Use `mapValues` to map from the input byte array to a winerecord (DataRecord.fromByteArray)
+        // 2. Remove the ones that failed during marshaling (using `filter`)
+        // 3. Use `transform` with a new `DataProcessor`. Pass `STORE_NAME` as the 2nd argument
+        // 4. Use `mapValues` to check on the results. If successfully processed (`value.processed == true`)
+        //    print fields in the resulting value; other print that no model is available
+
         // Model Processor
         models
                 .mapValues(value -> DataConverter.convertModel(value))
