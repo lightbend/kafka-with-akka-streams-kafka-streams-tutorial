@@ -51,12 +51,12 @@ object AkkaModelServer {
         .collect { case Success(a) => a }
 
     val modelPredictions: Source[Option[Double], ModelStateStore] =
-      dataStream.viaMat(new ModelStage)(Keep.right).map(result => {
+      dataStream.viaMat(new ModelStage)(Keep.right).map { result =>
         result.processed match {
           case true => println(s"Calculated quality - ${result.result} calculated in ${result.duration} ms"); Some(result.result)
           case _ => println ("No model available - skipping"); None
         }
-      })
+      }
 
     val modelStateStore: ModelStateStore =
       modelPredictions
