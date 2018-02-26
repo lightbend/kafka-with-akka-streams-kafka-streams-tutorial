@@ -41,7 +41,7 @@ object ModelServerFluent {
     streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.ByteArray.getClass)
     streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.ByteArray.getClass)
     // Add a topic config by prefixing with topic
-//    streamsConfiguration.put(StreamsConfig.topicPrefix(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG), "earliest")
+    //   streamsConfiguration.put(StreamsConfig.topicPrefix(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG), "earliest")
     // Create topology
     val streams = createStreams(streamsConfiguration)
     // Set Stream exception handler
@@ -84,12 +84,13 @@ object ModelServerFluent {
 
     // Data Processor
 
-    /* Implement Data processor
-       1. Map values from byte array to winerecord (DataRecord.fromByteArray)
-       2. Skip the ones that failed during marshalling
-       3. Serve records using DataProcessor
-       4 Print serving results
-     */
+    // Exercise: Provide implementation here.
+    // Implement the Data processor sequence of steps on the `data` object:
+    // 1. Use `mapValues` to map from the input byte array to a winerecord (DataRecord.fromByteArray)
+    // 2. Remove the ones that failed during marshaling (using `filter`)
+    // 3. Use `transform` with a new `DataProcessor`. Pass `STORE_NAME` as the 2nd argument
+    // 4. Use `mapValues` to check on the results. If successfully processed (`value.processed == true`)
+    //    print fields in the resulting value; other print that no model is available
 
     //Models Processor
     models
