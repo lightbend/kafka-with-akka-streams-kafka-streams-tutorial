@@ -65,8 +65,7 @@ public class ModelStage extends AbstractGraphStageWithMaterializedValue<FlowShap
             setHandler(scoringResultOut, new AbstractOutHandler() {
                 @Override
                 public void onPull() throws Exception {
-                    // Exercise: Provide implementation here.
-                    // 1. Pull the new input record
+                    pull(dataRecordIn);
                 }
             });
         }

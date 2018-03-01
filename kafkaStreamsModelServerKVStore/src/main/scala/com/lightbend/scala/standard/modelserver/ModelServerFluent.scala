@@ -84,13 +84,15 @@ object ModelServerFluent {
 
     // Data Processor
 
-    // Exercise: Provide implementation here.
-    // Implement the Data processor sequence of steps on the `data` object:
-    // 1. Use `mapValues` to map from the input byte array to a winerecord (DataRecord.fromByteArray)
-    // 2. Remove the ones that failed during marshaling (using `filter`)
-    // 3. Use `transform` with a new `DataProcessor`. Pass `STORE_NAME` as the 2nd argument
-    // 4. Use `mapValues` to check on the results. If successfully processed (`value.processed == true`)
-    //    print fields in the resulting value; other print that no model is available
+    data
+      .mapValues(value => DataRecord.fromByteArray(value))
+      .filter((key, value) => (value.isSuccess))
+      .transform(() => new DataProcessor, STORE_NAME)
+      .mapValues(value => {
+        if(value.processed) println(s"Calculated quality - ${value.result} calculated in ${value.duration} ms")
+        else println("No model available - skipping")
+        value
+      })
 
     //Models Processor
     models

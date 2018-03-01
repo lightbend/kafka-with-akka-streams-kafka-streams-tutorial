@@ -12,6 +12,7 @@ import akka.kafka.Subscriptions;
 import akka.kafka.javadsl.Consumer;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
+import akka.stream.javadsl.Keep;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
@@ -56,15 +57,17 @@ public class AkkaModelServer {
                 .filter(record -> record.isPresent()).map(record -> record.get());
 
         // Model Predictions
-        Source<Optional<Double>,ReadableModelStore> modelPredictions = null; /*  // Remove null
-        dataStream.viaMat(new ModelStage(), Keep.right()).map(result -> {  */
-        // Exercise: Provide implementation here.
-        // Add printing of the execution results. Ensure that you distinguish the "no model" case
-        // 1. Match on the `result.processed` (a Boolean).
-        // 2. If true, print fields in the `result` object and return the `result.result` in a `Some`.
-        // 3. If false, print that no model is available and return `None`.
-        // });   Uncomment this one
-
+        Source<Optional<Double>,ReadableModelStore> modelPredictions =
+                dataStream.viaMat(new ModelStage(), Keep.right()).map(result -> {
+                    if(result.isProcessed()) {
+                        System.out.println("Calculated quality - " + result.getResult() + " in " + result.getDuration() + "ms");
+                        return Optional.of(result.getResult());
+                    }
+                    else {
+                        System.out.println("No model available - skipping");
+                        return Optional.empty();
+                    }
+                });
         ReadableModelStore modelStateStore =
                 modelPredictions
                         .to(Sink.ignore())      // we do not read the results directly
@@ -72,14 +75,12 @@ public class AkkaModelServer {
                         .run(materializer);     // we run the stream, materializing the stage's StateStore
 
         // model stream
-        // model stream
-        // Exercise: Provide implementation here.
-        // Implement model processing (as was done in previous examples). The steps here should be:
-        // 1. Convert incoming byte array message to ModelToServe (ModelToServe.fromByteArray)
-        // 2. Make sure you ignore records that failed to marshal
-        // 3. Convert ModelToserve to a computable model (ModelWithDescriptor.fromModelToServe)
-        // 4. Make sure you ignore models that failed to convert
-        // 5. Update the stage with a new model (modelStateStore.setModel)
+        Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(ApplicationKafkaParameters.MODELS_TOPIC))
+                .map(record -> DataConverter.convertModel(record.value()))
+                .filter(record -> record.isPresent()).map(record -> record.get())
+                .map(record -> DataConverter.convertModel(record))
+                .filter(record -> record.isPresent()).map(record -> record.get())
+                .runForeach(model -> modelStateStore.setModel(model), materializer);
 
         startRest(system,materializer,modelStateStore);
     }

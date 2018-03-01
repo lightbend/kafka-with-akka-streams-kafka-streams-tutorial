@@ -54,9 +54,7 @@ class ModelStage extends GraphStageWithMaterializedValue[FlowShape[WineRecord, S
     })
 
     setHandler(scoringResultOut, new OutHandler {
-      override def onPull(): Unit = ???  // ??? convenient "no-op"; throws an Exception.
-      // Exercise: Provide implementation here.
-      // 1. Pull the new input record
+      override def onPull(): Unit = pull(dataRecordIn)
     })
   }
 

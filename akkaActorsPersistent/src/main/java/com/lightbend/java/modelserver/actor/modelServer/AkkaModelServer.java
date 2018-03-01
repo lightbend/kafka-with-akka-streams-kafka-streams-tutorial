@@ -65,12 +65,7 @@ public class AkkaModelServer {
                 .filter(record -> record.isPresent()).map(record -> record.get())
                 .map(record -> DataConverter.convertModel(record))
                 .filter(record -> record.isPresent()).map(record -> record.get())
-                // Exercise: Provide implementation here.
-                // Invoke model serving actor:
-                // 1. Use the "async" version of `map`, which takes two arguments:
-                //    a. parallelism (number). Just use 1
-                //    b. the usual kind of function passed to `map` to process an element.
-                //       It should use the synchronous `?` method to send the element to the model server.
+                .mapAsync(1, record -> ask(router, record, askTimeout))
                 .runWith(Sink.ignore(), materializer);
 
         // Data stream processing
