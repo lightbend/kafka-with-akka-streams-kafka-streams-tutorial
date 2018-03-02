@@ -10,7 +10,15 @@
 * [Strata Data Conference San Jose, Tuesday, March 6, 2018](https://conferences.oreilly.com/strata/strata-ca/public/schedule/detail/63983)
 * [Strata Data Conference London, Tuesday, May 22, 2018](https://conferences.oreilly.com/strata/strata-eu/public/schedule/detail/65420)
 
+©Copyright 2018, Lightbend, Inc. Apache 2.0 License. Please use as you see fit, but attribution is requested.
+
 This tutorial provides an introduction to streaming data microservices using Kafka with Akka Streams and Kafka Streams. Hence, the tutorial helps you compare and contrast these streaming libraries for your own use.
+
+See the companion presentation for the tutorial:
+
+* `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial.key` Keynote file
+* `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial.pdf` for non-Mac users ;)
+* `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial-with-notes.pdf` with speaker notes
 
 The core "use case" implemented is a stream processing application that also ingests updated parameters for a machine learning model and then uses the model to score the data. Several implementations of this use case are provided. They not only compare Akka Streams vs. Kafka Streams, but they also show how to support a few other common production requirements, such as managing the in-memory state of the application.
 
