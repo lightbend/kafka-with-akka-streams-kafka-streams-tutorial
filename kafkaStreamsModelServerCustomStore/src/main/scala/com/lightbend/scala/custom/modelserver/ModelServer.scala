@@ -87,6 +87,11 @@ object ModelServer {
       .filter(new DataValueFilter().asInstanceOf[Predicate[Array[Byte], Try[WineRecord]]])
       .transform(() => new DataProcessorKV, STORE_NAME)
       .mapValues[ServingResult](new ResultPrinter())
+
+    // Exercise: Output results to a new Kafka topic.
+    // 1. Instead of just printing results from scoring the data, add a new Kafka topic
+    //    and write the results to it.
+
     // Value Processor
     models
       .mapValues[Try[ModelToServe]](new ModelValueMapper().asInstanceOf[ValueMapper[Array[Byte],Try[ModelToServe]]])
