@@ -67,6 +67,7 @@ public class AkkaModelServer {
         //
         // Exercise: Provide implementation here.
         // 1. Write results to a new Kafka topic.
+        //    See https://doc.akka.io/docs/akka-stream-kafka/current/producer.html#producer-as-a-sink
 
         ReadableModelStore modelStateStore =
                 modelPredictions
