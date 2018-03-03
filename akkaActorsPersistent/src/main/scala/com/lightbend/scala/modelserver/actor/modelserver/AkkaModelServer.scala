@@ -47,8 +47,8 @@ object AkkaModelServer {
 
     // Model stream processing
     Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))
-      .map(record => ModelToServe.fromByteArray(record.value)).collect { case Success(a) => a }
-      .map(record => ModelWithDescriptor.fromModelToServe(record)).collect { case Success(a) => a }
+      .map(record => ModelToServe.fromByteArray(record.value)).collect { case Success(mts) => mts }
+      .map(record => ModelWithDescriptor.fromModelToServe(record)).collect { case Success(mod) => mod }
       // Exercise: Provide implementation here.
       // Invoke model serving actor:
       // 1. Use the "async" version of `map`, which takes two arguments:
@@ -59,7 +59,7 @@ object AkkaModelServer {
 
     // Data stream processing
     Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(DATA_TOPIC))
-      .map(record => DataRecord.fromByteArray(record.value)).collect { case Success(a) => a }
+      .map(record => DataRecord.fromByteArray(record.value)).collect { case Success(elem) => elem }
       .mapAsync(1)(elem => (modelserver ? elem).mapTo[ServingResult])
       .runForeach(result => {
         result.processed match {
