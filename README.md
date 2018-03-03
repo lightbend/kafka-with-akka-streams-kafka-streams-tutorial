@@ -51,10 +51,12 @@ If you use IntelliJ, the quickest way to start is to create a new project from t
 
 Unfortunately, the IntelliJ build doesn't properly build the `protobuf` project (TBD), so do a one-time command-line build:
 
-1. Open the terminal tool window in IntelliJ (e.g., _View > Tool Windows > Terminal_)
-2. Type "sbt compile"
+1. Open the _sbt shell_ tool window in IntelliJ (e.g., _View > Tool Windows > sbt shell_).
+2. Type `compile`, once it's finished loading.
 3. It should end with `[success] Total time: 30 s, completed Feb ...` after ~30 seconds
 4. Now just use IntelliJ's _Build_ command as needed or automatically
+
+> **Note:** There is also an `sbt` tool window that's useful for browsing the project structure, including the defined _tasks_ (commands). You can double click a task to run it.
 
 If you don't have a GitHub account, just download the latest [release](https://github.com/lightbend/kafka-with-akka-streams-kafka-streams-tutorial/releases) and import the code as an SBT project into your IDE. In IntelliJ, use these steps:
 
