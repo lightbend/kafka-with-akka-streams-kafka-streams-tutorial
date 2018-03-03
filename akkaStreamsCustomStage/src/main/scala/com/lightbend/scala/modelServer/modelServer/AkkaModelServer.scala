@@ -55,6 +55,10 @@ object AkkaModelServer {
         // 2. If true, print fields in the `result` object and return the `result.result` in a `Some`.
         // 3. If false, print that no model is available and return `None`.
         // } Uncomment this one
+        //
+        // Exercise: Provide implementation here.
+        // 1. Write results to a new Kafka topic.
+        //    See https://doc.akka.io/docs/akka-stream-kafka/current/producer.html#producer-as-a-sink
 
     val modelStateStore: ModelStateStore =
       modelPredictions

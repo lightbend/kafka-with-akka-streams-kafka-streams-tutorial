@@ -64,6 +64,10 @@ public class AkkaModelServer {
         // 2. If true, print fields in the `result` object and return the `result.result` in a `Some`.
         // 3. If false, print that no model is available and return `None`.
         // });   Uncomment this one
+        //
+        // Exercise: Provide implementation here.
+        // 1. Write results to a new Kafka topic.
+        //    See https://doc.akka.io/docs/akka-stream-kafka/current/producer.html#producer-as-a-sink
 
         ReadableModelStore modelStateStore =
                 modelPredictions
@@ -71,7 +75,6 @@ public class AkkaModelServer {
                         // try changing Sink.ignore() to Sink.foreach(x -> System.out.println(x))) What gets printed?
                         .run(materializer);     // we run the stream, materializing the stage's StateStore
 
-        // model stream
         // model stream
         // Exercise: Provide implementation here.
         // Implement model processing (as was done in previous examples). The steps here should be:

@@ -100,6 +100,10 @@ public class ModelServer {
         // 3. Use `transform` with a new `DataProcessor`. Pass `STORE_NAME` as the 2nd argument
         // 4. Use `mapValues` to check on the results. If successfully processed (`value.processed == true`)
         //    print fields in the resulting value; other print that no model is available
+        //
+        // Exercise: Output results to a new Kafka topic.
+        // 1. Instead of just printing results, as in the previous exercise (or using the
+        //    solution in the master branch, add a new Kafka topic and write the results to it.
 
         // Model Processor
         models

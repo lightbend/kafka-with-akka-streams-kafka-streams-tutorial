@@ -90,6 +90,11 @@ object ModelServerFluent {
         else println("No model available - skipping")
         value
       })
+
+    // Exercise: Output results to a new Kafka topic.
+    // 1. Instead of just printing results from scoring the data, add a new Kafka topic
+    //    and write the results to it.
+
     //Models Processor
     models
       .mapValues(value => ModelToServe.fromByteArray(value))
