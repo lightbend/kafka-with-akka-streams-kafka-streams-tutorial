@@ -49,12 +49,7 @@ object AkkaModelServer {
     Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))
       .map(record => ModelToServe.fromByteArray(record.value)).collect { case Success(mts) => mts }
       .map(record => ModelWithDescriptor.fromModelToServe(record)).collect { case Success(mod) => mod }
-      // Exercise: Provide implementation here.
-      // Invoke model serving actor:
-      // 1. Use the "async" version of `map`, which takes two arguments:
-      //    a. parallelism (number). Just use 1
-      //    b. the usual kind of function passed to `map` to process an element.
-      //       It should use the synchronous `?` method to send the element to the model server.
+      .mapAsync(1)(elem => modelserver ? elem)
       .runWith(Sink.ignore) // run the stream, we do not read the results directly
 
     // Data stream processing

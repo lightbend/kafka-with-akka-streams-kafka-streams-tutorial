@@ -58,8 +58,7 @@ class ModelServingActor(dataType : String) extends Actor {
 
     case request : GetState => {
       // State query
-      /* Provide implementation here
-       */
+      sender() ! currentState.getOrElse(ModelToServeStats.empty)
     }
   }
 }
