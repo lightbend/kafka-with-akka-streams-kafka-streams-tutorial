@@ -22,20 +22,10 @@ class ModelServingManager extends Actor {
 
     case record: WineRecord => getModelServer(record.dataType) forward record
 
-    case getState: GetState => {
-      context.child(getState.dataType) match{
-        case Some(server) => server forward getState
-        case _ => sender() ! ModelToServeStats.empty
-      }
+    case getState: GetState => context.child(getState.dataType) match{
+      case Some(server) => server forward getState
+      case _ => sender() ! ModelToServeStats.empty
     }
-
-    // Exercise: Provide implementation here.
-      // If the actor getState.dataType exists -> forward a request to it.
-      // Otherwise return an empty ModelToServeStats:
-      // 1. Use the actor context to get the child for the state (`getState.dataType`)
-      // 2. Match on the returned value, which will be an Option[ActorRef].
-      // 3. If a Some(ref), forward the state to the ref
-      // 4. Otherwise, send the empty `ModelToServeStats` as a message to the `sender`.
 
     case getModels : GetModels => sender() ! getInstances
   }
