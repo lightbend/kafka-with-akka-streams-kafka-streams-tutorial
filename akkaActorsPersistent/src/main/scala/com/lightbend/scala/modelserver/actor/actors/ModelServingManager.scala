@@ -18,17 +18,18 @@ class ModelServingManager extends Actor {
     GetModelsResult(context.children.map(_.path.name).toSeq)
 
   override def receive = {
-    case model: ModelWithDescriptor =>
-     // Exercise: Provide implementation here.
-     // Forward request to the appropriate instance (record.dataType) of the model server
-     // 1. Get the model server, by passing the `model.descriptor.dataType`.
-     // 2. It's an actor, so `forward` the model to it
-     // NOTE: You may need to add imports to complete these exercises.
+    case model: ModelWithDescriptor => getModelServer(model.descriptor.dataType) forward model
 
     case record: WineRecord => getModelServer(record.dataType) forward record
 
-    case getState: GetState =>
-      // Exercise: Provide implementation here.
+    case getState: GetState => {
+      context.child(getState.dataType) match{
+        case Some(server) => server forward getState
+        case _ => sender() ! ModelToServeStats.empty
+      }
+    }
+
+    // Exercise: Provide implementation here.
       // If the actor getState.dataType exists -> forward a request to it.
       // Otherwise return an empty ModelToServeStats:
       // 1. Use the actor context to get the child for the state (`getState.dataType`)
