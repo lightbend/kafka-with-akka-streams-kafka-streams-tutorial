@@ -538,7 +538,7 @@ The tutorial presentation will discuss other considerations when scaling these m
     * [Reference](https://doc.akka.io/docs/akka/current/stream/index.html?language=java)
     * [Javadocs](https://doc.akka.io/japi/akka/current/index.html?akka/stream/package-summary.html)
 * Miscellaneous:
-    * Integrating Akka Streams and Akka Actors: [Part I](http://blog.colinbreck.com/integrating-akka-streams-and-akka-actors-part-i/), [Part II](http://blog.colinbreck.com/integrating-akka-streams-and-akka-actors-part-ii/)
+    * [Colin Breck's blog](http://blog.colinbreck.com/), such as his two-part series on integrating Akka Streams and Akka Actors: [Part I](http://blog.colinbreck.com/integrating-akka-streams-and-akka-actors-part-i/), [Part II](http://blog.colinbreck.com/integrating-akka-streams-and-akka-actors-part-ii/)
     * [Akka Team Blog](https://akka.io/blog/)
 
 ### Kafka Streams
@@ -549,7 +549,7 @@ The tutorial presentation will discuss other considerations when scaling these m
     * [Scaladocs (2.12)](https://developer.lightbend.com/docs/api/kafka-streams-scala/0.1.2/com/lightbend/kafka/scala/streams/) - for the new Lightbend Scala API
     * [Scaladocs (2.11)](https://developer.lightbend.com/docs/api/kafka-streams-scala_2.11/0.1.2/#package)
 * Miscellaneous:
-    * [Enabling Exactly-Once in Kafka Streams](https://www.confluent.io/blog/enabling-exactly-kafka-streams/)
+    * [Confluent blog](https://www.confluent.io/blog/), such as [Enabling Exactly-Once in Kafka Streams](https://www.confluent.io/blog/enabling-exactly-kafka-streams/)
 
 ### For More Information
 
