@@ -48,7 +48,7 @@ object AkkaModelServer {
     val dataStream: Source[WineRecord, Consumer.Control] =
       Consumer.atMostOnceSource(dataConsumerSettings, Subscriptions.topics(DATA_TOPIC))
         .map(record => DataRecord.fromByteArray(record.value))
-        .collect { case Success(a) => a }
+        .collect { case Success(dataRecord) => dataRecord }
 
     val modelPredictions: Source[Option[Double], ModelStateStore] =
       dataStream.viaMat(new ModelStage)(Keep.right).map { result =>
@@ -66,8 +66,8 @@ object AkkaModelServer {
 
     // model stream
     Consumer.atMostOnceSource(modelConsumerSettings, Subscriptions.topics(MODELS_TOPIC))
-      .map(record => ModelToServe.fromByteArray(record.value())).collect { case Success(a) => a }
-      .map(record => ModelWithDescriptor.fromModelToServe(record)).collect { case Success(a) => a }
+      .map(record => ModelToServe.fromByteArray(record.value())).collect { case Success(mts) => mts }
+      .map(record => ModelWithDescriptor.fromModelToServe(record)).collect { case Success(mod) => mod }
       .runForeach(modelStateStore.setModel)
 
     startRest(modelStateStore)
