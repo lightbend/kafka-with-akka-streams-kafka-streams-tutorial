@@ -52,7 +52,7 @@ object AkkaModelServer {
         .map(record => ModelToServe.fromByteArray(record.value())).collect { case Success(mts) => mts }
         .map(record => ModelWithDescriptor.fromModelToServe(record)).collect { case Success(mod) => mod }
 
-    // Usingstage implementation
+    // Using custom stage implementation
     ModelServerProcessor.stageModelServerProcessor(dataStream, modelStream)
 
     // Using actors implementation
