@@ -32,6 +32,7 @@ object Dependencies {
   val jpmml         = "org.jpmml"                       % "pmml-evaluator"                % PMMLVersion
   val jpmmlextras   = "org.jpmml"                       % "pmml-evaluator-extension"      % PMMLVersion
 
+  val slf4j         = "org.slf4j"                       % "slf4j-simple"                  % slf4jVersion
 
   val modelsDependencies    = Seq(jpmml, jpmmlextras, tensorflow)
   val kafkabaseDependencies = Seq(reactiveKafka) ++ Seq(kafkaclients)
