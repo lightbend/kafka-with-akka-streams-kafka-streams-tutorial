@@ -34,10 +34,10 @@ object Dependencies {
 
   val slf4j         = "org.slf4j"                       % "slf4j-simple"                  % slf4jVersion
 
-  val modelsDependencies    = Seq(jpmml, jpmmlextras, tensorflow)
-  val kafkabaseDependencies = Seq(reactiveKafka) ++ Seq(kafkaclients)
-  val webDependencies       = Seq(gson, jersey, jerseymedia, jettyserver, jettyservlet, wsrs)
-  val akkHTTPPSupport       = Seq(akkaHttp, akkaHttpJsonJackson)
-  val akkaServerDependencies = Seq(akkaStream, akkaHttp, akkaHttpJsonJackson, reactiveKafka)
+  val modelsDependencies     = Seq(jpmml, jpmmlextras, tensorflow, slf4j)
+  val kafkabaseDependencies  = Seq(reactiveKafka, kafkaclients, slf4j)
+  val webDependencies        = Seq(gson, jersey, jerseymedia, jettyserver, jettyservlet, wsrs, slf4j)
+  val akkHTTPPSupport        = Seq(akkaHttp, akkaHttpJsonJackson, slf4j)
+  val akkaServerDependencies = Seq(akkaStream, akkaHttp, akkaHttpJsonJackson, reactiveKafka, slf4j)
 
 }
