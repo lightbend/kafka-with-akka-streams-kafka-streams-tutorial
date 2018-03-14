@@ -39,7 +39,33 @@ object AkkaModelServer {
     .withGroupId(MODELS_GROUP)
     .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
+  def help(message: String = "", exitCode: Int = 0): Nothing = {
+    println(
+      s"""
+         |$message
+         |
+         |AkkaModelServer -h | --help | c | custom | a | actor
+         |
+         |-h | --help   Print this help and exit
+         | c | custom   Use the custom stage implementation (default)
+         | a | actor    Use the actors implementation
+         |
+    """.stripMargin)
+    sys.exit(exitCode)
+  }
+
   def main(args: Array[String]): Unit = {
+
+    // You can either pick which one to run using a command-line argument, or
+    // for ease of use with the Run menu command, just switch which line is commented out for "case Nil => ...".
+    val modelServerProcessor: ModelServerProcessor = args.toSeq match {
+      case ("c"  | "custom") +: tail => CustomStageModelServerProcessor
+      case ("a"  | "actor")  +: tail => ActorModelServerProcessor
+      case ("-h" | "--help") +: tail => help()
+      case Nil => CustomStageModelServerProcessor
+//      case Nil => ActorModelServerProcessor
+      case _ => help(s"Unexpected arguments: ${args.mkString(" ")}", 1)
+    }
 
     // Data Stream
     val dataStream: Source[WineRecord, Consumer.Control] =
@@ -52,10 +78,7 @@ object AkkaModelServer {
         .map(record => ModelToServe.fromByteArray(record.value())).collect { case Success(mts) => mts }
         .map(record => ModelWithDescriptor.fromModelToServe(record)).collect { case Success(mod) => mod }
 
-    // Using custom stage implementation
-    ModelServerProcessor.stageModelServerProcessor(dataStream, modelStream)
-
-    // Using actors implementation
-//    ModelServerProcessor.actorModelServerProcessor(dataStream, modelStream)
+    // Using custom stage or actors implementation
+    modelServerProcessor.createStreams(dataStream, modelStream)
   }
 }

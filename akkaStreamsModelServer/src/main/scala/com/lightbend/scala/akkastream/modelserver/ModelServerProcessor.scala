@@ -15,11 +15,17 @@ import com.lightbend.scala.modelServer.model.{ModelWithDescriptor, ServingResult
 
 import scala.concurrent.duration._
 
-object ModelServerProcessor {
+trait ModelServerProcessor {
+  def createStreams(dataStream: Source[WineRecord, Consumer.Control], modelStream: Source[ModelWithDescriptor, Consumer.Control])
+                   (implicit system: ActorSystem, materializer: ActorMaterializer): Unit
+}
 
-  def actorModelServerProcessor(dataStream: Source[WineRecord, Consumer.Control], modelStream: Source[ModelWithDescriptor, Consumer.Control])
-                               (implicit system: ActorSystem, materializer: ActorMaterializer): Unit = {
+object ActorModelServerProcessor extends ModelServerProcessor {
 
+  def createStreams(dataStream: Source[WineRecord, Consumer.Control], modelStream: Source[ModelWithDescriptor, Consumer.Control])
+                   (implicit system: ActorSystem, materializer: ActorMaterializer): Unit = {
+
+    println("*** Using the Actor-based model server implementation ***")
     implicit val executionContext = system.dispatcher
     implicit val askTimeout = Timeout(30.seconds)
 
@@ -43,10 +49,14 @@ object ModelServerProcessor {
     // Rest Server
     RestServiceActors.startRest(modelserver)
   }
+}
 
-  def stageModelServerProcessor(dataStream: Source[WineRecord, Consumer.Control], modelStream: Source[ModelWithDescriptor, Consumer.Control])
-                               (implicit system: ActorSystem, materializer: ActorMaterializer): Unit = {
+object CustomStageModelServerProcessor extends ModelServerProcessor {
 
+  def createStreams(dataStream: Source[WineRecord, Consumer.Control], modelStream: Source[ModelWithDescriptor, Consumer.Control])
+                   (implicit system: ActorSystem, materializer: ActorMaterializer): Unit = {
+
+    println("*** Using the Custom Stage model server implementation ***")
     implicit val executionContext = system.dispatcher
 
     val modelPredictions: Source[Option[Double], ModelStateStore] =
