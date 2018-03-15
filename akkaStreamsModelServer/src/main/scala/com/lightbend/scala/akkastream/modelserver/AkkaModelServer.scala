@@ -56,8 +56,8 @@ object AkkaModelServer {
 
   def main(args: Array[String]): Unit = {
 
-    // You can either pick which one to run using a command-line argument, or
-    // for ease of use with the Run menu command, just switch which line is commented out for "case Nil => ...".
+    // You can either pick which one to run using a command-line argument, or for ease of use
+    // with the IDE Run menu command, just switch which line is commented out for "case Nil => ...".
     val modelServerProcessor: ModelServerProcessor = args.toSeq match {
       case ("c"  | "custom") +: tail => CustomStageModelServerProcessor
       case ("a"  | "actor")  +: tail => ActorModelServerProcessor

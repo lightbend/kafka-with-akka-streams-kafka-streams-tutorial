@@ -28,8 +28,8 @@ public class AkkaModelServer {
 
     public static void main(String [ ] args) throws Throwable {
 
-        // You can either pick which one to run using a command-line argument, or
-        // for ease of use with the Run menu command, just switch which line is commented out.
+        // You can either pick which one to run using a command-line argument, or for ease
+        // of use with the IDE Run menu command, just switch which line is commented out.
         ModelServerProcessor.ModelServerProcessorStreamCreator modelServerProcessor =
                 new ModelServerProcessor.CustomStageModelServerProcessor();
 //                new ModelServerProcessor.ActorModelServerProcessor();
