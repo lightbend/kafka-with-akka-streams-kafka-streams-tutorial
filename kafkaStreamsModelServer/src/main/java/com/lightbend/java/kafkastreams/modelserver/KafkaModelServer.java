@@ -11,7 +11,6 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 
-import java.util.Arrays;
 import java.util.Properties;
 
 
@@ -25,10 +24,33 @@ public class KafkaModelServer {
 
     private static void help(String message, int exitCode) {
         System.out.printf("%s\n", message);
-        System.out.printf("AkkaModelServer -h | --help");
-        System.out.printf("By default, uses a custom state store implementation.\n");
-        System.out.printf("Modify the code to use other implementations (see comments)\n");
+        System.out.printf("AkkaModelServer -h | --help  m | memory | c | custom | s | standard\n\n");
+        System.out.printf("-h | --help   Print this help and exit\n");
+        System.out.printf(" m | memory   Use the in-memory (\"naive\") state store implementation\n");
+        System.out.printf(" c | custom   Use the custom state store implementation (default)\n");
+        System.out.printf(" s | standard Use the built-in (\"standard\") state store implementation\n\n");
         System.exit(exitCode);
+    }
+
+    private static class Streams_Rest {
+        // Let's not obsess about hiding fields behind getters...
+        public KafkaStreams streams;
+        public StoppableService restService;
+
+        public Streams_Rest(String whichStorage, Properties streamsConfiguration) throws Exception {
+            if (whichStorage == "c" || whichStorage == "custom") {
+                streams = CustomStoreStreamBuilder.createStreams(streamsConfiguration);
+                restService = RestServiceWithStore.startRestProxy(streams, port, "custom");
+            } else if (whichStorage == "m" || whichStorage == "memory") {
+                streams = MemoryStoreStreamBuilder.createStreams(streamsConfiguration);
+                restService = RestServiceInMemory.startRestProxy(streams, port);
+            } else if (whichStorage == "s" || whichStorage == "standard") {
+                streams = StandardStoreStreamBuilder.createStreams(streamsConfiguration);
+                restService = RestServiceWithStore.startRestProxy(streams, port, "standard");
+            } else {
+                help("Unexpected storage type:" + whichStorage, 1);
+            }
+        }
     }
 
     public static void main(String [ ] args) throws Throwable {
@@ -53,20 +75,20 @@ public class KafkaModelServer {
             help("", 0);
         }
 
-        // Uses the custom store by default. To use one of the others,
-        // just switch which PAIR of lines are commented out.
-        final KafkaStreams streams = CustomStoreStreamBuilder.createStreams(streamsConfiguration);
-        final StoppableService restService = RestServiceWithStore.startRestProxy(streams, port, "custom");
-        // Use the in-memory store
-//        final KafkaStreams streams = MemoryStoreStreamBuilder.createStreams(streamsConfiguration);
-//        final StoppableService restService = RestServiceInMemory.startRestProxy(streams, port);
+        // You can either pick which one to run using a command-line argument, or for ease
+        // of use with the IDE Run menu command, just switch which line is commented out.
+//        String whichStorage = "custom";
+//        String whichStorage = "memory";
+        String whichStorage = "standard";
+        if (args.length > 0 ) {
+            whichStorage = args[0];
+        }
 
-        // Use the standard store as the default.
-//        final KafkaStreams streams = StandardStoreStreamBuilder.createStreams(streamsConfiguration);
-//        final StoppableService restService = RestServiceWithStore.startRestProxy(streams, port, "standard");
+        final Streams_Rest sr =
+                new Streams_Rest(whichStorage, streamsConfiguration);
 
         // Set Stream exception handler
-        streams.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+        sr.streams.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             public void uncaughtException(Thread t, Throwable e) {
                 System.out.println("Uncaught exception on thread " + t + " " + e.toString());
             }
@@ -75,13 +97,13 @@ public class KafkaModelServer {
         // Add shutdown hook to respond to SIGTERM and gracefully close Kafka Streams
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                streams.close();
-                restService.stop();
+                sr.streams.close();
+                sr.restService.stop();
             } catch (Exception e) {
                 // ignored
             }
         }));
         // Start streams
-        streams.start();
+        sr.streams.start();
     }
 }
