@@ -52,7 +52,7 @@ If you use IntelliJ, the quickest way to start is to create a new project from t
 Unfortunately, the IntelliJ build doesn't properly build the `protobuf` project (TBD), so do a one-time command-line build:
 
 1. Open the _sbt shell_ tool window in IntelliJ (e.g., _View > Tool Windows > sbt shell_).
-2. Type `compile`, once it's finished loading.
+2. Type `package`, once it's finished loading.
 3. It should end with `[success] Total time: 30 s, completed Feb ...` after ~30 seconds
 4. Now just use IntelliJ's _Build_ command as needed or automatically
 
@@ -70,7 +70,11 @@ If you wish to use SBT in a terminal (e.g., in conjunction with your text editor
 
 To compile the code with SBT in a terminal outside your IDE/Editor environment, use this command:
 
-    sbt compile
+    sbt package
+
+This _task_ compiles the Java and Scala sources, then packages the class and resource files (such as `log4j.properties`) into jar files.
+
+> **Tip:** It's actually sufficient to just run `sbt compile`, but then when you run the apps, you'll get warnings about missing `log4j` configurations.
 
 Building the code before the tutorial session will ensure that everything works.
 
@@ -80,9 +84,9 @@ It's convenient to use SBT's interactive mode if you intend to run more than one
 
 To list the most common tasks, run `tasks`. To see more complete lists, add the `-v` flag, or use `-V` to see all of them.
 
-The interactive mode is also convenient if you want to work in one of the nested projects, rather than the top-level project. At the SBT prompt, enter `projects` to list the projects (which we'll discuss below), then use `project <name>` to switch to that subproject. Now use commands like `clean`, `compile`, etc.
+The interactive mode is also convenient if you want to work in one of the nested projects, rather than the top-level project. At the SBT prompt, enter `projects` to list the projects (which we'll discuss below), then use `project <name>` to switch to that subproject. Now use commands like `clean`, `compile`, `package`, etc.
 
-> **Note:** If you get compilation errors when you run `sbt compile`, try starting `sbt`, then run `clean`, then `compile`. If it still fails, try running the tasks `project model` (switch to the model project), then `clean` and `compile`, then switch back to the top-level project `project akkaKafkaTutorial` and run `compile`.
+> **Note:** If you get compilation errors when you run `sbt package` (or `sbt compile`), try starting the SBT interpreter with just `sbt`, then run `clean`, then `package`. If it still fails, try running the tasks `project model` (switch to the model project), then `clean` and `package`, then switch back to the top-level project `project akkaKafkaTutorial` and run `package`.
 
 You can use SBT inside IntelliJ, open the Terminal Tool Window and run SBT commands. There is also an SBT Tool Window that's useful for browsing the projects, the available tasks, etc.
 

@@ -3,6 +3,7 @@ package com.lightbend.java.kafkastreams.queriablestate.withstore;
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.java.kafkastreams.queriablestate.HostStoreInfo;
 import com.lightbend.java.kafkastreams.queriablestate.MetadataService;
+import com.lightbend.java.kafkastreams.queriablestate.StoppableService;
 import com.lightbend.java.kafkastreams.store.StoreState;
 import com.lightbend.java.kafkastreams.store.store.custom.ModelStateStore;
 import com.lightbend.java.kafkastreams.store.store.custom.ReadableModelStateStore;
@@ -31,7 +32,7 @@ import java.util.List;
  *  https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/WordCountInteractiveQueriesRestService.java
  */
 @Path("state")
-public class RestServiceWithStore {
+public class RestServiceWithStore implements StoppableService {
 
     private final KafkaStreams streams;
     private final MetadataService metadataService;
@@ -114,6 +115,7 @@ public class RestServiceWithStore {
      * Stop the Jetty Server
      * @throws Exception
      */
+    @Override
     public void stop() throws Exception {
         if (jettyServer != null) {
             jettyServer.stop();

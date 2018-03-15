@@ -2,11 +2,16 @@ package com.lightbend.java.kafkastreams.modelserver;
 
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.java.kafkastreams.modelserver.customstore.CustomStoreStreamBuilder;
+import com.lightbend.java.kafkastreams.modelserver.memorystore.MemoryStoreStreamBuilder;
+import com.lightbend.java.kafkastreams.modelserver.standardstore.StandardStoreStreamBuilder;
+import com.lightbend.java.kafkastreams.queriablestate.StoppableService;
+import com.lightbend.java.kafkastreams.queriablestate.inmemory.RestServiceInMemory;
 import com.lightbend.java.kafkastreams.queriablestate.withstore.RestServiceWithStore;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 
+import java.util.Arrays;
 import java.util.Properties;
 
 
@@ -17,6 +22,14 @@ import java.util.Properties;
 public class KafkaModelServer {
 
     final static int port=8888;                             // Port for queryable state
+
+    private static void help(String message, int exitCode) {
+        System.out.printf("%s\n", message);
+        System.out.printf("AkkaModelServer -h | --help");
+        System.out.printf("By default, uses a custom state store implementation.\n");
+        System.out.printf("Modify the code to use other implementations (see comments)\n");
+        System.exit(exitCode);
+    }
 
     public static void main(String [ ] args) throws Throwable {
 
@@ -35,30 +48,22 @@ public class KafkaModelServer {
         // Default serdes
         streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.ByteArray().getClass());
         streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.ByteArray().getClass());
-/*
-        // For in memory store
-        // Create topology
-        final KafkaStreams streams = MemoryStoreStreamBuilder.createStreams(streamsConfiguration);
 
-        // Start the Restful proxy for servicing remote access to state stores
-        final RestServiceInMemory restService = RestServiceInMemory.startRestProxy(streams, port);
-*/
-/*
-        // For standard store
-        // Create topology
-        final KafkaStreams streams = StandardStoreStreamBuilder.createStreams(streamsConfiguration);
+        if (args.length > 0 && (args[0] == "-h" || args[0] == "--help")) {
+            help("", 0);
+        }
 
-        // Start the Restful proxy for servicing remote access to state stores
-        final RestServiceWithStore restService = RestServiceWithStore.startRestProxy(streams, port, "standard");
-*/
-
-        // For custom store
-        // Create topology
+        // Uses the custom store by default. To use one of the others,
+        // just switch which PAIR of lines are commented out.
         final KafkaStreams streams = CustomStoreStreamBuilder.createStreams(streamsConfiguration);
+        final StoppableService restService = RestServiceWithStore.startRestProxy(streams, port, "custom");
+        // Use the in-memory store
+//        final KafkaStreams streams = MemoryStoreStreamBuilder.createStreams(streamsConfiguration);
+//        final StoppableService restService = RestServiceInMemory.startRestProxy(streams, port);
 
-        // Start the Restful proxy for servicing remote access to state stores
-        final RestServiceWithStore restService = RestServiceWithStore.startRestProxy(streams, port, "custom");
-
+        // Use the standard store as the default.
+//        final KafkaStreams streams = StandardStoreStreamBuilder.createStreams(streamsConfiguration);
+//        final StoppableService restService = RestServiceWithStore.startRestProxy(streams, port, "standard");
 
         // Set Stream exception handler
         streams.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {

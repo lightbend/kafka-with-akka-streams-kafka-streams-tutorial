@@ -6,30 +6,47 @@ import akka.kafka.Subscriptions;
 import akka.kafka.javadsl.Consumer;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Source;
-import akka.util.Timeout;
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters;
 import com.lightbend.java.model.DataConverter;
 import com.lightbend.java.model.ModelWithDescriptor;
 import com.lightbend.model.Winerecord;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
-import scala.concurrent.ExecutionContextExecutor;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
 
 public class AkkaModelServer {
 
-    private static final String host = "localhost";
-    private static final int port = 5500;
+    private static void help(String message, int exitCode) {
+        System.out.printf("%s\n", message);
+        System.out.printf("AkkaModelServer -h | --help | c | custom | a | actor\n\n");
+        System.out.printf("-h | --help   Print this help and exit\n");
+        System.out.printf(" c | custom   Use the custom stage implementation (default)\n");
+        System.out.printf(" a | actor    Use the actors implementation\n");
+        System.exit(exitCode);
+    }
 
     public static void main(String [ ] args) throws Throwable {
+
+        // You can either pick which one to run using a command-line argument, or for ease
+        // of use with the IDE Run menu command, just switch which line is commented out.
+        ModelServerProcessor.ModelServerProcessorStreamCreator modelServerProcessor =
+                new ModelServerProcessor.CustomStageModelServerProcessor();
+//                new ModelServerProcessor.ActorModelServerProcessor();
+
+        if (args.length == 0 || args[0] == "c" || args[0] == "custom") {
+            // Already set ...
+        } else if (args[0] == "a" || args[0] == "actor") {
+            modelServerProcessor = new ModelServerProcessor.ActorModelServerProcessor();
+        } else if (args[0] == "-h" || args[0] == "--help") {
+            help("", 0);
+        } else {
+            help("Unexpected arguments:" + Arrays.toString(args), 1);
+        }
 
         // Akka
         final ActorSystem system = ActorSystem.create("ModelServing");
         final ActorMaterializer materializer = ActorMaterializer.create(system);
-        final ExecutionContextExecutor executionContext = system.dispatcher();
-
-        final Timeout askTimeout = Timeout.apply(5, TimeUnit.SECONDS);
 
         // Kafka config
         final ConsumerSettings<byte[], byte[]> dataConsumerSettings =
@@ -58,10 +75,7 @@ public class AkkaModelServer {
                 .map(record -> DataConverter.convertModel(record))
                 .filter(record -> record.isPresent()).map(record -> record.get());
 
-        // Use custom stage
-        ModelServerProcessor.stageModelServerProcessor(dataStream, modelStream, system, materializer);
-
-        // Use actor model
-//        ModelServerProcessor.actorModelServerProcessor(dataStream, modelStream, system, materializer);
+        // Use custom stage or actor to serve the model
+        modelServerProcessor.createStreams(dataStream, modelStream, system, materializer);
     }
 }

@@ -27,59 +27,73 @@ public class ModelServerProcessor {
 
     private static final Timeout askTimeout = Timeout.apply(5, TimeUnit.SECONDS);
 
-
-    public static void actorModelServerProcessor(Source<Winerecord.WineRecord, Consumer.Control> dataStream,
-                                                 Source<ModelWithDescriptor, Consumer.Control> modelStream,
-                                                 ActorSystem system, ActorMaterializer materializer) {
-
-        // Router
-        final ActorRef router = system.actorOf(Props.create(ModelServingManager.class));
-
-        // Data Stream processing
-        dataStream
-                .mapAsync(1, record -> ask(router, record, askTimeout))
-                .map(record -> (ServingResult) record)
-                .runWith(Sink.foreach(record -> {
-                    if (record.isProcessed())
-                        System.out.println("Calculated quality - " + record.getResult() + " in " + record.getDuration() + "ms");
-                    else System.out.println("No model available - skipping");
-                }), materializer);
-
-        // Model Stream processing
-        modelStream
-                .mapAsync(1, record -> ask(router, record, askTimeout))
-                .runWith(Sink.ignore(), materializer);
-
-        // Rest service
-        RestServiceActors.startRest(system, materializer, router);
+    public interface ModelServerProcessorStreamCreator {
+        void createStreams(Source<Winerecord.WineRecord, Consumer.Control> dataStream,
+                           Source<ModelWithDescriptor, Consumer.Control> modelStream,
+                           ActorSystem system, ActorMaterializer materializer);
     }
 
-    public static void stageModelServerProcessor(Source<Winerecord.WineRecord, Consumer.Control> dataStream,
-                                                 Source<ModelWithDescriptor, Consumer.Control> modelStream,
-                                                 ActorSystem system, ActorMaterializer materializer) {
+    public static class ActorModelServerProcessor implements ModelServerProcessorStreamCreator {
 
-        // Data Stream Processing
-        Source<Optional<Double>,ReadableModelStore> modelPredictions =
-                dataStream.viaMat(new ModelStage(), Keep.right()).map(result -> {
-                    if(result.isProcessed()) {
-                        System.out.println("Calculated quality - " + result.getResult() + " in " + result.getDuration() + "ms");
-                        return Optional.of(result.getResult());
-                    }
-                    else {
-                        System.out.println("No model available - skipping");
-                        return Optional.empty();
-                    }
-                });
+        public void createStreams(Source<Winerecord.WineRecord, Consumer.Control> dataStream,
+                                  Source<ModelWithDescriptor, Consumer.Control> modelStream,
+                                  ActorSystem system, ActorMaterializer materializer) {
 
-        ReadableModelStore modelStateStore =
-                modelPredictions
-                        .to(Sink.ignore())      // we do not read the results directly
-                        .run(materializer);     // we run the stream, materializing the stage's StateStore
+            System.out.println("*** Using the Actor-based model server implementation ***");
 
-        // model stream processing
-        modelStream.runForeach(model -> modelStateStore.setModel(model), materializer);
+            // Router
+            final ActorRef router = system.actorOf(Props.create(ModelServingManager.class));
 
-        // Rest service
-        RestServiceInMemory.startRest(system, materializer,modelStateStore);
+            // Data Stream processing
+            dataStream
+                    .mapAsync(1, record -> ask(router, record, askTimeout))
+                    .map(record -> (ServingResult) record)
+                    .runWith(Sink.foreach(record -> {
+                        if (record.isProcessed())
+                            System.out.println("Calculated quality - " + record.getResult() + " in " + record.getDuration() + "ms");
+                        else System.out.println("No model available - skipping");
+                    }), materializer);
+
+            // Model Stream processing
+            modelStream
+                    .mapAsync(1, record -> ask(router, record, askTimeout))
+                    .runWith(Sink.ignore(), materializer);
+
+            // Rest service
+            RestServiceActors.startRest(system, materializer, router);
+        }
+    }
+
+    public static class CustomStageModelServerProcessor implements ModelServerProcessorStreamCreator {
+
+        public void createStreams(Source<Winerecord.WineRecord, Consumer.Control> dataStream,
+                                  Source<ModelWithDescriptor, Consumer.Control> modelStream,
+                                  ActorSystem system, ActorMaterializer materializer) {
+
+            System.out.println("*** Using the Custom Stage model server implementation ***");
+
+            // Data Stream Processing
+            Source<Optional<Double>, ReadableModelStore> modelPredictions =
+                    dataStream.viaMat(new ModelStage(), Keep.right()).map(result -> {
+                        if (result.isProcessed()) {
+                            System.out.println("Calculated quality - " + result.getResult() + " in " + result.getDuration() + "ms");
+                            return Optional.of(result.getResult());
+                        } else {
+                            System.out.println("No model available - skipping");
+                            return Optional.empty();
+                        }
+                    });
+
+            ReadableModelStore modelStateStore =
+                    modelPredictions
+                            .to(Sink.ignore())      // we do not read the results directly
+                            .run(materializer);     // we run the stream, materializing the stage's StateStore
+
+            // model stream processing
+            modelStream.runForeach(model -> modelStateStore.setModel(model), materializer);
+
+            // Rest service
+            RestServiceInMemory.startRest(system, materializer, modelStateStore);
+        }
     }
 }

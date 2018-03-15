@@ -5,8 +5,8 @@ scalaVersion in ThisBuild := "2.11.12"
 // scalaVersion in ThisBuild := "2.12.4"
 
 scalacOptions in ThisBuild := Seq("-Xexperimental", "-Xlint:_", "-unchecked", "-deprecation", "-feature", "-target:jvm-1.8")
-javaOptions in ThisBuild := Seq("-Xlint:all")
-// compileOrder := CompileOrder.JavaThenScala
+// Unfortunately there are lots of annoying warnings from the generated Protobuf code:
+// javacOptions in ThisBuild := Seq("-Xlint:all")
 
 lazy val protobufs = (project in file("./protobufs"))
     .settings(
