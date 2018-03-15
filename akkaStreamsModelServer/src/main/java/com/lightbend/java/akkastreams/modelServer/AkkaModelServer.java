@@ -22,7 +22,7 @@ public class AkkaModelServer {
         System.out.printf("AkkaModelServer -h | --help | c | custom | a | actor\n\n");
         System.out.printf("-h | --help   Print this help and exit\n");
         System.out.printf(" c | custom   Use the custom stage implementation (default)\n");
-        System.out.printf(" a | actor    Use the actors implementation\n");
+        System.out.printf(" a | actor    Use the actors implementation\n\n");
         System.exit(exitCode);
     }
 
