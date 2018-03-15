@@ -1,5 +1,6 @@
 package com.lightbend.java.kafkastreams.queriablestate.inmemory;
 
+import com.lightbend.java.kafkastreams.queriablestate.StoppableService;
 import com.lightbend.java.kafkastreams.store.StoreState;
 import com.lightbend.java.model.ModelServingInfo;
 import org.apache.kafka.streams.KafkaStreams;
@@ -22,7 +23,7 @@ import javax.ws.rs.core.MediaType;
  *  https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/WordCountInteractiveQueriesRestService.java
  */
 @Path("state")
-public class RestServiceInMemory {
+public class RestServiceInMemory implements StoppableService {
 
     private final KafkaStreams streams;
     private Server jettyServer;
