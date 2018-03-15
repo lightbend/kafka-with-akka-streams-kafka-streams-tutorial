@@ -24,4 +24,6 @@ object Versions {
   val jerseyVersion = "2.25"
   val gsonVersion = "2.8.2"
   val wsrsVersion = "2.0.1"
+
+  val slf4jVersion = "1.7.25"
 }

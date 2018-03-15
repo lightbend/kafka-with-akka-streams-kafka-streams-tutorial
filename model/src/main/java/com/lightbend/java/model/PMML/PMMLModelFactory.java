@@ -1,7 +1,7 @@
 package com.lightbend.java.model.PMML;
 
-import com.lightbend.java.model.Model;
 import com.lightbend.java.model.CurrentModelDescriptor;
+import com.lightbend.java.model.Model;
 import com.lightbend.java.model.ModelFactory;
 
 import java.util.Optional;
