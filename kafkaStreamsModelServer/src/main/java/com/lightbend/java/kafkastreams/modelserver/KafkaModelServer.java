@@ -38,13 +38,13 @@ public class KafkaModelServer {
         public StoppableService restService;
 
         public Streams_Rest(String whichStorage, Properties streamsConfiguration) throws Exception {
-            if (whichStorage == "c" || whichStorage == "custom") {
+            if (whichStorage.equals("c") || whichStorage.equals("custom")) {
                 streams = CustomStoreStreamBuilder.createStreams(streamsConfiguration);
                 restService = RestServiceWithStore.startRestProxy(streams, port, "custom");
-            } else if (whichStorage == "m" || whichStorage == "memory") {
+            } else if (whichStorage.equals("m") || whichStorage.equals("memory")) {
                 streams = MemoryStoreStreamBuilder.createStreams(streamsConfiguration);
                 restService = RestServiceInMemory.startRestProxy(streams, port);
-            } else if (whichStorage == "s" || whichStorage == "standard") {
+            } else if (whichStorage.equals("s") || whichStorage.equals("standard")) {
                 streams = StandardStoreStreamBuilder.createStreams(streamsConfiguration);
                 restService = RestServiceWithStore.startRestProxy(streams, port, "standard");
             } else {
@@ -79,10 +79,7 @@ public class KafkaModelServer {
         // of use with the IDE Run menu command, just switch which line is commented out.
 //        String whichStorage = "custom";
 //        String whichStorage = "memory";
-        String whichStorage = "standard";
-        if (args.length > 0 ) {
-            whichStorage = args[0];
-        }
+        String whichStorage = args.length > 0 ? args[0] : "standard";
 
         final Streams_Rest sr =
                 new Streams_Rest(whichStorage, streamsConfiguration);

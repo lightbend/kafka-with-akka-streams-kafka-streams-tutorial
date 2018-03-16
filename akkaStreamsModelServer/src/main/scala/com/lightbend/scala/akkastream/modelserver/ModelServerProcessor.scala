@@ -33,12 +33,14 @@ object ActorModelServerProcessor extends ModelServerProcessor {
 
     // Model stream processing
     modelStream
-      .mapAsync(1)(elem => modelserver ? elem)
+      .ask[String](1)(modelserver)
+      //      .mapAsync(1)(elem => modelserver ? elem)
       .runWith(Sink.ignore) // run the stream, we do not read the results directly
 
     // Data stream processing
     dataStream
-      .mapAsync(1)(elem => (modelserver ? elem).mapTo[ServingResult])
+      .ask[ServingResult](1)(modelserver)
+//      .mapAsync(1)(elem => (modelserver ? elem).mapTo[ServingResult])
       .runForeach(result => {
         result.processed match {
           case true => println(s"Calculated quality - ${result.result} calculated in ${result.duration} ms")

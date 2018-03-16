@@ -5,12 +5,11 @@ import sbt._
 import Versions._
 
 object Dependencies {
-  val reactiveKafka  = "com.typesafe.akka"              %% "akka-stream-kafka"        % reactiveKafkaVersion
+  val reactiveKafka       = "com.typesafe.akka"         %% "akka-stream-kafka"            % reactiveKafkaVersion
 
-  val akkaStream          = "com.typesafe.akka"         %% "akka-stream"              % akkaVersion
-//  val akkaTyped           = "com.typesafe.akka"         %% "akka-typed"                   % akkaVersion
-  val akkaHttp            = "com.typesafe.akka"         %% "akka-http"                % akkaHttpVersion
-  val akkaHttpJsonJackson = "de.heikoseeberger"         %% "akka-http-jackson"        % akkaHttpJsonVersion
+  val akkaStream          = "com.typesafe.akka"         %% "akka-stream"                  % akkaVersion
+  val akkaHttp            = "com.typesafe.akka"         %% "akka-http"                    % akkaHttpVersion
+  val akkaHttpJsonJackson = "de.heikoseeberger"         %% "akka-http-jackson"            % akkaHttpJsonVersion
 
 
   val kafka         = "org.apache.kafka"                %% "kafka"                        % kafkaVersion

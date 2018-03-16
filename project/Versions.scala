@@ -5,10 +5,10 @@ object Versions {
   val Scala             = "2.11.11"
   val JDK               = "1.8"
 
-  val reactiveKafkaVersion = "0.18"
-  val akkaVersion = "2.5.6"
-  val akkaHttpVersion = "10.0.10"
-  val akkaHttpJsonVersion = "1.18.1"
+  val reactiveKafkaVersion = "0.19"
+  val akkaVersion = "2.5.11"
+  val akkaHttpVersion = "10.1.0"
+  val akkaHttpJsonVersion = "1.20.0"
 
 
   val Curator        = "4.0.0"

@@ -63,7 +63,6 @@ object AkkaModelServer {
       case ("a"  | "actor")  +: tail => ActorModelServerProcessor
       case ("-h" | "--help") +: tail => help()
       case Nil => CustomStageModelServerProcessor
-//      case Nil => ActorModelServerProcessor
       case _ => help(s"Unexpected arguments: ${args.mkString(" ")}", 1)
     }
 

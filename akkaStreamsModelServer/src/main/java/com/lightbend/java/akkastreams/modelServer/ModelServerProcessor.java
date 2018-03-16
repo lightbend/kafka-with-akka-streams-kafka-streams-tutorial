@@ -21,8 +21,6 @@ import com.lightbend.model.Winerecord;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import static akka.pattern.PatternsCS.ask;
-
 public class ModelServerProcessor {
 
     private static final Timeout askTimeout = Timeout.apply(5, TimeUnit.SECONDS);
@@ -46,8 +44,9 @@ public class ModelServerProcessor {
 
             // Data Stream processing
             dataStream
-                    .mapAsync(1, record -> ask(router, record, askTimeout))
-                    .map(record -> (ServingResult) record)
+                    .ask(1, router, ServingResult.class, askTimeout)
+//                    .mapAsync(1, record -> ask(router, record, askTimeout))
+//                    .map(record -> (ServingResult) record)
                     .runWith(Sink.foreach(record -> {
                         if (record.isProcessed())
                             System.out.println("Calculated quality - " + record.getResult() + " in " + record.getDuration() + "ms");
@@ -56,7 +55,8 @@ public class ModelServerProcessor {
 
             // Model Stream processing
             modelStream
-                    .mapAsync(1, record -> ask(router, record, askTimeout))
+                    .ask(1, router, String.class, askTimeout)
+//                    .mapAsync(1, record -> ask(router, record, askTimeout))
                     .runWith(Sink.ignore(), materializer);
 
             // Rest service

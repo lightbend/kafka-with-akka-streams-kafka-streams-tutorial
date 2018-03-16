@@ -34,11 +34,11 @@ public class AkkaModelServer {
                 new ModelServerProcessor.CustomStageModelServerProcessor();
 //                new ModelServerProcessor.ActorModelServerProcessor();
 
-        if (args.length == 0 || args[0] == "c" || args[0] == "custom") {
+        if (args.length == 0 || args[0].equals("c") || args[0].equals("custom")) {
             // Already set ...
-        } else if (args[0] == "a" || args[0] == "actor") {
+        } else if (args[0].equals("a") || args[0].equals("actor")) {
             modelServerProcessor = new ModelServerProcessor.ActorModelServerProcessor();
-        } else if (args[0] == "-h" || args[0] == "--help") {
+        } else if (args[0].equals("-h") || args[0].equals("--help")) {
             help("", 0);
         } else {
             help("Unexpected arguments:" + Arrays.toString(args), 1);
