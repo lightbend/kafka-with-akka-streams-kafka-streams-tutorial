@@ -11,6 +11,8 @@ import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.kstream.{KStream, Predicate, ValueMapper}
 import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor, ServingResult}
 import org.apache.kafka.streams.KafkaStreams
+import com.lightbend.kafka.scala.streams.DefaultSerdes._
+import com.lightbend.kafka.scala.streams.ImplicitConversions._
 
 import scala.util.Try
 

@@ -13,6 +13,8 @@ import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.kafkastreams.modelserver._
 import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor, ServingResult}
 import com.lightbend.scala.kafkastreams.store.store.ModelStateSerde
+import com.lightbend.kafka.scala.streams.DefaultSerdes._
+import com.lightbend.kafka.scala.streams.ImplicitConversions._
 
 import scala.util.Try
 
