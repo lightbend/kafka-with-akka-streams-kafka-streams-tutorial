@@ -22,6 +22,8 @@ public class DataProcessor implements Transformer<byte[], Optional<Winerecord.Wi
 
     private KeyValueStore<Integer, StoreState> modelStore;
 
+    // Exercise:
+    // See the exercises described in com.lightbend.java.kafkastreams.modelserver.customstore.DataProcessor.
     @Override
     public KeyValue<byte[], ServingResult> transform(byte[] key, Optional<Winerecord.WineRecord> dataRecord) {
 

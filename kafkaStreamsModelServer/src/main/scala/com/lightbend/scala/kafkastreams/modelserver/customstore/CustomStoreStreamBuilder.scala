@@ -79,6 +79,15 @@ object CustomStoreStreamBuilder {
       .filter(new DataValueFilter().asInstanceOf[Predicate[Array[Byte], Try[WineRecord]]])
       .transform(() => new DataProcessorKV, STORE_NAME)
       .mapValues[ServingResult](new ResultPrinter())
+    // Exercise:
+    // We just used a `ResultPrinter` to print the result. It returns the result, but we
+    // don't do anything with it.
+    // In particular, we might want to write the results to a new Kafka topic.
+    // 1. Modify the "client" to create a new output topic.
+    // 2. Modify KafkaModelServer to add the configuration for the new topic.
+    // 3. Add a final step that writes the results to the new topic.
+    //    Consult the Kafka Streams documentation for details.
+
     // Value Processor
     models
       .mapValues[Try[ModelToServe]](new ModelValueMapper().asInstanceOf[ValueMapper[Array[Byte],Try[ModelToServe]]])

@@ -10,6 +10,13 @@ public class MemoryStoreStreamBuilder {
 
     public static KafkaStreams createStreams(final Properties streamsConfiguration) {
 
+        // Exercise:
+        // We use a `PrintProcessor` to print the result, but not do anything else with it.
+        // In particular, we might want to write the results to a new Kafka topic.
+        // 1. Modify the "client" to create a new output topic.
+        // 2. Modify KafkaModelServer to add the configuration for the new topic.
+        // 3. Add a final step that writes the results to the new topic.
+        //    Consult the Kafka Streams Topology documentation for details.
 
         // Create topology
         Topology topology = new Topology();

@@ -52,6 +52,20 @@ public class ModelServerProcessor {
                             System.out.println("Calculated quality - " + record.getResult() + " in " + record.getDuration() + "ms");
                         else System.out.println("No model available - skipping");
                     }), materializer);
+            // Exercise:
+            // We just used `Sink.foreach`, which iterates through the records, prints output, but doesn't
+            // return a value. (In functional programming terms, it's "pure side effects")
+            // In particular, we might want to write the results to a new Kafka topic.
+            // 1. Modify the "client" to create a new output topic.
+            // 2. Modify AkkaModelServer to add the configuration for the new topic. For example, copy and adapt
+            //    `dataConsumerSettings` for a new producer instead of a consumer.
+            // 3. Replace `Sink.foreach` with logic to write the results to the new Kafka topic.
+            //    Also keep the current `println` output for convenience. For information on writing to Kafka
+            //    from Akka Streams, see:
+            //    https://doc.akka.io/docs/akka-stream-kafka/current/producer.html#producer-as-a-sink
+
+            // Exercise:
+            // Repeat the previous exercise, but write the results to the local file system instead (easier).
 
             // Model Stream processing
             modelStream

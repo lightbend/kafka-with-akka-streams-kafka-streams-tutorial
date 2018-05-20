@@ -354,7 +354,7 @@ Once either server is running, go to http://localhost:5500/state to obtain the c
 
 #### Using Akka Persistence to Save Model State
 
-When you use the `ActorModelServerProcessor` option (`a` or `actor`), it writes the state to the local file system using [Akka Persistence](https://doc.akka.io/docs/akka/2.5.4/scala/persistence.html), which insures that the application can be restarted if it crashes. Hence, this feature helps support the resiliency required for production systems. This data is written to the `persistence` directory.
+When you use the `ActorModelServerProcessor` option (`a` or `actor`), it writes the state to the local file system using [Akka Persistence](https://doc.akka.io/docs/akka/2.5.4/scala/persistence.html), which insures that the application can be restarted if it crashes. Hence, this feature helps support the resiliency required for production systems. This data is written to the `persistence` directory. This code is implemented in `com.lightbend.scala.akkastream.modelserver.actors.ModelServingActor`.
 
 A built-in Akka HTTP server provides access to state information. Once running, visit these links:
 
@@ -416,6 +416,10 @@ Once running, visit the following URLs:
 
 * http://localhost:8888/state/value (all versions) for the current state of execution for a given model
 * http://localhost:8888/state/instances (custom and standard stores only) for the list of currently deployed instances
+
+## Exercises
+
+We have embedded a few code comments with exercises. Search for the comment `// Exercise`. They suggest ways you can extend the functionality and thereby practice using the APIs. (Solutions are not yet provided; TODO)
 
 ## Production Considerations
 

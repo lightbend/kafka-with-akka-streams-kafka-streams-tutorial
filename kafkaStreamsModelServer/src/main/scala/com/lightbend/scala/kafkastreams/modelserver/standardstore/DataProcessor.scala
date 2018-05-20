@@ -13,12 +13,17 @@ import org.apache.kafka.streams.state.KeyValueStore
 
 import scala.util.Try
 
+/**
+  * The DataProcessor for the "standard" state store, the one provided by Kafka Streams.
+  */
 class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byte], ServingResult)]{
 
   private var modelStore: KeyValueStore[Integer, StoreState] = null
 
   import ApplicationKafkaParameters._
 
+  // Exercise:
+  // See the exercises described in com.lightbend.scala.kafkastreams.modelserver.customstore.DataProcessor.
   override def transform(key: Array[Byte], dataRecord: Try[WineRecord]) : (Array[Byte], ServingResult) = {
 
     var state = modelStore.get(STORE_ID)
