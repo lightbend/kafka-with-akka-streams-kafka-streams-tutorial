@@ -1,4 +1,6 @@
-### Kerberos/keytab ###
+persistence
+
+## Kerberos/keytab ###
 *.keytab
 *_jaas.conf
 
