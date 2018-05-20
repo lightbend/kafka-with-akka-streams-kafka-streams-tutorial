@@ -1,4 +1,4 @@
-package com.lightbend.java.akkastreams.modelServer;
+package com.lightbend.java.akkastreams.modelserver;
 
 import akka.actor.ActorSystem;
 import akka.kafka.ConsumerSettings;

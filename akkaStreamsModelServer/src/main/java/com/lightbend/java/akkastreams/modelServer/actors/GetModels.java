@@ -1,4 +1,4 @@
-package com.lightbend.java.akkastreams.modelServer.actors;
+package com.lightbend.java.akkastreams.modelserver.actors;
 
 public class GetModels {
 }

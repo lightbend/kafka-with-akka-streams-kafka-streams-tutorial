@@ -1,11 +1,11 @@
-package com.lightbend.java.akkastreams.modelServer.actors;
+package com.lightbend.java.akkastreams.modelserver.actors;
 
 import akka.actor.AbstractActor;
 import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import com.lightbend.java.akkastreams.modelServer.actors.presistence.ExecutionState;
-import com.lightbend.java.akkastreams.modelServer.actors.presistence.FilePersistence;
+import com.lightbend.java.akkastreams.modelserver.actors.presistence.ExecutionState;
+import com.lightbend.java.akkastreams.modelserver.actors.presistence.FilePersistence;
 import com.lightbend.java.model.Model;
 import com.lightbend.java.model.ModelServingInfo;
 import com.lightbend.java.model.ModelWithDescriptor;

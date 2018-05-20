@@ -14,8 +14,8 @@ import akka.http.javadsl.server.Route;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import akka.util.Timeout;
-import com.lightbend.java.akkastreams.modelServer.actors.GetModels;
-import com.lightbend.java.akkastreams.modelServer.actors.GetState;
+import com.lightbend.java.akkastreams.modelserver.actors.GetModels;
+import com.lightbend.java.akkastreams.modelserver.actors.GetState;
 import com.lightbend.java.model.ModelServingInfo;
 
 import java.util.List;

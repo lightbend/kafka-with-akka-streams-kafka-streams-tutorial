@@ -1,4 +1,4 @@
-package com.lightbend.java.akkastreams.modelServer.stage;
+package com.lightbend.java.akkastreams.modelserver.stage;
 
 import akka.japi.Pair;
 import akka.japi.function.Procedure;

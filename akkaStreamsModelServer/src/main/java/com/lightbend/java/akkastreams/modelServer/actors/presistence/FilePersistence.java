@@ -1,4 +1,4 @@
-package com.lightbend.java.akkastreams.modelServer.actors.presistence;
+package com.lightbend.java.akkastreams.modelserver.actors.presistence;
 
 import com.lightbend.java.model.DataConverter;
 import com.lightbend.java.model.Model;

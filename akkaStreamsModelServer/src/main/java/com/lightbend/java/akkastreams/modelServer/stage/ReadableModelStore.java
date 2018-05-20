@@ -1,4 +1,4 @@
-package com.lightbend.java.akkastreams.modelServer.stage;
+package com.lightbend.java.akkastreams.modelserver.stage;
 
 import com.lightbend.java.model.ModelServingInfo;
 import com.lightbend.java.model.ModelWithDescriptor;

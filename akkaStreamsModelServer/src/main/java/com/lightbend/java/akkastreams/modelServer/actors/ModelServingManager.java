@@ -1,4 +1,4 @@
-package com.lightbend.java.akkastreams.modelServer.actors;
+package com.lightbend.java.akkastreams.modelserver.actors;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;

@@ -1,4 +1,4 @@
-package com.lightbend.java.akkastreams.modelServer;
+package com.lightbend.java.akkastreams.modelserver;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -9,9 +9,9 @@ import akka.stream.javadsl.Keep;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
 import akka.util.Timeout;
-import com.lightbend.java.akkastreams.modelServer.actors.ModelServingManager;
-import com.lightbend.java.akkastreams.modelServer.stage.ModelStage;
-import com.lightbend.java.akkastreams.modelServer.stage.ReadableModelStore;
+import com.lightbend.java.akkastreams.modelserver.actors.ModelServingManager;
+import com.lightbend.java.akkastreams.modelserver.stage.ModelStage;
+import com.lightbend.java.akkastreams.modelserver.stage.ReadableModelStore;
 import com.lightbend.java.akkastreams.queryablestate.actors.RestServiceActors;
 import com.lightbend.java.akkastreams.queryablestate.inmemory.RestServiceInMemory;
 import com.lightbend.java.model.ModelWithDescriptor;

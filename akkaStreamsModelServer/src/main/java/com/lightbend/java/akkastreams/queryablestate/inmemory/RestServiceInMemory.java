@@ -13,7 +13,7 @@ import akka.http.javadsl.server.Route;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import akka.util.Timeout;
-import com.lightbend.java.akkastreams.modelServer.stage.ReadableModelStore;
+import com.lightbend.java.akkastreams.modelserver.stage.ReadableModelStore;
 
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
