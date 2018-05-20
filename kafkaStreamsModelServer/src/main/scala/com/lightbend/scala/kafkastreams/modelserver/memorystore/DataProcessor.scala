@@ -6,11 +6,16 @@ import org.apache.kafka.streams.processor.{AbstractProcessor, ProcessorContext}
 
 import scala.util.Success
 
+/**
+  * The DataProcessor for the in-memory state store for the Kafka Streams example.
+  */
 class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
 
   private var modelStore: StoreState = null
   private var ctx: ProcessorContext = null
 
+  // Exercise:
+  // See the exercises described in com.lightbend.scala.kafkastreams.modelserver.customstore.DataProcessor.
   override def process(key: Array[Byte], value: Array[Byte]): Unit = {
     DataRecord.fromByteArray(value) match {
       case Success(dataRecord) => {

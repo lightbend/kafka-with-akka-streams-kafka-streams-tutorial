@@ -20,6 +20,8 @@ public class DataProcessor extends AbstractProcessor<byte[], byte[]> {
     private StoreState modelStore;
     private ProcessorContext ctx;
 
+    // Exercise:
+    // See the exercises described in com.lightbend.java.kafkastreams.modelserver.customstore.DataProcessor.
     @Override
     public void process(byte[] key, byte[] value) {
         Optional<Winerecord.WineRecord> dataRecord = DataConverter.convertData(value);

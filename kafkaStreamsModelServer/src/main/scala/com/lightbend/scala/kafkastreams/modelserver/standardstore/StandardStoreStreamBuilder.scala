@@ -48,6 +48,13 @@ object StandardStoreStreamBuilder {
         else println("No model available - skipping")
         value
       })
+    // Exercise:
+    // We just printed the result, but we didn't do anything else with it.
+    // In particular, we might want to write the results to a new Kafka topic.
+    // 1. Modify the "client" to create a new output topic.
+    // 2. Modify KafkaModelServer to add the configuration for the new topic.
+    // 3. Add a final step that writes the results to the new topic.
+    //    Consult the Kafka Streams documentation for details.
 
     //Models Processor
     models

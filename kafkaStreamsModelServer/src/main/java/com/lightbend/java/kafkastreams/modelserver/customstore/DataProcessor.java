@@ -21,6 +21,31 @@ public class DataProcessor implements Transformer<byte[], Optional<Winerecord.Wi
 
     private ModelStateStore modelStore;
 
+    // Exercise:
+    // Currently, one model for each kind of data is returned. For model serving,
+    // we discussed in the presentation that you might want a set of workers for better
+    // scalability through parallelism. (We discussed it in the context of the Akka Streams
+    // example.) The line below,
+    //   val quality = model.score(dataRecord.get).asInstanceOf[Double]
+    // is where scoring is invoked. Modify this class to create a set of one or more
+    // workers. Choose which one to use for a record randomly, round-robin, or whatever.
+    // Add this feature without changing the public API of the class, so it's transparent
+    // to users.
+    // However, simply having a collection of servers won't help performance, because the current
+    // invocation is synchronous. So, try adapting the Akka Actors example of model serving, with
+    // a manager/router actor, so that you can invoke scoring asynchronously. How would you
+    // properly integrate this approach with tbe Kafka Streams logic below?
+
+    // Exercise:
+    // One technique used to improve scoring performance is to score each record with a set
+    // of models and then pick the best result. "Best result" could mean a few things:
+    // 1. The score includes a confidence level and the result with the highest confidence wins.
+    // 2. To met latency requirements, at least one of the models is faster than the latency window,
+    //    but less accurate. Once the latency window expires, the fast result is returned if the
+    //    slower models haven't returned a result in time.
+    // Modify the model management and scoring logic to implement one or both scenarios. Again,
+    // using Akka Actors or another concurrency library will be required.
+
     @Override
     public KeyValue<byte[], ServingResult> transform(byte[] key, Optional<Winerecord.WineRecord> dataRecord) {
         if(modelStore.getNewModel() != null){

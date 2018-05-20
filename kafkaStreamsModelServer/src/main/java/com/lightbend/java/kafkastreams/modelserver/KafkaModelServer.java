@@ -15,7 +15,7 @@ import java.util.Properties;
 
 
 /**
- * Created by boris on 6/28/17.
+ * Kafka Streams example of model management and serving.
  */
 
 public class KafkaModelServer {
