@@ -5,19 +5,19 @@ object Versions {
   val Scala             = "2.11.11"
   val JDK               = "1.8"
 
-  val reactiveKafkaVersion = "0.19"
-  val akkaVersion = "2.5.11"
-  val akkaHttpVersion = "10.1.0"
-  val akkaHttpJsonVersion = "1.20.0"
+  val reactiveKafkaVersion = "0.21.1"
+  val akkaVersion = "2.5.13"
+  val akkaHttpVersion = "10.1.3"
+  val akkaHttpJsonVersion = "1.21.0"
 
 
-  val Curator        = "4.0.0"
+  val Curator        = "4.0.1"
 
-  val kafkaVersion = "1.0.0"
+  val kafkaVersion = "1.1.0"
   val KafkaScalaVersion = "0.2.1"
 
-  val tensorflowVersion = "1.4.0"
-  val PMMLVersion = "1.3.10"
+  val tensorflowVersion = "1.8.0"
+  val PMMLVersion = "1.4.1"
 
   val jettyVersion = "9.4.7.v20170914"
   val jacksonVersion = "2.8.8"
