@@ -9,6 +9,7 @@
 * [Software Architecture Conference New York, Monday, February 26, 2018](https://conferences.oreilly.com/software-architecture/sa-ny/public/schedule/detail/63999)
 * [Strata Data Conference San Jose, Tuesday, March 6, 2018](https://conferences.oreilly.com/strata/strata-ca/public/schedule/detail/63983)
 * [Strata Data Conference London, Tuesday, May 22, 2018](https://conferences.oreilly.com/strata/strata-eu/public/schedule/detail/65420)
+* [OSCON, Opensource convention, Portland, Monday, July 16, 2018](https://conferences.oreilly.com/oscon/oscon-or/public/schedule/detail/67531)
 * [Strata Data Conference NYC, Tuesday, September 11, 2018](https://conferences.oreilly.com/strata/strata-ny/public/schedule/detail/68931)
 
 ©Copyright 2018, Lightbend, Inc. Apache 2.0 License. Please use as you see fit, but attribution is requested.
