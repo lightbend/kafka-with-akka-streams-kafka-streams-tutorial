@@ -55,10 +55,13 @@ object KafkaModelServer {
     // with the IDE Run menu command, just switch which line is commented out for "case Nil => ...".
     val streams: KafkaStreams = args.toSeq match {
       case ("m"  | "memory")   +: tail =>
+        println("Using in memory store")
         setupMemoryStoreStreams(streamsConfiguration)
-      case ("c"  | "custom")   +: tail =>
-        setupCustomStoreStreams(streamsConfiguration)
+       case ("c"  | "custom")   +: tail =>
+         println("Using Custom store")
+         setupCustomStoreStreams(streamsConfiguration)
       case ("s"  | "standard") +: tail =>
+        println("Using Standard store")
         setupStandardStoreStreams(streamsConfiguration)
       case ("-h" | "--help")   +: tail => help()
       case Nil =>
