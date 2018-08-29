@@ -16,7 +16,7 @@
 
 This tutorial provides an introduction to streaming data microservices using Kafka with Akka Streams and Kafka Streams. Hence, the tutorial helps you compare and contrast these streaming libraries for your own use.
 
-See the companion presentation for the tutorial:
+See the companion presentation for the tutorial in the `presentation` folder:
 
 * `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial.key` Keynote file
 * `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial.pdf` for non-Mac users ;)
