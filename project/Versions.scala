@@ -5,9 +5,9 @@ object Versions {
   val Scala             = "2.11.12"
   val JDK               = "1.8"
 
-  val reactiveKafkaVersion = "0.21.1"
-  val akkaVersion = "2.5.13"
-  val akkaHttpVersion = "10.1.3"
+  val reactiveKafkaVersion = "0.22"
+  val akkaVersion = "2.5.15"
+  val akkaHttpVersion = "10.1.4"
   val akkaHttpJsonVersion = "1.21.0"
 
 
