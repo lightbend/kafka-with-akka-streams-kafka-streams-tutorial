@@ -13,7 +13,7 @@ import com.lightbend.scala.kafkastreams.store.StoreState
 import com.lightbend.scala.kafkastreams.store.store.custom.ModelStateStoreType
 import de.heikoseeberger.akkahttpjackson.JacksonSupport
 import org.apache.kafka.streams.KafkaStreams
-import org.apache.kafka.streams.state.{QueryableStoreType, QueryableStoreTypes}
+import org.apache.kafka.streams.state.QueryableStoreTypes
 
 import scala.concurrent.duration._
 
