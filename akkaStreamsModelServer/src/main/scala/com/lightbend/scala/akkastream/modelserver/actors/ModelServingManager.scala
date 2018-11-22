@@ -4,10 +4,10 @@ import akka.actor.{Actor, ActorRef, Props}
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.modelServer.model.{ModelToServeStats, ModelWithDescriptor}
 
-
-// Router actor, routing both model and data to an appropriate actor
-// Based on http://michalplachta.com/2016/01/23/scalability-using-sharding-from-akka-cluster/
-
+/**
+ * Router actor, which routes both model and data (records) to an appropriate actor
+ * Based on http://michalplachta.com/2016/01/23/scalability-using-sharding-from-akka-cluster/
+ */
 class ModelServingManager extends Actor {
 
   private def getModelServer(dataType: String): ActorRef = {
@@ -54,6 +54,8 @@ object ModelServingManager{
   def props : Props = Props(new ModelServingManager())
 }
 
+/** Used as an Actor message. */
 case class GetModels()
 
+/** Used as a message returned for the GetModels request. */
 case class GetModelsResult(models : Seq[String])

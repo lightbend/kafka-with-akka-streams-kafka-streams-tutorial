@@ -5,6 +5,11 @@ import com.lightbend.java.model.ModelServingInfo;
 
 import java.util.Optional;
 
+/**
+ * Holds the state information that we persist for quick recovery.
+ * This state optionally includes the current {@link com.lightbend.java.model.Model} and
+ * {@link com.lightbend.java.model.ModelServingInfo}.
+ */
 public class ExecutionState {
 
     private Optional<Model> model = Optional.empty();

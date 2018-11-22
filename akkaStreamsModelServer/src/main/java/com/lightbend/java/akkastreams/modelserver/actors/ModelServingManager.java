@@ -14,8 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * The Manager has two functions. It creates the actors that manage models and score with them,
- * and it routes messages to them.
+ * Router actor, which routes both model and data (records) to an appropriate actor
+ * Based on http://michalplachta.com/2016/01/23/scalability-using-sharding-from-akka-cluster/
  */
 public class ModelServingManager extends AbstractActor {
     private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);

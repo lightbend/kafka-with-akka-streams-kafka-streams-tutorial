@@ -4,19 +4,22 @@ import java.io._
 
 import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor}
 
+/**
+  * Persists the state information to a file for quick recovery.
+  * This state optionally includes the current {@link com.lightbend.scala.modelServer.model.Model} and
+  * {@link com.lightbend.scala.modelServer.model.ModelToServeStats}.
+  */
 object FilePersistence {
 
-  private final val basDir = "persistence"
+  private final val baseDir = "persistence"
 
-  def restoreState(dataType: String) : (Option[Model], Option[ModelToServeStats]) = {
-    getDataInputStream(dataType) match {
-      case Some(input) => (ModelWithDescriptor.readModel(input), ModelToServeStats.readServingInfo(input))
-      case _ => (None, None)
-    }
-   }
+  def restoreState(dataType: String) : (Option[Model], Option[ModelToServeStats]) = getDataInputStream(dataType) match {
+    case Some(input) => (ModelWithDescriptor.readModel(input), ModelToServeStats.readServingInfo(input))
+    case _ => (None, None)
+  }
 
-  private def getDataInputStream(fileName: String) : Option[DataInputStream] = {
-    val file = new File(basDir + "/" + fileName)
+  private def getDataInputStream(fileName: String): Option[DataInputStream] = {
+    val file = new File(baseDir + "/" + fileName)
     file.exists() match {
       case true => Some(new DataInputStream(new FileInputStream(file)))
       case _ => None
@@ -31,12 +34,10 @@ object FilePersistence {
     output.close()
   }
 
-  private def getDataOutputStream(fileName: String) : DataOutputStream = {
+  private def getDataOutputStream(fileName: String) = {
 
-    val dir = new File(basDir)
-    if(!dir.exists()) {
-      dir.mkdir()
-    }
+    val dir = new File(baseDir)
+    if(!dir.exists()) dir.mkdir()
     val file = new File(dir, fileName)
     if(!file.exists())
       file.createNewFile()

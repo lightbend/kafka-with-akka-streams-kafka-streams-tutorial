@@ -7,8 +7,10 @@ import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.akkastream.modelserver.actors.persistence.FilePersistence
 import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor, ServingResult}
 
-// Workhorse - doing model serving for a given data type
-
+/**
+ * Actor that handles messages to update a model and to score records using the current model.
+ * @param dataType indicating either the record type or model parameters. Used as a file name.
+ */
 class ModelServingActor(dataType : String) extends Actor {
 
   println(s"Creating model serving actor $dataType")
@@ -67,4 +69,5 @@ object ModelServingActor{
   def props(dataType : String) : Props = Props(new ModelServingActor(dataType))
 }
 
+/** Used as an Actor message. */
 case class GetState(dataType : String)

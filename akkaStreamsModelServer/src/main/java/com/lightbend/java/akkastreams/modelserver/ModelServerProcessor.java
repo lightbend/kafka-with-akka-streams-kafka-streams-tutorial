@@ -54,9 +54,9 @@ public class ModelServerProcessor {
                     }), materializer);
             // Exercise:
             // We just used `Sink.foreach`, which iterates through the records, prints output, but doesn't
-            // return a value. (In functional programming terms, it's "pure side effects")
+            // return a value. (In functional programming terms, it's "all side effects")
             // In particular, we might want to write the results to a new Kafka topic.
-            // 1. Modify the "client" to create a new output topic.
+            // 1. Modify the "client" project to create a new output topic. (Or you could do it here.)
             // 2. Modify AkkaModelServer to add the configuration for the new topic. For example, copy and adapt
             //    `dataConsumerSettings` for a new producer instead of a consumer.
             // 3. Replace `Sink.foreach` with logic to write the results to the new Kafka topic.

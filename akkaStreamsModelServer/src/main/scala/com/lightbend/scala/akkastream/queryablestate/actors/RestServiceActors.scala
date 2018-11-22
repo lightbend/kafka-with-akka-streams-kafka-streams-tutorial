@@ -21,7 +21,8 @@ object RestServiceActors {
   def startRest(modelserver: ActorRef)(implicit system: ActorSystem, materializer: ActorMaterializer): Unit = {
 
     implicit val executionContext = system.dispatcher
-    implicit val timeout = Timeout(10.seconds)
+    // Use with HTTP methods that accept an implicit timeout argument
+    // implicit val timeout = Timeout(10.seconds)
     val host = "127.0.0.1"
     val port = 5500
     val routes: Route = QueriesAkkaHttpResource.storeRoutes(modelserver)
