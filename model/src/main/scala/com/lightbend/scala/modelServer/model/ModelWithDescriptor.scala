@@ -11,7 +11,9 @@ import com.lightbend.scala.modelServer.model.tensorflow.TensorFlowModel
 import scala.util.Try
 
 /**
- * Created by boris on 5/8/17.
+ * Used as a message to an Actor with data for a new model instance.
+ * In the Java implementation, this logic is spread over the corresponding
+ * `ModelWithDescriptor` class and the `DataConverter` class.
  */
 case class ModelWithDescriptor(model: Model, descriptor: ModelToServe){}
 

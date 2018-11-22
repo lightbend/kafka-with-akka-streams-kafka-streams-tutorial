@@ -5,9 +5,10 @@ import com.lightbend.model.winerecord.WineRecord
 import org.tensorflow.{Graph, Session, Tensor}
 import com.lightbend.scala.modelServer.model.{Model, ModelFactory, ModelToServe}
 
+/* Created by boris on 5/26/17. */
+
 /**
- * Created by boris on 5/26/17.
- * Implementation of a model using TensorFlow for "Records".
+ * Implementation of a model using TensorFlow.
  */
 class TensorFlowModel(inputStream: Array[Byte]) extends Model {
 
@@ -33,7 +34,7 @@ class TensorFlowModel(inputStream: Array[Byte]) extends Model {
     val modelInput = Tensor.create(Array(data))
     val result = session.runner.feed("dense_1_input", modelInput).fetch("dense_3/Sigmoid").run().get(0)
     val rshape = result.shape
-    var rMatrix = Array.ofDim[Float](rshape(0).asInstanceOf[Int], rshape(1).asInstanceOf[Int])
+    val rMatrix = Array.ofDim[Float](rshape(0).asInstanceOf[Int], rshape(1).asInstanceOf[Int])
     result.copyTo(rMatrix)
     var value = (0, rMatrix(0)(0))
     1 to (rshape(1).asInstanceOf[Int] - 1) foreach { i =>
@@ -44,6 +45,12 @@ class TensorFlowModel(inputStream: Array[Byte]) extends Model {
     }
     value._1.toDouble
   }
+
+  // Exercise:
+  // The previous method, `score` hard codes data about the records being scored.
+  // Make this class more abstract and reusable. There are several possible ways:
+  // 1. Make this class an abstract class and subclass a specific kind for wine records.
+  // 2. Keep this class concrete, but use function arguments to provide the `data` array. (Better)
 
   override def cleanup(): Unit = {
     try {

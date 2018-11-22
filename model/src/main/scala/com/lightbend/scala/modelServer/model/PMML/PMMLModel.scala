@@ -1,10 +1,6 @@
 package com.lightbend.scala.modelServer.model.PMML
 
-/**
- * Created by boris on 5/9/17.
- *
- * Class for PMML model
- */
+/* Created by boris on 5/9/17. */
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
 
@@ -12,15 +8,15 @@ import com.lightbend.model.modeldescriptor.ModelDescriptor
 import com.lightbend.model.winerecord.WineRecord
 import org.dmg.pmml.{FieldName, PMML}
 import org.jpmml.evaluator.visitors._
-import org.jpmml.evaluator.{Computable, FieldValue, ModelEvaluatorFactory, TargetField}
+import org.jpmml.evaluator._
 import org.jpmml.model.PMMLUtil
 import com.lightbend.scala.modelServer.model.{Model, ModelFactory, ModelToServe}
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.collection._
 
 /**
- * Handle models provided using PMML, to score "Records".
+ * Handle models provided in PMML format.
  */
 class PMMLModel(inputStream: Array[Byte]) extends Model {
 
@@ -43,12 +39,12 @@ class PMMLModel(inputStream: Array[Byte]) extends Model {
 
   override def score(record: WineRecord): Any = {
     arguments.clear()
-    inputFields.foreach(field => {
+    inputFields.asScala.foreach(field => {
       arguments.put(field.getName, field.prepare(getValueByName(record, field.getName.getValue)))
     })
 
     // Calculate Output// Calculate Output
-    val result = evaluator.evaluate(arguments)
+    val result = evaluator.evaluate(arguments.asJava)
 
     // Prepare output
     result.get(tname) match {
@@ -69,7 +65,7 @@ class PMMLModel(inputStream: Array[Byte]) extends Model {
     }
 
   override def toBytes: Array[Byte] = {
-    var stream = new ByteArrayOutputStream()
+    val stream = new ByteArrayOutputStream()
     PMMLUtil.marshal(pmml, stream)
     stream.toByteArray
   }
@@ -81,7 +77,7 @@ object PMMLModel extends ModelFactory {
 
   private val optimizers = Array(new ExpressionOptimizer, new FieldOptimizer, new PredicateOptimizer,
     new GeneralRegressionModelOptimizer, new NaiveBayesModelOptimizer, new RegressionModelOptimizer)
-  def optimize(pmml: PMML) = this.synchronized {
+  def optimize(pmml: PMML): Unit = this.synchronized {
     optimizers.foreach(opt =>
       try {
         opt.applyTo(pmml)
@@ -99,6 +95,12 @@ object PMMLModel extends ModelFactory {
     "chlorides" -> 4, "free sulfur dioxide" -> 5, "total sulfur dioxide" -> 6,
     "density" -> 7, "pH" -> 8, "sulphates" -> 9, "alcohol" -> 10
   )
+
+  // Exercise:
+  // The previous definition of `names` hard codes data about the records being scored.
+  // Make this class more abstract and reusable. There are several possible ways:
+  // 1. Make this class an abstract class and subclass a specific kind for wine records.
+  // 2. Keep this class concrete, but use function arguments to provide the `data` array. (Better)
 
   override def create(input: ModelToServe): Model = {
       new PMMLModel(input.model)

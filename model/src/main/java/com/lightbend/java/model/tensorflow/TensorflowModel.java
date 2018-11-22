@@ -49,6 +49,11 @@ public class TensorflowModel implements Model {
         }
         return (double)value.getIndex();
     }
+    // Exercise:
+    // The previous method, `score` hard codes data about the records being scored.
+    // Make this class more abstract and reusable. There are several possible ways:
+    // 1. Make this class an abstract class and subclass a specific kind for wine records.
+    // 2. Keep this class concrete, but use function arguments to provide the `data` array. (Better)
 
     @Override
     public void cleanup() {
