@@ -40,15 +40,17 @@ class MessageSender(val brokers: String) {
   val producer = new KafkaProducer[Array[Byte], Array[Byte]](
     providerProperties(brokers, classOf[ByteArraySerializer].getName, classOf[ByteArraySerializer].getName))
 
-  def writeKeyValue(topic: String, key: Array[Byte], value: Array[Byte]): Unit = {
+  def writeKeyValue(topic: String, key: Array[Byte], value: Array[Byte]): RecordMetadata = {
     val result = producer.send(new ProducerRecord[Array[Byte], Array[Byte]](topic, key, value)).get
     producer.flush()
+    result
   }
 
   /** Write a value with no key. */
-  def writeValue(topic: String, value: Array[Byte]): Unit = {
+  def writeValue(topic: String, value: Array[Byte]): RecordMetadata = {
     val result = producer.send(new ProducerRecord[Array[Byte], Array[Byte]](topic, value)).get
     producer.flush()
+    result
   }
 
   /** Write a value with no key. */

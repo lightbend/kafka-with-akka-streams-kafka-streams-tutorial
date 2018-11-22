@@ -18,12 +18,12 @@ import java.util.Comparator
 import kafka.admin.{AdminUtils, RackAwareMode}
 import kafka.utils.ZkUtils
 
-class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: ZooKeeperLocalServer) {
+case class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: ZooKeeperLocalServer) {
 
   import KafkaLocalServer._
 
   private var broker: KafkaServerStartable = null
-  private var zkUtils : ZkUtils =
+  private val zkUtils : ZkUtils =
     ZkUtils.apply(s"localhost:${zooKeeperServer.getPort()}", DEFAULT_ZK_SESSION_TIMEOUT_MS, DEFAULT_ZK_CONNECTION_TIMEOUT_MS, false)
 
   def start(): Unit = {
@@ -69,6 +69,7 @@ class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: Zo
     * @param topicConfig Additional topic-level configuration settings.
     */
   def createTopic(topic: String, partitions: Int, replication: Int, topicConfig: Properties): Unit = {
+    // TODO: There is a deprecation warning for AdminUtils. What should be used instead?
     AdminUtils.createTopic(zkUtils, topic, partitions, replication, topicConfig, RackAwareMode.Enforced)
   }
 }
@@ -76,13 +77,13 @@ class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: Zo
 object KafkaLocalServer {
   final val DefaultPort = 9092
   final val DefaultResetOnStart = true
-  private val DEFAULT_ZK_CONNECT = "localhost:2181"
-  private val DEFAULT_ZK_SESSION_TIMEOUT_MS = 10 * 1000
-  private val DEFAULT_ZK_CONNECTION_TIMEOUT_MS = 8 * 1000
+  val DEFAULT_ZK_CONNECT = "localhost:2181"
+  val DEFAULT_ZK_SESSION_TIMEOUT_MS = 10 * 1000
+  val DEFAULT_ZK_CONNECTION_TIMEOUT_MS = 8 * 1000
 
-  private final val baseDir = "tmp/"
+  final val baseDir = "tmp/"
 
-  private final val KafkaDataFolderName = "kafka_data"
+  final val KafkaDataFolderName = "kafka_data"
 
   val Log = LoggerFactory.getLogger(classOf[KafkaLocalServer])
 
@@ -150,7 +151,7 @@ object KafkaLocalServer {
   }
 }
 
-private class ZooKeeperLocalServer(port: Int, cleanOnStart: Boolean) {
+case class ZooKeeperLocalServer(port: Int, cleanOnStart: Boolean) {
 
   import KafkaLocalServer._
   import ZooKeeperLocalServer._
