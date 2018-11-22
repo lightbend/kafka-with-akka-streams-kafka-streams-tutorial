@@ -12,9 +12,9 @@ object Dependencies {
   val akkaHttpJsonJackson = "de.heikoseeberger"         %% "akka-http-jackson"            % akkaHttpJsonVersion
 
 
-  val kafka         = "org.apache.kafka"                %% "kafka"                        % kafkaVersion
-  val kafkastreams  = "org.apache.kafka"                %  "kafka-streams"                % kafkaVersion
-  val kafkastreamsScala  = "com.lightbend"              %% "kafka-streams-scala"          %  KafkaScalaVersion
+  val kafka               = "org.apache.kafka"          %% "kafka"                        % kafkaVersion
+  val kafkastreams        = "org.apache.kafka"           % "kafka-streams"                % kafkaVersion
+  val kafkastreamsScala   = "com.lightbend"             %% "kafka-streams-scala"          %  KafkaScalaVersion
 
   val curator       = "org.apache.curator"              % "curator-test"                  % Curator                 // ApacheV2
 
