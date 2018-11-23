@@ -34,7 +34,7 @@ class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byt
   // However, simply having a collection of servers won't help performance, because the current
   // invocation is synchronous. So, try adapting the Akka Actors example of model serving, with
   // a manager/router actor, so that you can invoke scoring asynchronously. How would you
-  // properly integrate this approach with tbe Kafka Streams logic below?
+  // properly integrate this approach with the Kafka Streams logic below?
 
   // Exercise:
   // One technique used to improve scoring performance is to score each record with a set
