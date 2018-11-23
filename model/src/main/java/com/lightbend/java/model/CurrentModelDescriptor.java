@@ -4,6 +4,7 @@ import java.io.Serializable;
 import com.lightbend.model.Modeldescriptor.ModelDescriptor;
 
 /**
+ * Metadata about the current model.
  * Created by boris on 6/28/17.
  */
 public class CurrentModelDescriptor implements Serializable {

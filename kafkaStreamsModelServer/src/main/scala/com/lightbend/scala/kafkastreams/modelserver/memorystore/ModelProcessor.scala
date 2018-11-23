@@ -6,6 +6,9 @@ import org.apache.kafka.streams.processor.{AbstractProcessor, ProcessorContext}
 
 import scala.util.Success
 
+/**
+ * Handle new model parameters; updates the current model used for scoring.
+ */
 class ModelProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
 
   private var modelStore: StoreState = null

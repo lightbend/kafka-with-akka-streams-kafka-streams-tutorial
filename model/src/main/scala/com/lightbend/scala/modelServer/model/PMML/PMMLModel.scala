@@ -16,7 +16,7 @@ import scala.collection.JavaConverters._
 import scala.collection._
 
 /**
- * Handle models provided in PMML format.
+ * Handle model exchange from remote training system using PMML and implement scoring with it.
  */
 class PMMLModel(inputStream: Array[Byte]) extends Model {
 

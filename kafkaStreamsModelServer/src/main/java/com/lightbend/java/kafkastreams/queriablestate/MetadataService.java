@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Looks up StreamsMetadata from KafkaStreams and converts the results
  * into Beans that can be JSON serialized via Jersey.
- * https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/MetadataService.java
+ * @see https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/MetadataService.java
  */
 public class MetadataService {
 

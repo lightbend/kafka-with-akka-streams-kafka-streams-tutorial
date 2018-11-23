@@ -5,10 +5,10 @@ import java.io.DataOutputStream
 
 import scala.util.control.NonFatal
 
-/* Created by boris on 5/8/17. */
 /**
  * State information about the current model being served.
  * Called `ModelServingInfo` in the Java implementation.
+ * Created by boris on 5/8/17.
  */
 final case class ModelToServeStats(
   name: String,

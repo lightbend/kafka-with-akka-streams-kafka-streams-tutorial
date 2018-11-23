@@ -4,6 +4,7 @@ import com.lightbend.java.model.Model;
 import com.lightbend.java.model.ModelServingInfo;
 
 /**
+ * Encapsulation of the model state storage information.
  * Created by boris on 7/18/17.
  */
 public class StoreState {

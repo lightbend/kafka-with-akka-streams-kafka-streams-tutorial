@@ -6,6 +6,10 @@ import org.apache.kafka.streams.Topology;
 
 import java.util.Properties;
 
+/**
+ * Use the lower level topology API for defining the Kafka Streams processing "nodes".
+ * Store the running state in memory only, which of course is not durable.
+ */
 public class MemoryStoreStreamBuilder {
 
     public static KafkaStreams createStreams(final Properties streamsConfiguration) {

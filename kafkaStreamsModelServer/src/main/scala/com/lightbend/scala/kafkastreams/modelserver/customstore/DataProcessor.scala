@@ -13,8 +13,10 @@ import org.apache.kafka.streams.kstream.Transformer
 import scala.util.Try
 
 /**
-  * The DataProcessor for the custom state store for the Kafka Streams example.
-  */
+ * The DataProcessor for the custom state store for the Kafka Streams example.
+ * See also this example:
+ * https://github.com/bbejeck/kafka-streams/blob/master/src/main/java/bbejeck/processor/stocks/StockSummaryProcessor.java
+ */
 class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byte], ServingResult)]{
 
   private var modelStore: ModelStateStore = null

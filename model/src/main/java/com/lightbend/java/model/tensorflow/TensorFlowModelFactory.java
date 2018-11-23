@@ -7,6 +7,7 @@ import com.lightbend.java.model.ModelFactory;
 import java.util.Optional;
 
 /**
+ * A factory for creating TensorFlow-based models.
  * Created by boris on 7/15/17.
  */
 public class TensorFlowModelFactory implements ModelFactory {

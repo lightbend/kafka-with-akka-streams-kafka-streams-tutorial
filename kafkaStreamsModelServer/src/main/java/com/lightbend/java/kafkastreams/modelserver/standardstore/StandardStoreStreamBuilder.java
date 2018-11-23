@@ -18,6 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Use the Kafka Streams DSL to define the application streams.
+ * Use the built-in storage implementation for the running state.
+ */
 public class StandardStoreStreamBuilder {
 
     public static KafkaStreams createStreams(final Properties streamsConfiguration) {

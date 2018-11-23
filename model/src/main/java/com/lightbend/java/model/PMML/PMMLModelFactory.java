@@ -7,6 +7,7 @@ import com.lightbend.java.model.ModelFactory;
 import java.util.Optional;
 
 /**
+ * A factory for creating PMML-based models.
  * Created by boris on 7/15/17.
  */
 public class PMMLModelFactory implements ModelFactory {

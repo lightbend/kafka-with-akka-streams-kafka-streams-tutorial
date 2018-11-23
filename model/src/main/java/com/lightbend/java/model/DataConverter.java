@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
+ * Helper for handling a data record or model as a byte array, including parsing and I/O.
  * Created by boris on 6/28/17.
  */
 public class DataConverter {

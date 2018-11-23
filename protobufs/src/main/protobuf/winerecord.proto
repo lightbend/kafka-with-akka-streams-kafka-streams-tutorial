@@ -2,7 +2,7 @@ syntax = "proto3";
 
 option java_package = "com.lightbend.model";
 
-// Description of the wine.
+// Description of a wine record.
 message WineRecord {
     double fixed_acidity = 1;
     double volatile_acidity = 2;

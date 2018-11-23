@@ -11,9 +11,9 @@ import org.apache.kafka.streams.processor.ProcessorContext;
 import java.util.Optional;
 
 /**
+ * Handle new model parameters; updates the current model used for scoring.
  * Created by boris on 7/12/17.
  */
-
 public class ModelProcessor extends AbstractProcessor<byte[], byte[]> {
 
     private StoreState modelStore;

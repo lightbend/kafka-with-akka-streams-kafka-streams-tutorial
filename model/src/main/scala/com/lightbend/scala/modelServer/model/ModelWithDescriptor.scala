@@ -11,7 +11,7 @@ import com.lightbend.scala.modelServer.model.tensorflow.TensorFlowModel
 import scala.util.Try
 
 /**
- * Used as a message to an Actor with data for a new model instance.
+ * Implementation of a message sent to an Actor with data for a new model instance.
  * In the Java implementation, this logic is spread over the corresponding
  * `ModelWithDescriptor` class and the `DataConverter` class.
  */

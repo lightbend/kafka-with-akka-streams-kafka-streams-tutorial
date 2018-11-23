@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.*;
 
 /**
+ * Handle model exchange from remote training system using PMML and implement scoring with it.
  * Created by boris on 5/18/17.
  */
 public class PMMLModel implements Model {

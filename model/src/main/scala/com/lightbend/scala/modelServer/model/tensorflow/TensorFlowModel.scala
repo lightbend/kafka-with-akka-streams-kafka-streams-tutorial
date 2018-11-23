@@ -5,10 +5,10 @@ import com.lightbend.model.winerecord.WineRecord
 import org.tensorflow.{Graph, Session, Tensor}
 import com.lightbend.scala.modelServer.model.{Model, ModelFactory, ModelToServe}
 
-/* Created by boris on 5/26/17. */
 
 /**
- * Implementation of a model using TensorFlow.
+ * Handle TensorFlow model exchange from remote training system and implement scoring with it.
+ * Created by boris on 5/26/17.
  */
 class TensorFlowModel(inputStream: Array[Byte]) extends Model {
 

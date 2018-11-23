@@ -5,7 +5,10 @@ import java.util.Properties
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters._
 import org.apache.kafka.streams.{KafkaStreams, Topology}
 
-
+/**
+ * Use the lower level topology API for defining the Kafka Streams processing "nodes".
+ * Store the running state in memory only, which of course is not durable.
+ */
 object MemoryStoreStreamBuilder {
   // Create topology
   def createStreams(streamsConfiguration: Properties) : KafkaStreams = {

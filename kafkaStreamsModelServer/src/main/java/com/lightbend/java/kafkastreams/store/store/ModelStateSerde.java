@@ -21,9 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by boris on 7/11/17.
- * based on
+ * Serialization and deserialization of model stat information. Needed for durable storage. Based on
  * https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/scala/io/confluent/examples/streams/algebird/TopCMSSerde.scala
+ * Created by boris on 7/11/17.
  */
 public class ModelStateSerde implements Serde<StoreState> {
 

@@ -7,8 +7,10 @@ import org.apache.kafka.streams.processor.{AbstractProcessor, ProcessorContext}
 import scala.util.Success
 
 /**
-  * The DataProcessor for the in-memory state store for the Kafka Streams example.
-  */
+ * The DataProcessor for the in-memory state store for the Kafka Streams example.
+ * See also this example:
+ * https://github.com/bbejeck/kafka-streams/blob/master/src/main/java/bbejeck/processor/stocks/StockSummaryProcessor.java
+ */
 class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
 
   private var modelStore: StoreState = null

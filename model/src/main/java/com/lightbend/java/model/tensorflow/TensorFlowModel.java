@@ -1,9 +1,5 @@
 package com.lightbend.java.model.tensorflow;
 
-/**
- * Created by boris on 5/26/17.
- */
-
 import com.lightbend.java.model.Model;
 import com.lightbend.model.Modeldescriptor;
 import com.lightbend.model.Winerecord;
@@ -11,6 +7,10 @@ import org.tensorflow.Graph;
 import org.tensorflow.Session;
 import org.tensorflow.Tensor;
 
+/**
+ * Handle TensorFlow model exchange from remote training system and implement scoring with it.
+ * Created by boris on 5/26/17.
+ */
 public class TensorFlowModel implements Model {
     private Graph graph = new Graph();
     private Session session;

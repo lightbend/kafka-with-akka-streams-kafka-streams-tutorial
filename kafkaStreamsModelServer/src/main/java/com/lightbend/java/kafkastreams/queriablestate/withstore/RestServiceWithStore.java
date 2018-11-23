@@ -29,7 +29,7 @@ import java.util.List;
  *  A simple REST proxy that runs embedded in the Model server. This is used to
  *  demonstrate how a developer can use the Interactive Queries APIs exposed by Kafka Streams to
  *  locate and query the State Stores within a Kafka Streams Application.
- *  https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/WordCountInteractiveQueriesRestService.java
+ *  @see https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/WordCountInteractiveQueriesRestService.java
  */
 @Path("state")
 public class RestServiceWithStore implements StoppableService {

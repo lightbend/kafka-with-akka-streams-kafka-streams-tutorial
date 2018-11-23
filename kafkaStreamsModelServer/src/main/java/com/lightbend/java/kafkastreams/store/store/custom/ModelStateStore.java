@@ -14,12 +14,11 @@ import org.apache.kafka.streams.state.StateSerdes;
 import org.apache.kafka.streams.state.internals.StateStoreProvider;
 
 /**
- * Created by boris on 7/11/17.
  * Implementation of a custom state store based on
  * http://docs.confluent.io/current/streams/developer-guide.html#streams-developer-guide-state-store-custom
- * and example at:
+ * and the example at:
  * https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/scala/io/confluent/examples/streams/algebird/CMSStore.scala
- *
+ * Created by boris on 7/11/17.
  */
 public class ModelStateStore implements StateStore, ReadableModelStateStore {
 

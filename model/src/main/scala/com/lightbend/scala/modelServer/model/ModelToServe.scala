@@ -4,9 +4,11 @@ import com.lightbend.model.modeldescriptor.ModelDescriptor
 
 import scala.util.Try
 
-/* Created by boris on 5/8/17. */
 
-/** Wraps data about a model */
+/**
+ * A wrapper for metadata about a model.
+ * Created by boris on 5/8/17.
+ */
 case class ModelToServe(name: String, description: String,
   modelType: ModelDescriptor.ModelType, model: Array[Byte], dataType: String) {}
 
