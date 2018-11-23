@@ -22,6 +22,7 @@ See the companion presentation for the tutorial in the `presentation` folder:
 
 * `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial.key` Keynote file
 * `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial.pdf` for non-Mac users ;)
+* `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial-with-notes.pdf` includes the speaker notes
 
 The core "use case" implemented is a stream processing application that also ingests updated parameters for a machine learning model and then uses the model to score the data. Several implementations of this use case are provided. They not only compare Akka Streams vs. Kafka Streams, but they also show how to support a few other common production requirements, such as managing the in-memory state of the application.
 
