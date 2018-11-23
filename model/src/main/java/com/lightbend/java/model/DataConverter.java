@@ -1,7 +1,7 @@
 package com.lightbend.java.model;
 
 import com.lightbend.java.model.PMML.PMMLModelFactory;
-import com.lightbend.java.model.tensorflow.TensorflowModelFactory;
+import com.lightbend.java.model.tensorflow.TensorFlowModelFactory;
 import com.lightbend.model.Modeldescriptor.ModelDescriptor;
 import com.lightbend.model.Winerecord;
 
@@ -18,7 +18,7 @@ public class DataConverter {
 
     private static final Map<Integer, ModelFactory> factories = new HashMap<Integer, ModelFactory>() {
         {
-            put(ModelDescriptor.ModelType.TENSORFLOW.getNumber(), TensorflowModelFactory.getInstance());
+            put(ModelDescriptor.ModelType.TENSORFLOW.getNumber(), TensorFlowModelFactory.getInstance());
             put(ModelDescriptor.ModelType.PMML.getNumber(), PMMLModelFactory.getInstance());
         }
     };

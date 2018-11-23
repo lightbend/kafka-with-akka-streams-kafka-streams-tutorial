@@ -11,11 +11,11 @@ import org.tensorflow.Graph;
 import org.tensorflow.Session;
 import org.tensorflow.Tensor;
 
-public class TensorflowModel implements Model {
+public class TensorFlowModel implements Model {
     private Graph graph = new Graph();
     private Session session;
 
-    public TensorflowModel(byte[] inputStream) {
+    public TensorFlowModel(byte[] inputStream) {
         graph.importGraphDef(inputStream);
         session = new Session(graph);
     }

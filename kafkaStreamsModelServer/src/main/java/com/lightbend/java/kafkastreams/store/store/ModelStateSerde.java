@@ -7,7 +7,7 @@ import com.lightbend.java.model.Model;
 import com.lightbend.java.model.ModelFactory;
 import com.lightbend.java.model.ModelServingInfo;
 import com.lightbend.java.model.PMML.PMMLModelFactory;
-import com.lightbend.java.model.tensorflow.TensorflowModelFactory;
+import com.lightbend.java.model.tensorflow.TensorFlowModelFactory;
 
 import org.apache.kafka.common.serialization.Deserializer;
 import org.apache.kafka.common.serialization.Serde;
@@ -82,7 +82,7 @@ public class ModelStateSerde implements Serde<StoreState> {
 
         private static final Map<Integer, ModelFactory> factories = new HashMap<Integer, ModelFactory>() {
             {
-                put(ModelDescriptor.ModelType.TENSORFLOW.getNumber(), TensorflowModelFactory.getInstance());
+                put(ModelDescriptor.ModelType.TENSORFLOW.getNumber(), TensorFlowModelFactory.getInstance());
                 put(ModelDescriptor.ModelType.PMML.getNumber(), PMMLModelFactory.getInstance());
             }
         };

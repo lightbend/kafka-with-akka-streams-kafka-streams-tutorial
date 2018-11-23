@@ -9,18 +9,18 @@ import java.util.Optional;
 /**
  * Created by boris on 7/15/17.
  */
-public class TensorflowModelFactory implements ModelFactory {
+public class TensorFlowModelFactory implements ModelFactory {
 
-    private static TensorflowModelFactory instance = null;
+    private static TensorFlowModelFactory instance = null;
 
     @Override
     public Optional<Model> create(CurrentModelDescriptor descriptor) {
 
         try{
-            return Optional.of(new TensorflowModel(descriptor.getModelData()));
+            return Optional.of(new TensorFlowModel(descriptor.getModelData()));
         }
         catch (Throwable t){
-            System.out.println("Exception creating TensorflowModel from " + descriptor);
+            System.out.println("Exception creating TensorFlowModel from " + descriptor);
             t.printStackTrace();
             return Optional.empty();
         }
@@ -29,7 +29,7 @@ public class TensorflowModelFactory implements ModelFactory {
     @Override
     public Model restore(byte[] bytes) {
         try{
-            return new TensorflowModel(bytes);
+            return new TensorFlowModel(bytes);
         }
         catch (Throwable t){
             System.out.println("Exception restoring PMMLModel from ");
@@ -40,7 +40,7 @@ public class TensorflowModelFactory implements ModelFactory {
 
     public static ModelFactory getInstance(){
         if(instance == null)
-            instance = new TensorflowModelFactory();
+            instance = new TensorFlowModelFactory();
         return instance;
     }
 
