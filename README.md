@@ -465,6 +465,11 @@ Once running, visit the following URLs:
 
 We have embedded a few code comments with exercises. Search for the comment `// Exercise`. They suggest ways you can extend the functionality and thereby practice using the APIs. (Solutions are not yet provided; TODO)
 
+Here are a few other exercises to consider that aren't shown as code comments:
+
+* For simplicity, much of the code assumes details about the wine record example. Can you make the code more generic. This is discussed as a `// Exercise` comment in `PMMLModel.java`, `PMMLModel.scala`, `TensorFlowModel.java`, and `TensorFlowModel.scala`. See the suggestions there.
+* The idea of calling an external service for model scoring, e.g., _TensorFlow Serving_, is discussed in the presentation, but not provided in the example code. Try implementing this feature. You could even adapt the Akka-based model serving to run as a separate application and use Akka HTTP to support REST calls for serving. What is the performance overhead for this approach vs. scoring through an in-memory library, as implemented in the examples?
+
 ## Production Considerations
 
 The examples illustrate how to implement a model-serving microservice using Akka Streams and Kafka Streams in various ways. A few illustrate other production considerations, such as persisting state so that restarts can pick up where processing left off.
