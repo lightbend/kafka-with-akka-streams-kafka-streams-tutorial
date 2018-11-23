@@ -5,6 +5,9 @@ import org.apache.kafka.common.serialization.ByteArrayDeserializer
 
 import scala.collection.JavaConverters._
 
+/**
+ * Helper class for listening for new records in Kafka.
+ */
 object MessageListener {
   private val AUTOCOMMITINTERVAL = "1000" // Frequency off offset commits
   private val SESSIONTIMEOUT = "30000"    // The timeout used to detect failures - should be greater then processing time

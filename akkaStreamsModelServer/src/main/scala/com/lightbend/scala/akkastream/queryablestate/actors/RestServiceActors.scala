@@ -14,6 +14,12 @@ import de.heikoseeberger.akkahttpjackson.JacksonSupport
 
 import scala.concurrent.duration._
 
+/**
+ * Implements Queryable State for the Akka Streams-based model scoring application.
+ * Uses Akka HTTP to implement this capability, with separate actor invocations.
+ * Note that a production implementation might need better scalability, if it's used
+ * heavily and also we ignore security considerations here!
+ */
 object RestServiceActors {
 
   // See http://localhost:5500/models

@@ -10,6 +10,12 @@ import com.lightbend.scala.akkastream.modelserver.stage.ModelStateStore
 import com.lightbend.scala.modelServer.model.ModelToServeStats
 import de.heikoseeberger.akkahttpjackson.JacksonSupport
 
+/**
+ * Implements Queryable State for the Akka Streams-based model scoring application.
+ * Uses Akka HTTP to implement this capability, with state held in memory.
+ * Note that a production implementation might need better scalability, if it's used
+ * heavily and also we ignore security considerations here!
+ */
 object RestServiceInMemory {
 
   // Serve model status: http://localhost:5500/state

@@ -10,6 +10,9 @@ import java.util.Properties
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata}
 import org.apache.kafka.common.serialization.ByteArraySerializer
 
+/**
+ * Helper class for writing records to Kafka.
+ */
 object MessageSender {
   private val ACKCONFIGURATION = "all" // Blocking on the full commit of the record
   private val RETRYCOUNT = "1" // Number of retries on put

@@ -15,6 +15,9 @@ import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 
 import java.util.Arrays;
 
+/**
+ * Entry point for the Akka model serving example.
+ */
 public class AkkaModelServer {
 
     private static void help(String message, int exitCode) {

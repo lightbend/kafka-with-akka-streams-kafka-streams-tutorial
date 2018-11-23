@@ -14,13 +14,16 @@ import com.lightbend.scala.modelServer.model.{ModelWithDescriptor, ServingResult
 
 import scala.concurrent.duration._
 
+/**
+ * Abstraction for the core logic for model serving.
+ */
 trait ModelServerProcessor {
   def createStreams(dataStream: Source[WineRecord, Consumer.Control], modelStream: Source[ModelWithDescriptor, Consumer.Control])
                    (implicit system: ActorSystem, materializer: ActorMaterializer): Unit
 }
 
 /**
- * Using an Actor-based model server implementation
+ * Implements model serving using an Actor-based approach, to which messages are sent to do scoring.
  */
 object ActorModelServerProcessor extends ModelServerProcessor {
 
@@ -71,7 +74,7 @@ object ActorModelServerProcessor extends ModelServerProcessor {
 }
 
 /**
- * Using the Custom Stage model server implementation.
+ * Implements model serving using a custom Akka Streams "stage", so that scoring looks like a regular stream "operator".
  */
 object CustomStageModelServerProcessor extends ModelServerProcessor {
 

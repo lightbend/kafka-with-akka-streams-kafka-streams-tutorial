@@ -17,8 +17,10 @@ import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import scala.concurrent.duration._
 import scala.util.Success
 
+/* Created by boris on 7/21/17. */
+
 /**
- * Created by boris on 7/21/17.
+ * Entry point for the Akka model serving example.
  */
 object AkkaModelServer {
 

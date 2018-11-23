@@ -21,6 +21,10 @@ import com.lightbend.model.Winerecord;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Implements the core logic for model serving, supporting two options, 1) a custom
+ * Akka Streams "stage" and 2) invoking an Actor Actor to do scoring.
+ */
 public class ModelServerProcessor {
 
     private static final Timeout askTimeout = Timeout.apply(5, TimeUnit.SECONDS);
@@ -31,6 +35,9 @@ public class ModelServerProcessor {
                            ActorSystem system, ActorMaterializer materializer);
     }
 
+    /**
+     * Implements model serving using an Actor-based approach, to which messages are sent to do scoring.
+     */
     public static class ActorModelServerProcessor implements ModelServerProcessorStreamCreator {
 
         public void createStreams(Source<Winerecord.WineRecord, Consumer.Control> dataStream,
@@ -78,6 +85,9 @@ public class ModelServerProcessor {
         }
     }
 
+    /**
+     * Implements model serving using a custom Akka Streams "stage", so that scoring looks like a regular stream "operator".
+     */
     public static class CustomStageModelServerProcessor implements ModelServerProcessorStreamCreator {
 
         public void createStreams(Source<Winerecord.WineRecord, Consumer.Control> dataStream,

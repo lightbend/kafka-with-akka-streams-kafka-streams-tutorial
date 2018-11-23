@@ -18,7 +18,16 @@ import java.util.Comparator
 import kafka.admin.{AdminUtils, RackAwareMode}
 import kafka.utils.ZkUtils
 
+/**
+ * Helper class for working with a local, embedded instance of Kafka.
+ */
 case class KafkaLocalServer private (kafkaProperties: Properties, zooKeeperServer: ZooKeeperLocalServer) {
+
+  // Exercise:
+  // Create a similar set of classes for a real Kafka cluster. See the Kafka documentation for
+  // configuring and running Kafka clusters and the Kafka Publisher documentation for
+  // instructions on how to connect to the cluster. Can you create an abstraction that makes it
+  // easy to switch between the local and "real" clusters?
 
   import KafkaLocalServer._
 

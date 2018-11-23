@@ -7,7 +7,9 @@ import akka.stream.stage._
 import com.lightbend.model.winerecord.WineRecord
 import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWithDescriptor, ServingResult}
 
-
+/**
+ * Implements model updates and serving using a custom Akka Streams "stage".
+ */
 class ModelStage extends GraphStageWithMaterializedValue[FlowShape[WineRecord, ServingResult], ModelStateStore] {
 
   val dataRecordIn = Inlet[WineRecord]("dataRecordIn")
