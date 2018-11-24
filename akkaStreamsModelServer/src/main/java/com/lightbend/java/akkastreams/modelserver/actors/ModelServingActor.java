@@ -14,6 +14,9 @@ import com.lightbend.model.Winerecord;
 
 import java.util.Optional;
 
+/**
+ * Actor that handles messages to update a model and to score records using the current model.
+ */
 public class ModelServingActor extends AbstractActor {
     private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
@@ -23,6 +26,9 @@ public class ModelServingActor extends AbstractActor {
     private Optional<ModelServingInfo> newServingInfo = Optional.empty();
     private String dataType = null;
 
+    /**
+     * @param dataType indicating either the record type or model parameters. Used as a file name.
+     */
     public ModelServingActor(String dataType){
         this.dataType = dataType;
     }

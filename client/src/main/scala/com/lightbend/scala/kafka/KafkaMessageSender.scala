@@ -10,6 +10,9 @@ import java.util.Properties
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord, RecordMetadata}
 import org.apache.kafka.common.serialization.ByteArraySerializer
 
+/**
+ * Helper class for writing records to Kafka.
+ */
 object MessageSender {
   private val ACKCONFIGURATION = "all" // Blocking on the full commit of the record
   private val RETRYCOUNT = "1" // Number of retries on put
@@ -40,15 +43,17 @@ class MessageSender(val brokers: String) {
   val producer = new KafkaProducer[Array[Byte], Array[Byte]](
     providerProperties(brokers, classOf[ByteArraySerializer].getName, classOf[ByteArraySerializer].getName))
 
-  def writeKeyValue(topic: String, key: Array[Byte], value: Array[Byte]): Unit = {
+  def writeKeyValue(topic: String, key: Array[Byte], value: Array[Byte]): RecordMetadata = {
     val result = producer.send(new ProducerRecord[Array[Byte], Array[Byte]](topic, key, value)).get
     producer.flush()
+    result
   }
 
   /** Write a value with no key. */
-  def writeValue(topic: String, value: Array[Byte]): Unit = {
+  def writeValue(topic: String, value: Array[Byte]): RecordMetadata = {
     val result = producer.send(new ProducerRecord[Array[Byte], Array[Byte]](topic, value)).get
     producer.flush()
+    result
   }
 
   /** Write a value with no key. */

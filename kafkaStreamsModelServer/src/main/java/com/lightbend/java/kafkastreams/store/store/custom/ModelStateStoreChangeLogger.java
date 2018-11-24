@@ -7,9 +7,9 @@ import org.apache.kafka.streams.processor.internals.RecordCollector;
 import org.apache.kafka.streams.state.StateSerdes;
 
 /**
- * Created by boris on 7/11/17.
- * based on
+ * Log model state changes. Based on this example,
  * https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/scala/io/confluent/examples/streams/algebird/CMSStoreChangeLogger.scala
+ * Created by boris on 7/11/17.
  */
 public class ModelStateStoreChangeLogger<K,V> {
 

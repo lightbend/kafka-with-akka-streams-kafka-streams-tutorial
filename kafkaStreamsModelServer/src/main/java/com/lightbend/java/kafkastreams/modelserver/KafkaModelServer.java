@@ -15,9 +15,8 @@ import java.util.Properties;
 
 
 /**
- * Kafka Streams example of model management and serving.
+ * Entry point for the Kafka Streams example of model management and serving.
  */
-
 public class KafkaModelServer {
 
     final static int port=8888;                             // Port for queryable state

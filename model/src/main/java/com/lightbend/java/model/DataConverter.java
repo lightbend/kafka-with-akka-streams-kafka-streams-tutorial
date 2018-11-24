@@ -1,7 +1,7 @@
 package com.lightbend.java.model;
 
 import com.lightbend.java.model.PMML.PMMLModelFactory;
-import com.lightbend.java.model.tensorflow.TensorflowModelFactory;
+import com.lightbend.java.model.tensorflow.TensorFlowModelFactory;
 import com.lightbend.model.Modeldescriptor.ModelDescriptor;
 import com.lightbend.model.Winerecord;
 
@@ -12,13 +12,14 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
+ * Helper for handling a data record or model as a byte array, including parsing and I/O.
  * Created by boris on 6/28/17.
  */
 public class DataConverter {
 
     private static final Map<Integer, ModelFactory> factories = new HashMap<Integer, ModelFactory>() {
         {
-            put(ModelDescriptor.ModelType.TENSORFLOW.getNumber(), TensorflowModelFactory.getInstance());
+            put(ModelDescriptor.ModelType.TENSORFLOW.getNumber(), TensorFlowModelFactory.getInstance());
             put(ModelDescriptor.ModelType.PMML.getNumber(), PMMLModelFactory.getInstance());
         }
     };

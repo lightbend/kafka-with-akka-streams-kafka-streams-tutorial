@@ -2,6 +2,9 @@ package com.lightbend.scala.kafkastreams.store
 
 import com.lightbend.scala.modelServer.model._
 
+/**
+ * Encapsulation of the model state storage information.
+ */
 case class StoreState(var currentModel: Option[Model] = None, var newModel: Option[Model] = None,
                       var currentState: Option[ModelToServeStats] = None, var newState: Option[ModelToServeStats] = None){
   def zero() : Unit = {

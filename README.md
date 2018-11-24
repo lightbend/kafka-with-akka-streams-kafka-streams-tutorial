@@ -11,8 +11,10 @@
 * [Strata Data Conference London, Tuesday, May 22, 2018](https://conferences.oreilly.com/strata/strata-eu/public/schedule/detail/65420)
 * [OSCON, Opensource convention, Portland, Monday, July 16, 2018](https://conferences.oreilly.com/oscon/oscon-or/public/schedule/detail/67531)
 * [Strata Data Conference NYC, Tuesday, September 11, 2018](https://conferences.oreilly.com/strata/strata-ny/public/schedule/detail/68931)
+* [Reactive Summit Montréal, Monday, October 22, 2018](https://www.reactivesummit.org/2018/workshop/)
+* [YOW! Conference Sydney and Melbourne, November-December 2018](https://sydney.yowconference.com.au/)
 
-©Copyright 2018, Lightbend, Inc. Apache 2.0 License. Please use as you see fit, but attribution is requested.
+©Copyright 2018-2019, Lightbend, Inc. Apache 2.0 License. Please use as you see fit, but attribution is requested.
 
 This tutorial provides an introduction to streaming data microservices using Kafka with Akka Streams and Kafka Streams. Hence, the tutorial helps you compare and contrast these streaming libraries for your own use.
 
@@ -20,7 +22,7 @@ See the companion presentation for the tutorial in the `presentation` folder:
 
 * `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial.key` Keynote file
 * `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial.pdf` for non-Mac users ;)
-* `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial-with-notes.pdf` with speaker notes
+* `Kafka-with-Akka-Streams-Kafka-Streams-Tutorial-with-notes.pdf` includes the speaker notes
 
 The core "use case" implemented is a stream processing application that also ingests updated parameters for a machine learning model and then uses the model to score the data. Several implementations of this use case are provided. They not only compare Akka Streams vs. Kafka Streams, but they also show how to support a few other common production requirements, such as managing the in-memory state of the application.
 
@@ -34,13 +36,13 @@ First, we will describe how to build and run the applications. Then we will disc
 
 The Java JDK v8 is required. If not already installed, see the instructions [here](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html).
 
-[SBT](https://www.scala-sbt.org/), the _de facto_ build tool for Scala is used to build the code, both the Scala and Java implementations. The SBT build files are configured to download all the required dependencies.
+[SBT](https://www.scala-sbt.org/), the _de facto_ build tool for Scala is used to build the code, both the Scala and Java implementations. The SBT build files are configured to download all the required dependencies. Go [here](https://www.scala-sbt.org/download.html) for installation instructions.
 
-We recommend using [IntelliJ IDEA](https://www.jetbrains.com/idea/) for managing and building the code, which can drive SBT. The free Community Edition is sufficient. However, using IntelliJ isn't required; any favorite IDE or editor environment will do.
+We recommend using [IntelliJ IDEA](https://www.jetbrains.com/idea/) for managing and building the code, which can drive SBT. The free Community Edition is sufficient. However, using IntelliJ isn't required; any favorite IDE or editor environment will do; you'll just need to run SBT in a separate command window.
 
-If you use IntelliJ IDEA or another IDE environment, also install the Scala plugin for the IDE. IntelliJ's Scala plugin includes support for SBT (ignore the SBT plugins that are available). Other IDEs might require a separate SBT plugin. Note that the tutorial uses the last release of Scala 2.11, 2.11.12 (the overall latest release of Scala is 2.12.4).
+If you use IntelliJ IDEA or another IDE environment, also install the Scala plugin for the IDE. IntelliJ's Scala plugin includes support for SBT (ignore the SBT plugins that are available). Other IDEs might require a separate SBT plugin. Note that the tutorial uses the last release of Scala, 2.12.4 (at the time of this writing...).
 
-> **Note:** If you encounter class file or byte code errors when attempting to run SBT below, try removing any versions of Scala that are on your `PATH`. You can also try downloading the correct version of Scala ([tgz](https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.tgz) or [zip](https://downloads.lightbend.com/scala/2.11.12/scala-2.11.12.zip)) and use it as your Scala SDK for the project or the IDE globally.
+> **Note:** If you encounter class file or byte code errors when attempting to run SBT below, try removing any versions of Scala that are on your `PATH`. You can also try downloading the 2.12.4 version of Scala from [scala-lang.org](https://www.scala-lang.org) and use it as your Scala SDK for the project or in your IDE globally.
 
 If you use IntelliJ, the quickest way to start is to create a new project from the GitHub repository:
 
@@ -51,22 +53,24 @@ If you use IntelliJ, the quickest way to start is to create a new project from t
 5. Accept the defaults for SBT. Use JDK 1.8 if it's not shown as the default.
 6. Do one build using the SBT command line...
 
-> **WARNING:** Unfortunately, the IntelliJ build doesn't properly build the `protobuf` project (TBD), so do a one-time command-line build as follows:
+> **WARNING:** Unfortunately, the IntelliJ build doesn't properly build the `protobuf` project (TBD), which is used for encoding and serializing data exchanged between services. So, you must do the following one-time, command-line build:
 
-1. Open the _sbt shell_ tool window in IntelliJ (e.g., _View > Tool Windows > sbt shell_).
-2. Type `package`, once it's finished loading.
-3. It should end with `[success] Total time: 30 s, completed Feb ...` after ~30 seconds
-4. Now just use IntelliJ's _Build_ command as needed or automatically
+1. Open an SBT window:
+    a. In IntelliJ, open the _sbt shell_ tool window (_View > Tool Windows > sbt shell_)
+    b. If not using IntelliJ, open a terminal/command window, change to the tutorial directory, run `sbt`.
+2. Type `package`, once `sbt` has finished loading
+3. It should end with `[success] Total time: ...` after ~30 seconds
+4. Now just use IntelliJ's _Build_ command as needed or triggered automatically. If not using IntelliJ, use `~package` in your terminal inside `sbt`.
 
-> **Note:** There is also an `sbt` tool window that's useful for browsing the project structure, including the defined _tasks_ (commands). You can double click a task to run it.
+> **Note:** There is also an IntelliJ `sbt` tool window that's useful for browsing the project structure, including the defined _tasks_ (commands). You can double click a task to run it.
 
 If you don't have a GitHub account, just download the latest [release](https://github.com/lightbend/kafka-with-akka-streams-kafka-streams-tutorial/releases) and import the code as an SBT project into your IDE. In IntelliJ, use these steps:
 
-* _Import Project_
-* Select the project root directory (i.e., the same as for this README)
-* Select `sbt` as the project type
-* Use the default settings for `sbt`. Use JDK 1.8 if it's not shown as the default.
-* Profit!!
+1. _Import Project_
+2. Select the project root directory (i.e., the same as for this README)
+3. Select `sbt` as the project type
+4. Use the default settings for `sbt`. Use JDK 1.8 if it's not shown as the default.
+5. Profit!!
 
 If you wish to use SBT in a terminal (e.g., in conjunction with your text editor), follow the SBT installation instructions [here](https://www.scala-sbt.org/download.html).
 
@@ -76,9 +80,12 @@ To compile the code with SBT in a terminal outside your IDE/Editor environment, 
 
 This _task_ compiles the Java and Scala sources, then packages the class and resource files (such as `log4j.properties`) into jar files.
 
-> **Tip:** It's actually sufficient to just run `sbt compile`, but then when you run the apps, you'll get warnings about missing `log4j` configurations.
+> **Tips:**
+>
+> 1. It's actually sufficient to just run `sbt compile`, but then when you run the apps, you'll get warnings about missing `log4j` configurations.
+> 2. To continuously rebuild as you edit, start `sbt`, then use `~package`, which continuously builds when files are changed. Hit `return` to exit.
 
-Building the code before the tutorial session will ensure that everything works.
+Building the code before the tutorial session will ensure that everything is working. If it's _not_ working, please ask for help in the tutorial's [Gitter room](https://gitter.im/kafka-with-akka-streams-kafka-streams-tutorial).
 
 ### More about Using SBT
 
@@ -95,6 +102,42 @@ You can use SBT inside IntelliJ, open the Terminal Tool Window and run SBT comma
 To use the SBT build with other IDEs and editors, consult their documentation on using SBT and Scala. If your editor doesn't offer Scala and SBT support, just load the project as a Java project and use the editor to browse and edit the files. Use a terminal window to run SBT.
 
 If you successfully built the code, you should be ready for the tutorial. We discuss running the services below.
+
+### Miscellaneous SBT Tips
+
+The `build.sbt` file defines several command _aliases_ to make it easy to run the applications defined here.
+
+```
+sbt:akkaKafkaTutorial> alias
+  run_client = client/runMain com.lightbend.scala.kafka.client.DataProvider
+  run_reader = client/runMain com.lightbend.scala.kafka.client.DataReader
+...
+sbt:akkaKafkaTutorial> run_client
+```
+You'll have to use control-c to stop them, which means you'll need separate terminal windows for each app you want to run. So, it's easier to run the apps concurrently in IntelliJ, but a bit less convenient to pass options to the apps.
+
+If you want to see all the application `main` classes defined in the project and subprojects, use the following SBT command:
+
+```
+sbt:akkaKafkaTutorial> show discoveredMainClasses
+...
+[info] configuration / Compile / discoveredMainClasses
+[info]   List()
+[info] client / Compile / discoveredMainClasses
+[info]   List(com.lightbend.scala.kafka.client.DataProvider, com.lightbend.scala.kafka.client.DataReader)
+[info] model / Compile / discoveredMainClasses
+[info]   List()
+[info] akkaStreamsModelServer / Compile / discoveredMainClasses
+[info]   List(com.lightbend.java.akkastreams.modelserver.AkkaModelServer, com.lightbend.scala.akkastream.modelserver.AkkaModelServer)
+[info] protobufs / Compile / discoveredMainClasses
+[info]   List()
+[info] kafkaStreamsModelServer / Compile / discoveredMainClasses
+[info]   List(com.lightbend.java.kafkastreams.modelserver.KafkaModelServer, com.lightbend.scala.kafkastreams.modelserver.KafkaModelServer)
+[info] Compile / discoveredMainClasses
+[info]   List()
+```
+
+The lines with `List(...)` are what you want.
 
 ## About the Project
 
@@ -423,6 +466,11 @@ Once running, visit the following URLs:
 
 We have embedded a few code comments with exercises. Search for the comment `// Exercise`. They suggest ways you can extend the functionality and thereby practice using the APIs. (Solutions are not yet provided; TODO)
 
+Here are a few other exercises to consider that aren't shown as code comments:
+
+* For simplicity, much of the code assumes details about the wine record example. Can you make the code more generic. This is discussed as a `// Exercise` comment in `PMMLModel.java`, `PMMLModel.scala`, `TensorFlowModel.java`, and `TensorFlowModel.scala`. See the suggestions there.
+* The idea of calling an external service for model scoring, e.g., _TensorFlow Serving_, is discussed in the presentation, but not provided in the example code. Try implementing this feature. You could even adapt the Akka-based model serving to run as a separate application and use Akka HTTP to support REST calls for serving. What is the performance overhead for this approach vs. scoring through an in-memory library, as implemented in the examples?
+
 ## Production Considerations
 
 The examples illustrate how to implement a model-serving microservice using Akka Streams and Kafka Streams in various ways. A few illustrate other production considerations, such as persisting state so that restarts can pick up where processing left off.
@@ -444,7 +492,7 @@ The tutorial presentation will discuss other considerations when scaling these m
 ### Scala
 
 * [Scala web site](https://www.scala-lang.org/)
-* [Scaladocs](https://www.scala-lang.org/api/current/index.html) (This is for 2.12.4; we're using 2.11.11, but close enough...)
+* [Scaladocs](https://www.scala-lang.org/api/current/index.html)
 
 ### Kafka
 
@@ -477,5 +525,5 @@ The tutorial presentation will discuss other considerations when scaling these m
 
 ### For More Information
 
-Interested in an integrated and commercially supported distribution of Akka Streams, Kafka Streams, and Kafka, plus other tools like Spark, Flink, and HDFS? See the https://www.lightbend.com/products/fast-data-platform for more information about the Lightbend Fast Data Platform.
+Interested in an integrated and commercially supported distribution of Akka Streams, Kafka Streams, and Kafka, plus other tools like Spark, Flink, and HDFS? Go to https://www.lightbend.com/products/fast-data-platform for more information about the Lightbend Fast Data Platform.
 

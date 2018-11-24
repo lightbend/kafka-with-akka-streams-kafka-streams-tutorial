@@ -15,6 +15,9 @@ import com.lightbend.model.Winerecord;
 
 import java.util.Optional;
 
+/**
+ * Implements model updates and serving using a custom Akka Streams "stage".
+ */
 public class ModelStage extends AbstractGraphStageWithMaterializedValue<FlowShape<Winerecord.WineRecord, ServingResult>, ReadableModelStore> {
 
     Inlet<Winerecord.WineRecord> dataRecordIn = Inlet.create("dataRecordIn");

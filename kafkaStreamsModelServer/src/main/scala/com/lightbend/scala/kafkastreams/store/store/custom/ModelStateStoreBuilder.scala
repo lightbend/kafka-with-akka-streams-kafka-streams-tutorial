@@ -5,6 +5,9 @@ import java.util.{Objects}
 
 import org.apache.kafka.streams.state.StoreBuilder
 
+/**
+ * Encapsulation of a state store factory for model data.
+ */
 class ModelStateStoreBuilder(nm: String) extends StoreBuilder [ModelStateStore]{
   Objects.requireNonNull(nm, "name can't be null")
 

@@ -14,8 +14,10 @@ import org.apache.kafka.streams.state.KeyValueStore
 import scala.util.Try
 
 /**
-  * The DataProcessor for the "standard" state store, the one provided by Kafka Streams.
-  */
+ * The DataProcessor for the "standard" state store, the one provided by Kafka Streams.
+ * See also this example:
+ * https://github.com/bbejeck/kafka-streams/blob/master/src/main/java/bbejeck/processor/stocks/StockSummaryProcessor.java
+ */
 class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byte], ServingResult)]{
 
   private var modelStore: KeyValueStore[Integer, StoreState] = null

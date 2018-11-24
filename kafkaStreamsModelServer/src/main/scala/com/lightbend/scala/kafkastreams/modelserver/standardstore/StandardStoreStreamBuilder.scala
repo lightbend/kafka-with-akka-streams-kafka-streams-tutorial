@@ -18,6 +18,10 @@ import com.lightbend.kafka.scala.streams.ImplicitConversions._
 
 import scala.util.Try
 
+/**
+ * Use the Kafka Streams DSL to define the application streams.
+ * Use the built-in storage implementation for the running state.
+ */
 object StandardStoreStreamBuilder {
 
   def createStreamsFluent(streamsConfiguration: Properties) : KafkaStreams = { // Create topology

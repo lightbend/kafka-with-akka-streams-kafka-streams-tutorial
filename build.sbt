@@ -1,8 +1,8 @@
 
 import Dependencies._
 
-scalaVersion in ThisBuild := "2.11.12"
-// scalaVersion in ThisBuild := "2.12.4"
+// scalaVersion in ThisBuild := "2.11.12"
+scalaVersion in ThisBuild := "2.12.4"
 
 scalacOptions in ThisBuild := Seq("-Xexperimental", "-Xlint:_", "-unchecked", "-deprecation", "-feature", "-target:jvm-1.8")
 // Unfortunately there are lots of annoying warnings from the generated Protobuf code:
@@ -46,3 +46,10 @@ lazy val akkaKafkaTutorial = (project in file(".")).
   aggregate(protobufs, client, model, configuration,
     kafkaStreamsModelServer,
     akkaStreamsModelServer)
+
+addCommandAlias("run_client", "client/runMain com.lightbend.scala.kafka.client.DataProvider")
+addCommandAlias("run_reader", "client/runMain com.lightbend.scala.kafka.client.DataReader")
+addCommandAlias("run_java_akka_server",   "com.lightbend.java.akkastreams.modelserver.AkkaModelServer")
+addCommandAlias("run_scala_akka_server",  "com.lightbend.scala.akkastream.modelserver.AkkaModelServer")
+addCommandAlias("run_java_kafka_server",  "com.lightbend.java.kafkastreams.modelserver.KafkaModelServer")
+addCommandAlias("run_scala_kafka_server", "com.lightbend.scala.kafkastreams.modelserver.KafkaModelServer")

@@ -9,8 +9,13 @@ import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.streams.KafkaStreams
 import org.apache.kafka.streams.state.{HostInfo, StreamsMetadata}
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
+/**
+ * Looks up StreamsMetadata from KafkaStreams and converts the results
+ * into Beans that can be JSON serialized via Jersey.
+ * @see https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/MetadataService.java
+ */
 class MetadataService(streams: KafkaStreams) {
 
   /**
@@ -21,7 +26,7 @@ class MetadataService(streams: KafkaStreams) {
     * @return List of { @link HostStoreInfo}
     */
   def streamsMetadataForStore(store: String, port: Int): util.List[HostStoreInfo] = { // Get metadata for all of the instances of this Kafka Streams application hosting the store
-    var metadata = streams.allMetadataForStore(store).toSeq match{
+    val metadata = streams.allMetadataForStore(store).asScala.toSeq match{
       case list if !list.isEmpty => list
       case _ => Seq(new StreamsMetadata(
         new HostInfo("localhost", port),
@@ -31,7 +36,7 @@ class MetadataService(streams: KafkaStreams) {
   }
 
 
-  private def mapInstancesToHostStoreInfo(metadatas: Seq[StreamsMetadata]) = metadatas.map(convertMetadata(_))
+  private def mapInstancesToHostStoreInfo(metadatas: Seq[StreamsMetadata]) = metadatas.map(convertMetadata(_)).asJava
 
   private def convertMetadata(metadata: StreamsMetadata) : HostStoreInfo = {
     val currentHost = metadata.host match{
@@ -40,6 +45,6 @@ class MetadataService(streams: KafkaStreams) {
         catch {case t: Throwable => ""}
       case host => host
     }
-     new HostStoreInfo(currentHost, metadata.port, metadata.stateStoreNames.toSeq)
+     new HostStoreInfo(currentHost, metadata.port, metadata.stateStoreNames.asScala.toSeq)
   }
 }

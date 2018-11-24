@@ -6,6 +6,8 @@ import java.io.DataOutputStream
 import scala.util.control.NonFatal
 
 /**
+ * State information about the current model being served.
+ * Called `ModelServingInfo` in the Java implementation.
  * Created by boris on 5/8/17.
  */
 final case class ModelToServeStats(
@@ -17,13 +19,11 @@ final case class ModelToServeStats(
   min: Long = 0,
   max: Long = 0) {
 
-  def incrementUsage(execution: Long): ModelToServeStats = {
-    copy(
-      usage = usage + 1,
-      duration = duration + execution,
-      min = if (execution < min) execution else min,
-      max = if (execution > max) execution else max)
-  }
+  def incrementUsage(execution: Long): ModelToServeStats = copy(
+    usage = usage + 1,
+    duration = duration + execution,
+    min = if (execution < min) execution else min,
+    max = if (execution > max) execution else max)
 }
 
 object ModelToServeStats {

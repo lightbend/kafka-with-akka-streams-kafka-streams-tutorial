@@ -13,8 +13,10 @@ import org.apache.kafka.streams.kstream.Transformer
 import scala.util.Try
 
 /**
-  * The DataProcessor for the custom state store for the Kafka Streams example.
-  */
+ * The DataProcessor for the custom state store for the Kafka Streams example.
+ * See also this example:
+ * https://github.com/bbejeck/kafka-streams/blob/master/src/main/java/bbejeck/processor/stocks/StockSummaryProcessor.java
+ */
 class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byte], ServingResult)]{
 
   private var modelStore: ModelStateStore = null
@@ -34,7 +36,7 @@ class DataProcessor extends Transformer[Array[Byte], Try[WineRecord], (Array[Byt
   // However, simply having a collection of servers won't help performance, because the current
   // invocation is synchronous. So, try adapting the Akka Actors example of model serving, with
   // a manager/router actor, so that you can invoke scoring asynchronously. How would you
-  // properly integrate this approach with tbe Kafka Streams logic below?
+  // properly integrate this approach with the Kafka Streams logic below?
 
   // Exercise:
   // One technique used to improve scoring performance is to score each record with a set

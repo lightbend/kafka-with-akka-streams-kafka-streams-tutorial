@@ -1,5 +1,8 @@
 package com.lightbend.java.model;
 
+/**
+ * Implementation of a message sent to an Actor with data for a new model instance.
+ */
 public class ModelWithDescriptor {
 
     private Model model;

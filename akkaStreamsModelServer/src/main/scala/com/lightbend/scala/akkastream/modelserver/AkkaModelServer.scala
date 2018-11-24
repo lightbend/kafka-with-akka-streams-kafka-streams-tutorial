@@ -9,7 +9,7 @@ import akka.util.Timeout
 
 import com.lightbend.java.configuration.kafka.ApplicationKafkaParameters._
 import com.lightbend.model.winerecord.WineRecord
-import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor, ServingResult}
+import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWithDescriptor}
 
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
@@ -17,8 +17,10 @@ import org.apache.kafka.common.serialization.ByteArrayDeserializer
 import scala.concurrent.duration._
 import scala.util.Success
 
+/* Created by boris on 7/21/17. */
+
 /**
- * Created by boris on 7/21/17.
+ * Entry point for the Akka model serving example.
  */
 object AkkaModelServer {
 

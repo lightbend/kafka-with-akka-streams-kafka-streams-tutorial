@@ -1,8 +1,9 @@
 package com.lightbend.java.configuration.kafka;
 
+/* Created by boris on 5/18/17. */
+
 /**
- * Created by boris on 5/18/17.
- * Set of parameters for running applications
+ * A set of configuration parameters for running applications.
  */
 public class ApplicationKafkaParameters {
 

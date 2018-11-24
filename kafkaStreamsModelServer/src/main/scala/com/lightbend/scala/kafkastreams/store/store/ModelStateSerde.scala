@@ -10,10 +10,14 @@ import com.lightbend.scala.modelServer.model.{ModelToServeStats, ModelWithDescri
 import com.lightbend.scala.kafkastreams.store.StoreState
 import org.apache.kafka.common.serialization.{Deserializer, Serde, Serializer}
 
+/**
+ * Serialization and deserialization of model stat information. Needed for durable storage. Based on
+ * https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/scala/io/confluent/examples/streams/algebird/TopCMSSerde.scala
+ */
 class ModelStateSerde extends Serde[StoreState] {
 
-  private var mserializer = new ModelStateSerializer()
-  private var mdeserializer = new ModelStateDeserializer()
+  private val mserializer = new ModelStateSerializer()
+  private val mdeserializer = new ModelStateDeserializer()
 
   override def deserializer() = mdeserializer
 
@@ -25,7 +29,7 @@ class ModelStateSerde extends Serde[StoreState] {
 }
 
 object ModelStateDeserializer {
-  private val factories = Map(
+  val factories = Map(
     ModelDescriptor.ModelType.PMML.index -> PMMLModel,
     ModelDescriptor.ModelType.TENSORFLOW.index -> TensorFlowModel
   )

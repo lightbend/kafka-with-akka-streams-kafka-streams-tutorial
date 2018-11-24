@@ -2,6 +2,10 @@ package com.lightbend.java.model;
 
 import java.util.Objects;
 
+/**
+ * State information about the current model being served.
+ * Called `ModelToServeStats` in the Scala implementation.
+ */
 public class ModelServingInfo {
 
     public static ModelServingInfo empty = new ModelServingInfo();

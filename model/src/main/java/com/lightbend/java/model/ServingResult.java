@@ -1,5 +1,8 @@
 package com.lightbend.java.model;
 
+/**
+ * The result (a double) from scoring a record and the time it took to compute the score.
+ */
 public class ServingResult {
 
     public static ServingResult noModel = new ServingResult();

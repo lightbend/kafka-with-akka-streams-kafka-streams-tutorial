@@ -13,10 +13,11 @@ import scala.concurrent.Future
 import scala.io.Source
 import scala.concurrent.ExecutionContext.Implicits.global
 
+/* Created by boris on 5/10/17. */
+
 /**
- * Created by boris on 5/10/17.
- *
- * Application publishing models from /data directory to Kafka
+ * Application that publishes models and data records from the `data` directory to the appropriate Kafka topics.
+ * Embedded Kafka is used and this class also instantiates the Kafka topics at start up.
  */
 object DataProvider {
 
@@ -31,6 +32,14 @@ object DataProvider {
     println(s"Using kafka brokers at ${KAFKA_BROKER}")
     println(s"Data Message delay $dataTimeInterval")
     println(s"Model Message delay $modelTimeInterval")
+
+    // Exercise:
+    // Replace embedded Kafka with a real Kafka cluster. See the comments in the helper class,
+    // `KafkaLocalServer` that's used here. See also the Kafka documentation for
+    // configuring and running Kafka clusters and the Kafka Publisher documentation for
+    // instructions on how to connect to the cluster.
+    // The clients of these topics are the `akkaStreamsModelServer` and `kafkaStreamsModelServer`
+    // projects. Are any changes required there to use an external cluster??
 
     val kafka = KafkaLocalServer(true)
     kafka.start()

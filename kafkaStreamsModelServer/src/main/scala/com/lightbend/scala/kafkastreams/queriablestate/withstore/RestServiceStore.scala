@@ -13,10 +13,16 @@ import com.lightbend.scala.kafkastreams.store.StoreState
 import com.lightbend.scala.kafkastreams.store.store.custom.ModelStateStoreType
 import de.heikoseeberger.akkahttpjackson.JacksonSupport
 import org.apache.kafka.streams.KafkaStreams
-import org.apache.kafka.streams.state.{QueryableStoreType, QueryableStoreTypes}
+import org.apache.kafka.streams.state.QueryableStoreTypes
 
 import scala.concurrent.duration._
 
+/**
+ *  A simple REST proxy that runs embedded in the Model server. This is used to
+ *  demonstrate how a developer can use the Interactive Queries APIs exposed by Kafka Streams to
+ *  locate and query the State Stores within a Kafka Streams Application.
+ *  @see https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/java/io/confluent/examples/streams/interactivequeries/WordCountInteractiveQueriesRestService.java
+ */
 object RestServiceStore {
 
   implicit val system = ActorSystem("ModelServing")

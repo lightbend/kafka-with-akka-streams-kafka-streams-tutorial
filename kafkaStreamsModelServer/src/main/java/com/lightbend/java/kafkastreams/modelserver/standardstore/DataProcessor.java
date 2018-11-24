@@ -14,9 +14,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Created by boris on 7/12/17.
- * used
+ * Handle scoring where the model will be updated occasionally.
+ * Adapted from this example:
  * https://github.com/bbejeck/kafka-streams/blob/master/src/main/java/bbejeck/processor/stocks/StockSummaryProcessor.java
+ * Created by boris on 7/12/17.
  */
 public class DataProcessor implements Transformer<byte[], Optional<Winerecord.WineRecord>, KeyValue<byte[], ServingResult>> {
 

@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Encapsulation of a state store factory for model data.
+ */
 public class ModelStateStoreBuilder implements StoreBuilder<ModelStateStore> {
 
     private final String name;

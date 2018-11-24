@@ -9,6 +9,9 @@ import com.lightbend.scala.kafkastreams.store.store.custom.ModelStateStore
 
 import scala.util.Try
 
+/**
+ * Handle new model parameters; updates the current model used for scoring.
+ */
 class ModelProcessor extends AbstractProcessor[Array[Byte], Try[ModelWithDescriptor]] {
 
   private var modelStore: ModelStateStore = null

@@ -21,6 +21,10 @@ import com.lightbend.model.Winerecord;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Implements the core logic for model serving, supporting two options, 1) a custom
+ * Akka Streams "stage" and 2) invoking an Actor Actor to do scoring.
+ */
 public class ModelServerProcessor {
 
     private static final Timeout askTimeout = Timeout.apply(5, TimeUnit.SECONDS);
@@ -31,6 +35,9 @@ public class ModelServerProcessor {
                            ActorSystem system, ActorMaterializer materializer);
     }
 
+    /**
+     * Implements model serving using an Actor-based approach, to which messages are sent to do scoring.
+     */
     public static class ActorModelServerProcessor implements ModelServerProcessorStreamCreator {
 
         public void createStreams(Source<Winerecord.WineRecord, Consumer.Control> dataStream,
@@ -54,9 +61,9 @@ public class ModelServerProcessor {
                     }), materializer);
             // Exercise:
             // We just used `Sink.foreach`, which iterates through the records, prints output, but doesn't
-            // return a value. (In functional programming terms, it's "pure side effects")
+            // return a value. (In functional programming terms, it's "all side effects")
             // In particular, we might want to write the results to a new Kafka topic.
-            // 1. Modify the "client" to create a new output topic.
+            // 1. Modify the "client" project to create a new output topic. (Or you could do it here.)
             // 2. Modify AkkaModelServer to add the configuration for the new topic. For example, copy and adapt
             //    `dataConsumerSettings` for a new producer instead of a consumer.
             // 3. Replace `Sink.foreach` with logic to write the results to the new Kafka topic.
@@ -78,6 +85,9 @@ public class ModelServerProcessor {
         }
     }
 
+    /**
+     * Implements model serving using a custom Akka Streams "stage", so that scoring looks like a regular stream "operator".
+     */
     public static class CustomStageModelServerProcessor implements ModelServerProcessorStreamCreator {
 
         public void createStreams(Source<Winerecord.WineRecord, Consumer.Control> dataStream,

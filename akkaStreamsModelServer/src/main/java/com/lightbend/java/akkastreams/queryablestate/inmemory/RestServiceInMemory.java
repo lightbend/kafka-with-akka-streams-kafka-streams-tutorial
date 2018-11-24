@@ -18,6 +18,12 @@ import com.lightbend.java.akkastreams.modelserver.stage.ReadableModelStore;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Implements Queryable State for the Akka Streams-based model scoring application.
+ * Uses Akka HTTP to implement this capability, with state held in memory.
+ * Note that a production implementation might need better scalability, if it's used
+ * heavily and also we ignore security considerations here!
+ */
 public class RestServiceInMemory extends AllDirectives {
 
     private static final String host = "localhost";

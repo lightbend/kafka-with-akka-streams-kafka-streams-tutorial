@@ -25,6 +25,12 @@ import java.util.concurrent.TimeUnit;
 import static akka.http.javadsl.server.PathMatchers.segment;
 import static akka.pattern.PatternsCS.ask;
 
+/**
+ * Implements Queryable State for the Akka Streams-based model scoring application.
+ * Uses Akka HTTP to implement this capability, with separate actor invocations.
+ * Note that a production implementation might need better scalability, if it's used
+ * heavily and also we ignore security considerations here!
+ */
 public class RestServiceActors extends AllDirectives {
 
     private static final String host = "localhost";

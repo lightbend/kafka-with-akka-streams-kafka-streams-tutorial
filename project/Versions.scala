@@ -2,7 +2,7 @@
   * Created by boris on 7/14/17.
   */
 object Versions {
-  val Scala             = "2.11.12"
+  // val Scala             = "2.11.4"  // Set in build.sbt
   val JDK               = "1.8"
 
   val reactiveKafkaVersion = "0.22"

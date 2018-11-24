@@ -14,6 +14,12 @@ import de.heikoseeberger.akkahttpjackson.JacksonSupport
 
 import scala.concurrent.duration._
 
+/**
+ * Implements Queryable State for the Akka Streams-based model scoring application.
+ * Uses Akka HTTP to implement this capability, with separate actor invocations.
+ * Note that a production implementation might need better scalability, if it's used
+ * heavily and also we ignore security considerations here!
+ */
 object RestServiceActors {
 
   // See http://localhost:5500/models
@@ -21,7 +27,8 @@ object RestServiceActors {
   def startRest(modelserver: ActorRef)(implicit system: ActorSystem, materializer: ActorMaterializer): Unit = {
 
     implicit val executionContext = system.dispatcher
-    implicit val timeout = Timeout(10.seconds)
+    // Use with HTTP methods that accept an implicit timeout argument
+    // implicit val timeout = Timeout(10.seconds)
     val host = "127.0.0.1"
     val port = 5500
     val routes: Route = QueriesAkkaHttpResource.storeRoutes(modelserver)

@@ -10,6 +10,9 @@ import org.apache.kafka.streams.state.KeyValueStore
 
 import scala.util.Try
 
+/**
+ * Handle new model parameters; updates the current model used for scoring.
+ */
 class ModelProcessor extends AbstractProcessor[Array[Byte], Try[ModelWithDescriptor]] {
 
   private var modelStore: KeyValueStore[Integer, StoreState] = null

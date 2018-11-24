@@ -9,7 +9,12 @@ import org.apache.kafka.streams.processor.{ProcessorContext, StateRestoreCallbac
 import org.apache.kafka.streams.state.internals.StateStoreProvider
 import org.apache.kafka.streams.state.{QueryableStoreType, StateSerdes}
 
-
+/**
+ * Implementation of a custom state store based on
+ * http://docs.confluent.io/current/streams/developer-guide.html#streams-developer-guide-state-store-custom
+ * and the example at:
+ * https://github.com/confluentinc/examples/blob/3.2.x/kafka-streams/src/main/scala/io/confluent/examples/streams/algebird/CMSStore.scala
+ */
 class ModelStateStore(name: String, loggingEnabled: Boolean) extends StateStore with ReadableModelStateStore {
 
   import ApplicationKafkaParameters._

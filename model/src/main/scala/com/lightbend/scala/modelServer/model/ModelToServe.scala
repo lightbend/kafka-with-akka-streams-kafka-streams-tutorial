@@ -4,9 +4,21 @@ import com.lightbend.model.modeldescriptor.ModelDescriptor
 
 import scala.util.Try
 
+
 /**
+ * A wrapper for metadata about a model.
  * Created by boris on 5/8/17.
  */
+case class ModelToServe(name: String, description: String,
+  modelType: ModelDescriptor.ModelType, model: Array[Byte], dataType: String) {}
+
+case class ServingResult(processed : Boolean, result: Double = .0, duration: Long = 0l)
+
+object ServingResult{
+  val noModel = ServingResult(false)
+  def apply(result: Double, duration: Long): ServingResult = ServingResult(true, result, duration)
+}
+
 object ModelToServe {
   def fromByteArray(message: Array[Byte]): Try[ModelToServe] = Try {
     val m = ModelDescriptor.parseFrom(message)
@@ -17,12 +29,3 @@ object ModelToServe {
   }
 }
 
-case class ModelToServe(name: String, description: String,
-  modelType: ModelDescriptor.ModelType, model: Array[Byte], dataType: String) {}
-
-case class ServingResult(processed : Boolean, result: Double = .0, duration: Long = 0l)
-
-object ServingResult{
-  val noModel = ServingResult(false)
-  def apply(result: Double, duration: Long): ServingResult = ServingResult(true, result, duration)
-}

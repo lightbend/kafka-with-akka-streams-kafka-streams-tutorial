@@ -7,6 +7,9 @@ import com.lightbend.java.model.ModelServingInfo;
 import java.io.*;
 import java.util.Optional;
 
+/**
+ * Persists the state information, an instances of {@link ExecutionState} to a file for quick recovery.
+ */
 public class FilePersistence {
 
     private final static String  basDir = "persistence";

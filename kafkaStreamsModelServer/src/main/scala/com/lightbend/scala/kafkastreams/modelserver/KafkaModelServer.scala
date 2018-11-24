@@ -13,6 +13,10 @@ import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
 
 import scala.util.control.NonFatal
 
+
+/**
+ * Entry point for the Kafka Streams example of model management and serving.
+ */
 object KafkaModelServer {
 
   private val port = 8888 // Port for queryable state
