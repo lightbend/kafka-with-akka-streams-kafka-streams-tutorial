@@ -515,11 +515,12 @@ The tutorial presentation will discuss other considerations when scaling these m
 
 ### Kafka Streams
 
-* [Kafka Streams](https://kafka.apache.org/10/documentation/streams/)
+* [Kafka Streams](https://kafka.apache.org/20/documentation/streams/developer-guide/dsl-api.html)
 * Kafka Streams API:
-    * [Javadocs](https://kafka.apache.org/10/javadoc/index.html?org/apache/kafka/streams/KafkaStreams.html)
-    * [Scaladocs (2.12)](https://developer.lightbend.com/docs/api/kafka-streams-scala/0.1.2/com/lightbend/kafka/scala/streams/) - for the new Lightbend Scala API
-    * [Scaladocs (2.11)](https://developer.lightbend.com/docs/api/kafka-streams-scala_2.11/0.1.2/#package)
+    * [Javadocs](hhttps://kafka.apache.org/20/javadoc/org/apache/kafka/streams/package-summary.html)
+    * Scala:
+      * [intro](https://kafka.apache.org/20/documentation/streams/developer-guide/dsl-api.html#scala-dsl)
+      * It appears the Kafka project is not hosting the Scaladocs, so see the [original Lightbend Scala API](https://developer.lightbend.com/docs/api/kafka-streams-scala/0.2.1/com/lightbend/kafka/scala/streams/)
 * Miscellaneous:
     * [Confluent blog](https://www.confluent.io/blog/), such as [Enabling Exactly-Once in Kafka Streams](https://www.confluent.io/blog/enabling-exactly-kafka-streams/)
 

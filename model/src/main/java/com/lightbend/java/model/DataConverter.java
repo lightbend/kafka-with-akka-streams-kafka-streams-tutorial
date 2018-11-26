@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Helper for handling a data record or model as a byte array, including parsing and I/O.
@@ -26,10 +27,18 @@ public class DataConverter {
 
     private DataConverter(){}
 
+    // We inject random parsing errors.
+    private static int percentErrors = 5;  // 5%
+    private static Random rand = new Random();
+
     public static Optional<Winerecord.WineRecord> convertData(byte[] binary){
         try {
-            // Unmarshall record
-            return Optional.of(Winerecord.WineRecord.parseFrom(binary));
+            if (rand.nextInt(100) < percentErrors) {
+              return Optional.empty();
+            } else {
+              // Unmarshall record
+              return Optional.of(Winerecord.WineRecord.parseFrom(binary));
+            }
         } catch (Throwable t) {
             // Oops
             System.out.println("Exception parsing input record" + new String(binary));

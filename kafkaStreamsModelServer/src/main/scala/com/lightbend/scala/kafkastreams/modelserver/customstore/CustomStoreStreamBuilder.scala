@@ -62,6 +62,18 @@ object CustomStoreStreamBuilder {
 
     return new KafkaStreams(topology, streamsConfiguration)
 
+    // Exercise:
+    // Like all good production code, we're ignoring errors ;) in the `data` and `models` code. That is, we filter to keep
+    // messages where `value.isSuccess` is true and ignore those that fail.
+    // Use the `split` operator to split the stream into good and bad values.
+    //   https://developer.lightbend.com/docs/api/kafka-streams-scala/0.2.1/com/lightbend/kafka/scala/streams/KStreamS.html#split(predicate:(K,V)=%3EBoolean):(com.lightbend.kafka.scala.streams.KStreamS[K,V],com.lightbend.kafka.scala.streams.KStreamS[K,V])
+    // Write the bad values to stdout or to a special Kafka topic.
+    // See the implementation of `DataRecord`, where we inject fake errors. Add the same logic to `ModelToServe` and
+    // `ModelWithDescriptor`.
+
+    // Exercise:
+    // Print messages that scroll out of view is not very good for error handling. Write the errors to a special Kafka topic.
+
   }
 
   def createStreams(streamsConfiguration: Properties) : KafkaStreams = { // Create topology
