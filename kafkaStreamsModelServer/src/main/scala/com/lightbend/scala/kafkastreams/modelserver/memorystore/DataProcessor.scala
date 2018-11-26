@@ -51,7 +51,12 @@ class DataProcessor extends AbstractProcessor[Array[Byte], Array[Byte]]{
         }
         ctx.commit()
       }
-      case _ => // ignore
+      case _ => // error; ignore
+        // Exercise:
+        // Like all good production code, we're ignoring errors ;) here! That is, we filter to keep
+        // messages where a `Success(x)` is returned true and ignore the `Failure(exception)` results.
+        // With the topology API, this is harder to fix; what could you do in those `case _ =>` clauses??
+        // See the implementation of `DataRecord`, where we inject fake errors. 
     }
   }
 

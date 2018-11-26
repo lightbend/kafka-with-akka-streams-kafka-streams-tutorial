@@ -24,6 +24,11 @@ public class ModelProcessor extends AbstractProcessor<byte[], byte[]> {
         Optional<CurrentModelDescriptor> descriptor = DataConverter.convertModel(value);
         if(!descriptor.isPresent()){
             return;                                                 // Bad record
+            // Exercise:
+            // Like all good production code, we're ignoring errors ;) here! That is, we filter to keep
+            // messages where `isPresent()` is true and ignore the failures.
+            // With the topology API, this is harder to fix; what could you do right here??
+            // See the implementation of `DataConverter`, where we inject fake errors. Add the same logic for models there.
         }
         Optional<ModelWithDescriptor> modelWithDescriptor = DataConverter.convertModel(descriptor);
         if(modelWithDescriptor.isPresent()){
