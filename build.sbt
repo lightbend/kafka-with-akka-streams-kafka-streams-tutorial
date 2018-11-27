@@ -49,7 +49,7 @@ lazy val akkaKafkaTutorial = (project in file(".")).
 
 addCommandAlias("run_client", "client/runMain com.lightbend.scala.kafka.client.DataProvider")
 addCommandAlias("run_reader", "client/runMain com.lightbend.scala.kafka.client.DataReader")
-addCommandAlias("run_java_akka_server",   "com.lightbend.java.akkastreams.modelserver.AkkaModelServer")
-addCommandAlias("run_scala_akka_server",  "com.lightbend.scala.akkastream.modelserver.AkkaModelServer")
-addCommandAlias("run_java_kafka_server",  "com.lightbend.java.kafkastreams.modelserver.KafkaModelServer")
-addCommandAlias("run_scala_kafka_server", "com.lightbend.scala.kafkastreams.modelserver.KafkaModelServer")
+addCommandAlias("run_java_akka_server",   "akkaStreamsModelServer/runMain com.lightbend.java.akkastreams.modelserver.AkkaModelServer")
+addCommandAlias("run_scala_akka_server",  "akkaStreamsModelServer/runMain com.lightbend.scala.akkastream.modelserver.AkkaModelServer")
+addCommandAlias("run_java_kafka_server",  "kafkaStreamsModelServer/runMain com.lightbend.java.kafkastreams.modelserver.KafkaModelServer")
+addCommandAlias("run_scala_kafka_server", "kafkaStreamsModelServer/runMain com.lightbend.scala.kafkastreams.modelserver.KafkaModelServer")
