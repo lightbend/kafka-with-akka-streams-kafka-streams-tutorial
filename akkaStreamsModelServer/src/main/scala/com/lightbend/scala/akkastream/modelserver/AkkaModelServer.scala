@@ -12,6 +12,7 @@ import com.lightbend.scala.modelServer.model.{DataRecord, ModelToServe, ModelWit
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.common.serialization.ByteArrayDeserializer
 
+import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 import scala.util.{Success, Try}
 
@@ -22,22 +23,24 @@ import scala.util.{Success, Try}
  */
 object AkkaModelServer {
 
-  implicit val system = ActorSystem("ModelServing")
-  implicit val materializer = ActorMaterializer()
-  implicit val executionContext = system.dispatcher
-  implicit val askTimeout = Timeout(30.seconds)
+  implicit val system: ActorSystem = ActorSystem("ModelServing")
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
+  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+  implicit val askTimeout: Timeout = Timeout(30.seconds)
 
-  println(s"Using kafka brokers at ${KAFKA_BROKER} ")
+  println(s"Using kafka brokers at $KAFKA_BROKER")
 
-  val dataConsumerSettings = ConsumerSettings(system, new ByteArrayDeserializer, new ByteArrayDeserializer)
-    .withBootstrapServers(KAFKA_BROKER)
-    .withGroupId(DATA_GROUP)
-    .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+  val dataConsumerSettings: ConsumerSettings[Array[Byte], Array[Byte]] =
+    ConsumerSettings(system, new ByteArrayDeserializer, new ByteArrayDeserializer)
+      .withBootstrapServers(KAFKA_BROKER)
+      .withGroupId(DATA_GROUP)
+      .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
-  val modelConsumerSettings = ConsumerSettings(system, new ByteArrayDeserializer, new ByteArrayDeserializer)
-    .withBootstrapServers(KAFKA_BROKER)
-    .withGroupId(MODELS_GROUP)
-    .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
+  val modelConsumerSettings: ConsumerSettings[Array[Byte], Array[Byte]] =
+    ConsumerSettings(system, new ByteArrayDeserializer, new ByteArrayDeserializer)
+      .withBootstrapServers(KAFKA_BROKER)
+      .withGroupId(MODELS_GROUP)
+      .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 
   def help(message: String = "", exitCode: Int = 0): Nothing = {
     println(

@@ -8,6 +8,6 @@ import com.lightbend.model.winerecord.WineRecord
 trait Model {
   def score(record: WineRecord): Any
   def cleanup(): Unit
-  def toBytes(): Array[Byte]
+  def toBytes: Array[Byte]
   def getType: Long
 }

@@ -25,7 +25,7 @@ class ModelServingActor(dataType : String) extends Actor {
     newModel = state._1
   }
 
-  override def receive = {
+  override def receive: PartialFunction[Any, Unit] = {
     case model : ModelWithDescriptor =>
       // Update model
       println(s"Updated model: $model")
@@ -58,7 +58,7 @@ class ModelServingActor(dataType : String) extends Actor {
           sender() ! ServingResult.noModel
       }
 
-    case request : GetState => {
+    case _ : GetState => {
       // State query
       sender() ! currentState.getOrElse(ModelToServeStats.empty)
     }

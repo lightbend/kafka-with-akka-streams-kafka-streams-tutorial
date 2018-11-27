@@ -36,7 +36,7 @@ class ModelServingManager extends Actor {
   private def getInstances : GetModelsResult =
     GetModelsResult(context.children.map(_.path.name).toSeq)
 
-  override def receive = {
+  override def receive: PartialFunction[Any, Unit] = {
     case model: ModelWithDescriptor => getModelServer(model.descriptor.dataType) forward model
 
     case record: WineRecord => getModelServer(record.dataType) forward record
@@ -46,7 +46,7 @@ class ModelServingManager extends Actor {
       case _ => sender() ! ModelToServeStats.empty
     }
 
-    case getModels : GetModels => sender() ! getInstances
+    case _ : GetModels => sender() ! getInstances
   }
 }
 

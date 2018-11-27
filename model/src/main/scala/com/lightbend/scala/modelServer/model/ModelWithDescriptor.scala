@@ -39,11 +39,11 @@ object ModelWithDescriptor {
 
   def readModel(input : DataInputStream) : Option[Model] = {
     input.readLong.toInt match{
-      case length if length > 0 => {
+      case length if length > 0 =>
         val `type` = input.readLong.toInt
         val bytes = new Array[Byte](length)
         input.read(bytes)
-        factoriesInt.get(`type`) match{
+        factoriesInt.get(`type`) match {
           case Some(factory) => try {
             Some(factory.restore(bytes))
           }
@@ -55,7 +55,6 @@ object ModelWithDescriptor {
           }
           case _ => None
         }
-      }
       case _ => None
     }
   }
@@ -65,7 +64,7 @@ object ModelWithDescriptor {
       output.writeLong(0l)
     else {
       try {
-        val bytes = model.toBytes()
+        val bytes = model.toBytes
         output.writeLong(bytes.length)
         output.writeLong(model.getType)
         output.write(bytes)

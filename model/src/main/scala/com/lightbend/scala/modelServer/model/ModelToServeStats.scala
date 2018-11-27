@@ -34,7 +34,7 @@ object ModelToServeStats {
 
   def readServingInfo(input: DataInputStream) : Option[ModelToServeStats] = {
     input.readLong match {
-      case length if length > 0 => {
+      case length if length > 0 =>
         try {
           Some(ModelToServeStats(input.readUTF, input.readUTF, input.readLong, input.readLong, input.readDouble, input.readLong, input.readLong))
         } catch {
@@ -43,7 +43,7 @@ object ModelToServeStats {
             e.printStackTrace()
             None
         }
-      }
+
       case _ => None
     }
   }
