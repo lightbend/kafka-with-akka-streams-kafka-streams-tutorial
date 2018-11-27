@@ -92,7 +92,9 @@ object StandardStoreStreamBuilder {
     // DataStore
     builder.addStateStore(storeBuilder)
 
-    // Data Processor
+    // Data Processor -
+    // See the customstore.CustomStoreStreamBuilder for cleaner code that avoids the use of `new DataValueMapper`,
+    // `DataValueFilter`, etc.
     data
       .mapValues[Try[WineRecord]](new DataValueMapper().asInstanceOf[ValueMapper[Array[Byte], Try[WineRecord]]])
       .filter(new DataValueFilter().asInstanceOf[Predicate[Array[Byte], Try[WineRecord]]])
@@ -112,5 +114,12 @@ object StandardStoreStreamBuilder {
 
     return new KafkaStreams(topology, streamsConfiguration)
 
+    // Exercise:
+    // Like all good production code, we're ignoring errors ;) in the `data` and `models` code. That is, we filter to keep
+    // messages where `value.isPresent` is true and ignore those that fail.
+    // Use the `KStream.branch` method to split the stream into good and bad values.
+    //   https://kafka.apache.org/20/javadoc/org/apache/kafka/streams/kstream/KStream.html (Javadoc)
+    // Write the bad values to stdout or to a special Kafka topic.
+    // See the implementation of `DataConverter`, where we inject fake errors. Add the same logic for models there.
   }
 }

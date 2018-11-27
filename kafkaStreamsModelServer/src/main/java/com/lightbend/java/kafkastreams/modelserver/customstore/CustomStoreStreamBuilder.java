@@ -62,7 +62,7 @@ public class CustomStoreStreamBuilder {
         // Like all good production code, we're ignoring errors ;) in the `data` and `models` code. That is, we filter to keep
         // messages where `value.isPresent` is true and ignore those that fail.
         // Use the `KStream.branch` method to split the stream into good and bad values.
-        //   https://kafka.apache.org/20/javadoc/org/apache/kafka/streams/kstream/KStream.html
+        //   https://kafka.apache.org/20/javadoc/org/apache/kafka/streams/kstream/KStream.html (Javadoc)
         // Write the bad values to stdout or to a special Kafka topic.
         // See the implementation of `DataConverter`, where we inject fake errors. Add the same logic for models there.
 
