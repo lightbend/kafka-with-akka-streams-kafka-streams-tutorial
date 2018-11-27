@@ -12,8 +12,8 @@ import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWit
  */
 class ModelStage extends GraphStageWithMaterializedValue[FlowShape[WineRecord, ServingResult], ModelStateStore] {
 
-  val dataRecordIn = Inlet[WineRecord]("dataRecordIn")
-  val scoringResultOut = Outlet[ServingResult]("scoringOut")
+  val dataRecordIn: Inlet[WineRecord] = Inlet[WineRecord]("dataRecordIn")
+  val scoringResultOut: Outlet[ServingResult] = Outlet[ServingResult]("scoringOut")
 
   override val shape: FlowShape[WineRecord, ServingResult] = FlowShape(dataRecordIn, scoringResultOut)
 

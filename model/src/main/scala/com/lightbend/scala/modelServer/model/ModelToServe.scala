@@ -15,16 +15,17 @@ case class ModelToServe(name: String, description: String,
 case class ServingResult(processed : Boolean, result: Double = .0, duration: Long = 0l)
 
 object ServingResult{
-  val noModel = ServingResult(false)
-  def apply(result: Double, duration: Long): ServingResult = ServingResult(true, result, duration)
+  val noModel = ServingResult(processed = false)
+  def apply(result: Double, duration: Long): ServingResult = ServingResult(processed = true, result, duration)
 }
 
 object ModelToServe {
   def fromByteArray(message: Array[Byte]): Try[ModelToServe] = Try {
     val m = ModelDescriptor.parseFrom(message)
-    m.messageContent.isData match {
-      case true => new ModelToServe(m.name, m.description, m.modeltype, m.getData.toByteArray, m.dataType)
-      case _ => throw new Exception("Location based is not yet supported")
+    if (m.messageContent.isData) {
+      new ModelToServe(m.name, m.description, m.modeltype, m.getData.toByteArray, m.dataType)
+    } else {
+      throw new Exception("Location based is not yet supported")
     }
   }
 }

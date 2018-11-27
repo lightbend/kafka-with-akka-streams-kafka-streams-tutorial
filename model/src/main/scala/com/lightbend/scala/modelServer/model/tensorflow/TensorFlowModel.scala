@@ -37,7 +37,7 @@ class TensorFlowModel(inputStream: Array[Byte]) extends Model {
     val rMatrix = Array.ofDim[Float](rshape(0).asInstanceOf[Int], rshape(1).asInstanceOf[Int])
     result.copyTo(rMatrix)
     var value = (0, rMatrix(0)(0))
-    1 to (rshape(1).asInstanceOf[Int] - 1) foreach { i =>
+    (1 until rshape(1).asInstanceOf[Int]) foreach { i =>
       {
         if (rMatrix(0)(i) > value._2)
           value = (i, rMatrix(0)(i))
@@ -54,18 +54,18 @@ class TensorFlowModel(inputStream: Array[Byte]) extends Model {
 
   override def cleanup(): Unit = {
     try {
-      session.close
+      session.close()
     } catch {
-      case t: Throwable => // Swallow
+      case _: Throwable => // Swallow
     }
     try {
-      graph.close
+      graph.close()
     } catch {
-      case t: Throwable => // Swallow
+      case _: Throwable => // Swallow
     }
   }
 
-  override def toBytes(): Array[Byte] = graph.toGraphDef
+  override def toBytes: Array[Byte] = graph.toGraphDef
 
   override def getType: Long = ModelDescriptor.ModelType.TENSORFLOW.value
 }
@@ -75,7 +75,7 @@ object TensorFlowModel extends ModelFactory {
     try {
       Some(new TensorFlowModel(inputStream))
     } catch {
-      case t: Throwable => None
+      case _: Throwable => None
     }
   }
 

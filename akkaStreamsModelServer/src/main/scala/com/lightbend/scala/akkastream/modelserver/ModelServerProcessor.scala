@@ -31,7 +31,7 @@ object ActorModelServerProcessor extends ModelServerProcessor {
                    (implicit system: ActorSystem, materializer: ActorMaterializer): Unit = {
 
     println("*** Using an Actor-based model server implementation ***")
-    implicit val askTimeout = Timeout(30.seconds)
+    implicit val askTimeout: Timeout = Timeout(30.seconds)
 
     val modelserver = system.actorOf(ModelServingManager.props)
 
@@ -48,9 +48,10 @@ object ActorModelServerProcessor extends ModelServerProcessor {
       // Another way to invoke serving asynchronously (previous line), but less optimal)
       // .mapAsync(1)(elem => (modelserver ? elem).mapTo[ServingResult])
       .runForeach(result => {
-        result.processed match {
-          case true => println(s"Calculated quality - ${result.result} calculated in ${result.duration} ms")
-          case _ => println("No model available - skipping")
+        if (result.processed) {
+          println(s"Calculated quality - ${result.result} calculated in ${result.duration} ms")
+        } else {
+          println("No model available - skipping")
         }
       })
     // Exercise:
@@ -85,9 +86,12 @@ object CustomStageModelServerProcessor extends ModelServerProcessor {
 
     val modelPredictions: Source[Option[Double], ModelStateStore] =
       dataStream.viaMat(new ModelStage)(Keep.right).map { result =>
-        result.processed match {
-          case true => println(s"Calculated quality - ${result.result} calculated in ${result.duration} ms"); Some(result.result)
-          case _ => println ("No model available - skipping"); None
+        if (result.processed) {
+          println(s"Calculated quality - ${result.result} calculated in ${result.duration} ms");
+          Some(result.result)
+        } else {
+          println ("No model available - skipping")
+          None
         }
       }
 

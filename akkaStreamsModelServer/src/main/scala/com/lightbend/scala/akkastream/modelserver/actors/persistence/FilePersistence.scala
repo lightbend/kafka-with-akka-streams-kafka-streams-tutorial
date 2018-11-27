@@ -6,8 +6,8 @@ import com.lightbend.scala.modelServer.model.{Model, ModelToServeStats, ModelWit
 
 /**
   * Persists the state information to a file for quick recovery.
-  * This state optionally includes the current {@link com.lightbend.scala.modelServer.model.Model} and
-  * {@link com.lightbend.scala.modelServer.model.ModelToServeStats}.
+  * This state optionally includes the current `com.lightbend.scala.modelServer.model.Model` and
+  * `com.lightbend.scala.modelServer.model.ModelToServeStats`.
   */
 object FilePersistence {
 
@@ -20,9 +20,10 @@ object FilePersistence {
 
   private def getDataInputStream(fileName: String): Option[DataInputStream] = {
     val file = new File(baseDir + "/" + fileName)
-    file.exists() match {
-      case true => Some(new DataInputStream(new FileInputStream(file)))
-      case _ => None
+    if (file.exists()) {
+      Some(new DataInputStream(new FileInputStream(file)))
+    } else {
+      None
     }
   }
 

@@ -12,6 +12,7 @@ import com.lightbend.scala.akkastream.modelserver.actors.{GetModels, GetModelsRe
 import com.lightbend.scala.modelServer.model.ModelToServeStats
 import de.heikoseeberger.akkahttpjackson.JacksonSupport
 
+import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
 
 /**
@@ -26,7 +27,7 @@ object RestServiceActors {
   // Then select a model shown and try http://localhost:5500/state/<model>, e.g., http://localhost:5500/state/wine
   def startRest(modelserver: ActorRef)(implicit system: ActorSystem, materializer: ActorMaterializer): Unit = {
 
-    implicit val executionContext = system.dispatcher
+    implicit val executionContext: ExecutionContextExecutor = system.dispatcher
     // Use with HTTP methods that accept an implicit timeout argument
     // implicit val timeout = Timeout(10.seconds)
     val host = "127.0.0.1"
@@ -43,7 +44,7 @@ object RestServiceActors {
 
 object QueriesAkkaHttpResource extends JacksonSupport {
 
-  implicit val askTimeout = Timeout(30.seconds)
+  implicit val askTimeout: Timeout = Timeout(30.seconds)
 
   def storeRoutes(modelserver: ActorRef): Route =
     get {
