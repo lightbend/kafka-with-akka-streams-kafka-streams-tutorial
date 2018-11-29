@@ -35,7 +35,7 @@ A three-hour tutorial, usually covering 3.5 hours with a 30-minute break. Typica
 
 ## Full Day: ~6 Hours
 
-A six-hour tutorial, usually covering eight hours with two, 30-minute breaks and a one-hour lunch. The same sections in the 1/2-day session are here, but more time allows more depth of discussion. There is one additional section, for exercises (plus lunch and a second break...).
+A six-hour tutorial, usually covering eight hours with two, 30-minute breaks and a one-hour lunch. The same sections in the 1/2-day session are here, but more time allows more depth of discussion, plus sections for exercises, a second break and lunch.
 
 | Time      | Clock         | Topics |
 | --------: | ------------: | :----- |
@@ -46,12 +46,17 @@ A six-hour tutorial, usually covering eight hours with two, 30-minute breaks and
 |  80 -  90 | 10:20 - 10:30 | Spectrum of data in microservices, motivation for Akka Streams vs. Kafka Streams  |
 |  90 - 120 | 10:30 - 11:00 | Break  |
 | 120 - 135 | 11:00 - 11:15 | Akka Streams: description  |
-| 135 - 180 | 11:15 - 12:00 | Akka Streams: example walkthrough, in depth  |
-| 180 - 210 | 12:00 - 12:30 | Akka Streams: other production concerns  |
+| 135 - 165 | 11:15 - 11:45 | Akka Streams: example walkthrough, in depth  |
+| 165 - 180 | 11:45 - 12:00 | Akka Streams: other production concerns  |
+| 180 - 210 | 12:00 - 12:30 | Akka Streams: Exercises - Part I |
 | 210 - 270 | 12:30 - 13:30 | Lunch  |
-| 270 - 290 | 13:30 - 13:50 | Kafka Streams: description  |
-| 290 - 360 | 13:50 - 15:00 | Kafka Streams: example walkthrough, in depth  |
-| 360 - 390 | 15:00 - 15:30 | Break  |
-| 390 - 400 | 15:30 - 15:40 | Model Serving: other production concerns  |
-| 400 - 460 | 15:40 - 16:40 | Exercises  |
-| 460 - 480 | 16:40 - 17:00 | Wrap up and final questions  |
+| 270 - 300 | 13:30 - 14:00 | Akka Streams: Exercises - Part II |
+| 300 - 315 | 14:00 - 14:15 | Discuss exercises and solutions implemented  |
+| 315 - 330 | 14:15 - 14:30 | Kafka Streams: description  |
+| 330 - 360 | 14:30 - 15:00 | Kafka Streams: example walkthrough, in depth  |
+| 360 - 390 | 15:00 - 15:30 | Kafka Streams: Exercises - Part I |
+| 390 - 420 | 15:30 - 16:00 | Break  |
+| 420 - 450 | 16:00 - 16:30 | Kafka Streams: Exercises - Part II  |
+| 450 - 465 | 16:30 - 16:45 | Discuss exercises and solutions implemented  |
+| 465 - 475 | 16:45 - 16:55 | Model Serving: other production concerns  |
+| 475 - 480 | 16:55 - 17:00 | Wrap up  |
