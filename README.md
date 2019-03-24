@@ -2,7 +2,10 @@
 
 [![Join the chat at https://gitter.im/kafka-with-akka-streams-kafka-streams-tutorial](https://badges.gitter.im/kafka-with-akka-streams-kafka-streams-tutorial.svg)](https://gitter.im/kafka-with-akka-streams-kafka-streams-tutorial?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-> **NOTE:** We strongly recommend using Java 8 with this tutorial. There is an experimental branch `latest-dependency-versions` that compiles with Java 9, but still has problems running successfully.
+> **NOTES:** 
+>
+> 1. We strongly recommend using Java 8 with this tutorial. There is an experimental branch `latest-dependency-versions` that compiles with Java 9, but still has problems running successfully.
+> 2. See also our newer tutorial, [model-serving-tutorial](https://github.com/lightbend/model-serving-tutorial/), which expands on the concepts here with more focus on the use case of serving ML models.
 
 [Boris Lublinsky](mailto:boris.lublinsky@lightbend.com) and [Dean Wampler](mailto:dean.wampler@lightbend.com), [Lightbend](https://lightbend.com/fast-data-platform)
 
