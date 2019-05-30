@@ -530,4 +530,3 @@ The tutorial presentation will discuss other considerations when scaling these m
 ### For More Information
 
 Interested in an integrated and commercially supported distribution of Akka Streams, Kafka Streams, and Kafka, plus other tools like Spark, Flink, and HDFS? Go to https://www.lightbend.com/products/fast-data-platform for more information about the Lightbend Fast Data Platform.
-
